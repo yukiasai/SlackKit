@@ -1,11 +1,10 @@
 ![SlackKit](https://cloud.githubusercontent.com/assets/8311605/10260893/5ec60f96-694e-11e5-91fd-da6845942201.png)
-
-![Swift Version](https://img.shields.io/badge/Swift-2.2-orange.svg) ![Plaforms](https://img.shields.io/badge/Platforms-macOS,iOS,tvOS-lightgrey.svg) ![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg) [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) ![Pod Version](https://img.shields.io/badge/Pod-2.0.0-blue.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg)](https://github.com/Carthage/Carthage)
+![Swift Version](https://img.shields.io/badge/Swift-2.3-orange.svg) ![Plaforms](https://img.shields.io/badge/Platforms-macOS,iOS,tvOS-lightgrey.svg) ![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg) ![Pod Version](https://img.shields.io/badge/Pod-2.3.0-blue.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg)](https://github.com/Carthage/Carthage)
 ## SlackKit: A Swift Slack Client Library
 ### Description
 This is a Slack client library for OS X, iOS, and tvOS written in Swift. It's intended to expose all of the functionality of Slack's [Real Time Messaging API](https://api.slack.com/rtm) as well as the [web APIs](https://api.slack.com/web) that are accessible to [bot users](https://api.slack.com/bot-users). SlackKit also supports Slack’s [OAuth 2.0](https://api.slack.com/docs/oauth) flow including the [Add to Slack](https://api.slack.com/docs/slack-button) and [Sign in with Slack](https://api.slack.com/docs/sign-in-with-slack) buttons, [incoming webhooks](https://api.slack.com/incoming-webhooks), [slash commands](https://api.slack.com/slash-commands), and [message buttons](https://api.slack.com/docs/message-buttons).
 
-SlackKit also has alpha support for: [Swift 3](https://github.com/pvzig/SlackKit/tree/swift3), [Linux](https://github.com/pvzig/SlackKit/tree/linux)
+This is the Swift 2.3 branch of SlackKit. SlackKit also has support for [Swift 3](https://github.com/pvzig/SlackKit/tree/swift3) and [Linux](https://github.com/pvzig/SlackKit/tree/linux).
 
 #### Building the SlackKit Framework
 To build the SlackKit project directly, first build the dependencies using Carthage or CocoaPods. To use the framework in your application, install it in one of the following ways:
@@ -25,7 +24,7 @@ pod install
 
 Add SlackKit to your Cartfile:
 ```
-github "pvzig/SlackKit" ~> 2.0
+github "pvzig/SlackKit" ~> 2.3
 ```
 and run
 ```
@@ -36,19 +35,6 @@ carthage bootstrap
 carthage bootstrap --configuration "Debug"
 ```
 Drag the built `SlackKit.framework` into your Xcode project.
-
-#### Swift Package Manager
-Add SlackKit to your Package.swift
-```swift
-import PackageDescription
-
-let package = Package(
-    dependencies: [
-        .Package(url: "https://github.com/pvzig/SlackKit.git", majorVersion: 2)
-    ]
-)
-```
-Run `swift build` on your application’s main directory.
 
 To use the library in your project import it:
 ```
