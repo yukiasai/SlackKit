@@ -60,7 +60,7 @@ open class Server {
         case .text(let body):
             return .ok(.text(body))
         case .json(let response):
-            return .ok(.json(response.json))
+            return .ok(.json(response.json as AnyObject))
         case .badRequest:
             return .badRequest(.text("Bad request."))
         }
