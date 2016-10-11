@@ -30,7 +30,6 @@
 		263993A71CE90EE0004A6E93 /* Client+EventHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A85FF81CE3BCEF00756C40 /* Client+EventHandling.swift */; };
 		263993A81CE90EE0004A6E93 /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260EC2311C4DC61D0093B253 /* NetworkInterface.swift */; };
 		263993A91CE90EE0004A6E93 /* EventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BBA18B1C398E3C00BF7225 /* EventDelegate.swift */; };
-		263993AB1CE90EE0004A6E93 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307A07F1CC6D0910011D5DE /* Starscream.framework */; };
 		263993AD1CE90EE0004A6E93 /* SlackKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2661A6A41BBF62FF0026F67B /* SlackKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		263993B61CE90EED004A6E93 /* Client+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16C98791CE7D3DD00692776 /* Client+Utilities.swift */; };
 		263993B71CE90EED004A6E93 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BBA1881C398E3C00BF7225 /* Channel.swift */; };
@@ -50,7 +49,6 @@
 		263993C61CE90EED004A6E93 /* Client+EventHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A85FF81CE3BCEF00756C40 /* Client+EventHandling.swift */; };
 		263993C71CE90EED004A6E93 /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260EC2311C4DC61D0093B253 /* NetworkInterface.swift */; };
 		263993C81CE90EED004A6E93 /* EventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BBA18B1C398E3C00BF7225 /* EventDelegate.swift */; };
-		263993CA1CE90EED004A6E93 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307A07F1CC6D0910011D5DE /* Starscream.framework */; };
 		263993CC1CE90EED004A6E93 /* SlackKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2661A6A41BBF62FF0026F67B /* SlackKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2678B5941D3151B900CE521A /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678B5931D3151B900CE521A /* AuthorizeResponse.swift */; };
 		2678B5951D3151B900CE521A /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678B5931D3151B900CE521A /* AuthorizeResponse.swift */; };
@@ -144,8 +142,6 @@
 		26EC14FB1D1F355A00FD3A53 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EC14F81D1F355A00FD3A53 /* Action.swift */; };
 		26EC15011D260B1000FD3A53 /* WebhookServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EC15001D260B1000FD3A53 /* WebhookServer.swift */; };
 		26EC15021D260B1000FD3A53 /* WebhookServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EC15001D260B1000FD3A53 /* WebhookServer.swift */; };
-		26F76EB21D40318F00C3A3DD /* Swifter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26B30B6E1D289FB2004D4AB5 /* Swifter.framework */; };
-		26F76EB31D40319700C3A3DD /* Swifter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269B47CB1D3AE5670042D137 /* Swifter.framework */; };
 		C16C987A1CE7D3DD00692776 /* Client+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16C98791CE7D3DD00692776 /* Client+Utilities.swift */; };
 		C1A85FF91CE3BCEF00756C40 /* Client+EventDispatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A85FF71CE3BCEF00756C40 /* Client+EventDispatching.swift */; };
 		C1A85FFA1CE3BCEF00756C40 /* Client+EventHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A85FF81CE3BCEF00756C40 /* Client+EventHandling.swift */; };
@@ -222,8 +218,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263993AB1CE90EE0004A6E93 /* Starscream.framework in Frameworks */,
-				26F76EB21D40318F00C3A3DD /* Swifter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,8 +225,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263993CA1CE90EED004A6E93 /* Starscream.framework in Frameworks */,
-				26F76EB31D40319700C3A3DD /* Swifter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
