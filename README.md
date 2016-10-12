@@ -13,6 +13,19 @@ To build the SlackKit project directly, first build the dependencies using Carth
 
 ### Installation
 
+#### CocoaPods
+
+Add SlackKit to your pod file:
+```
+use_frameworks!
+pod 'SlackKit', '~> 3.1.2'
+```
+and run
+```
+# Use CocoaPods version >= 1.1.0.rc.2 (gem install cocoapods --pre)
+pod install
+```
+
 #### Carthage
 
 Add SlackKit to your Cartfile:
@@ -44,9 +57,6 @@ let package = Package(
 ```
 
 Run `swift build` on your application’s main directory.
- 
-#### ~~CocoaPods~~
-SlackKit doesn’t currently build correctly using CocoaPods with Swift 3. I’m hoping to restore support soon.
 
 To use the library in your project import it:
 ```
