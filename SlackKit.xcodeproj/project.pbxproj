@@ -50,6 +50,12 @@
 		263993C71CE90EED004A6E93 /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260EC2311C4DC61D0093B253 /* NetworkInterface.swift */; };
 		263993C81CE90EED004A6E93 /* EventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BBA18B1C398E3C00BF7225 /* EventDelegate.swift */; };
 		263993CC1CE90EED004A6E93 /* SlackKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2661A6A41BBF62FF0026F67B /* SlackKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2659FC1B1DADC4E0003F3930 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307A07F1CC6D0910011D5DE /* Starscream.framework */; };
+		2659FC1C1DADC4E0003F3930 /* Swifter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26B30B6B1D289FA0004D4AB5 /* Swifter.framework */; };
+		2659FC1D1DADC4F2003F3930 /* Swifter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26B30B6E1D289FB2004D4AB5 /* Swifter.framework */; };
+		2659FC1F1DADC4F2003F3930 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2659FC1E1DADC4F2003F3930 /* Starscream.framework */; };
+		2659FC201DADC4FC003F3930 /* Swifter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269B47CB1D3AE5670042D137 /* Swifter.framework */; };
+		2659FC221DADC4FC003F3930 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2659FC211DADC4FC003F3930 /* Starscream.framework */; };
 		2678B5941D3151B900CE521A /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678B5931D3151B900CE521A /* AuthorizeResponse.swift */; };
 		2678B5951D3151B900CE521A /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678B5931D3151B900CE521A /* AuthorizeResponse.swift */; };
 		2678B5961D3151B900CE521A /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678B5931D3151B900CE521A /* AuthorizeResponse.swift */; };
@@ -155,6 +161,8 @@
 		260EC2321C4DC61D0093B253 /* WebAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebAPI.swift; path = Sources/WebAPI.swift; sourceTree = "<group>"; };
 		263993B21CE90EE0004A6E93 /* SlackKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SlackKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		263993D11CE90EED004A6E93 /* SlackKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SlackKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2659FC1E1DADC4F2003F3930 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
+		2659FC211DADC4FC003F3930 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/tvOS/Starscream.framework; sourceTree = "<group>"; };
 		2661A6A41BBF62FF0026F67B /* SlackKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SlackKit.h; sourceTree = "<group>"; };
 		2678B5931D3151B900CE521A /* AuthorizeResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizeResponse.swift; path = Sources/AuthorizeResponse.swift; sourceTree = "<group>"; };
 		268E46131CE8F79D009F19CC /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-iOS.plist"; path = "Supporting Files/Info-iOS.plist"; sourceTree = "<group>"; };
@@ -211,6 +219,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2659FC1B1DADC4E0003F3930 /* Starscream.framework in Frameworks */,
+				2659FC1C1DADC4E0003F3930 /* Swifter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,6 +228,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2659FC1F1DADC4F2003F3930 /* Starscream.framework in Frameworks */,
+				2659FC1D1DADC4F2003F3930 /* Swifter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +237,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2659FC221DADC4FC003F3930 /* Starscream.framework in Frameworks */,
+				2659FC201DADC4FC003F3930 /* Swifter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +355,8 @@
 		CA70A3A1A9A1A259960DFBCF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2659FC211DADC4FC003F3930 /* Starscream.framework */,
+				2659FC1E1DADC4F2003F3930 /* Starscream.framework */,
 				269B47CB1D3AE5670042D137 /* Swifter.framework */,
 				26B30B6E1D289FB2004D4AB5 /* Swifter.framework */,
 				26B30B6B1D289FA0004D4AB5 /* Swifter.framework */,
