@@ -29,132 +29,132 @@ internal extension Client {
             return
         }
         switch type {
-        case .Hello:
+        case .hello:
             connected = true
             connectionEventsDelegate?.connected(self)
-        case .Ok:
+        case .ok:
             messageSent(event)
-        case .Message:
+        case .message:
             if (event.subtype != nil) {
                 messageDispatcher(event)
             } else {
                 messageReceived(event)
             }
-        case .UserTyping:
+        case .userTyping:
             userTyping(event)
-        case .ChannelMarked, .IMMarked, .GroupMarked:
+        case .channelMarked, .imMarked, .groupMarked:
             channelMarked(event)
-        case .ChannelCreated, .IMCreated:
+        case .channelCreated, .imCreated:
             channelCreated(event)
-        case .ChannelJoined, .GroupJoined:
+        case .channelJoined, .groupJoined:
             channelJoined(event)
-        case .ChannelLeft, .GroupLeft:
+        case .channelLeft, .groupLeft:
             channelLeft(event)
-        case .ChannelDeleted:
+        case .channelDeleted:
             channelDeleted(event)
-        case .ChannelRenamed, .GroupRename:
+        case .channelRenamed, .groupRename:
             channelRenamed(event)
-        case .ChannelArchive, .GroupArchive:
+        case .channelArchive, .groupArchive:
             channelArchived(event, archived: true)
-        case .ChannelUnarchive, .GroupUnarchive:
+        case .channelUnarchive, .groupUnarchive:
             channelArchived(event, archived: false)
-        case .ChannelHistoryChanged, .IMHistoryChanged, .GroupHistoryChanged:
+        case .channelHistoryChanged, .imHistoryChanged, .groupHistoryChanged:
             channelHistoryChanged(event)
-        case .DNDUpdated:
+        case .dndUpdated:
             doNotDisturbUpdated(event)
-        case .DNDUpatedUser:
+        case .dndUpatedUser:
             doNotDisturbUserUpdated(event)
-        case .IMOpen, .GroupOpen:
+        case .imOpen, .groupOpen:
             open(event, open: true)
-        case .IMClose, .GroupClose:
+        case .imClose, .groupClose:
             open(event, open: false)
-        case .FileCreated:
+        case .fileCreated:
             processFile(event)
-        case .FileShared:
+        case .fileShared:
             processFile(event)
-        case .FileUnshared:
+        case .fileUnshared:
             processFile(event)
-        case .FilePublic:
+        case .filePublic:
             processFile(event)
-        case .FilePrivate:
+        case .filePrivate:
             filePrivate(event)
-        case .FileChanged:
+        case .fileChanged:
             processFile(event)
-        case .FileDeleted:
+        case .fileDeleted:
             deleteFile(event)
-        case .FileCommentAdded:
+        case .fileCommentAdded:
             fileCommentAdded(event)
-        case .FileCommentEdited:
+        case .fileCommentEdited:
             fileCommentEdited(event)
-        case .FileCommentDeleted:
+        case .fileCommentDeleted:
             fileCommentDeleted(event)
-        case .PinAdded:
+        case .pinAdded:
             pinAdded(event)
-        case .PinRemoved:
+        case .pinRemoved:
             pinRemoved(event)
-        case .Pong:
+        case .pong:
             pong(event)
-        case .PresenceChange:
+        case .presenceChange:
             presenceChange(event)
-        case .ManualPresenceChange:
+        case .manualPresenceChange:
             manualPresenceChange(event)
-        case .PrefChange:
+        case .prefChange:
             changePreference(event)
-        case .UserChange:
+        case .userChange:
             userChange(event)
-        case .TeamJoin:
+        case .teamJoin:
             teamJoin(event)
-        case .StarAdded:
+        case .starAdded:
             itemStarred(event, star: true)
-        case .StarRemoved:
+        case .starRemoved:
             itemStarred(event, star: false)
-        case .ReactionAdded:
+        case .reactionAdded:
             addedReaction(event)
-        case .ReactionRemoved:
+        case .reactionRemoved:
             removedReaction(event)
-        case .EmojiChanged:
+        case .emojiChanged:
             emojiChanged(event)
-        case .CommandsChanged:
+        case .commandsChanged:
             // This functionality is only used by our web client. 
             // The other APIs required to support slash command metadata are currently unstable. 
             // Until they are released other clients should ignore this event.
             break
-        case .TeamPlanChange:
+        case .teamPlanChange:
             teamPlanChange(event)
-        case .TeamPrefChange:
+        case .teamPrefChange:
             teamPreferenceChange(event)
-        case .TeamRename:
+        case .teamRename:
             teamNameChange(event)
-        case .TeamDomainChange:
+        case .teamDomainChange:
             teamDomainChange(event)
-        case .EmailDomainChange:
+        case .emailDomainChange:
             emailDomainChange(event)
-        case .TeamProfileChange:
+        case .teamProfileChange:
             teamProfileChange(event)
-        case .TeamProfileDelete:
+        case .teamProfileDelete:
             teamProfileDeleted(event)
-        case .TeamProfileReorder:
+        case .teamProfileReorder:
             teamProfileReordered(event)
-        case .BotAdded:
+        case .botAdded:
             bot(event)
-        case .BotChanged:
+        case .botChanged:
             bot(event)
-        case .AccountsChanged:
+        case .accountsChanged:
             // The accounts_changed event is used by our web client to maintain a list of logged-in accounts.
             // Other clients should ignore this event.
             break
-        case .TeamMigrationStarted:
+        case .teamMigrationStarted:
             connect(options: options ?? ClientOptions())
-        case .ReconnectURL:
+        case .reconnectURL:
             // The reconnect_url event is currently unsupported and experimental.
             break
-        case .SubteamCreated, .SubteamUpdated:
+        case .subteamCreated, .subteamUpdated:
             subteam(event)
-        case .SubteamSelfAdded:
+        case .subteamSelfAdded:
             subteamAddedSelf(event)
-        case.SubteamSelfRemoved:
+        case .subteamSelfRemoved:
             subteamRemovedSelf(event)
-        case .Error:
+        case .error:
             print("Error: \(event)")
         }
     }
@@ -164,9 +164,9 @@ internal extension Client {
             return
         }
         switch subtype {
-        case .MessageChanged:
+        case .messageChanged:
             messageChanged(event)
-        case .MessageDeleted:
+        case .messageDeleted:
             messageDeleted(event)
         default:
             messageReceived(event)
