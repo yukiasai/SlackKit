@@ -73,7 +73,7 @@ internal struct NetworkInterface {
     }
     
     internal func uploadRequest(_ token: String, data: Data, parameters: [String: Any]?, successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
-        var requestString = "\(apiUrl)\(Endpoint.FilesUpload.rawValue)?token=\(token)"
+        var requestString = "\(apiUrl)\(Endpoint.filesUpload.rawValue)?token=\(token)"
         if let params = parameters {
             requestString = requestString + params.requestStringFromParameters
         }
