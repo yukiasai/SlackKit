@@ -47,11 +47,10 @@ internal extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any 
         for key in self.keys {
             if let value = self[key] as? String, let encodedValue = value.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlHostAllowed) {
                 requestString += "&\(key)=\(encodedValue)"
-            } else if let value = self[key] as? Int {
+            } else if let value = self[key] {
                 requestString += "&\(key)=\(value)"
             }
         }
-        
         return requestString
     }
 }
