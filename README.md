@@ -152,6 +152,7 @@ SlackKit currently supports the a subset of the Slack Web APIs that are availabl
 - channels.setPurpose
 - channels.setTopic
 - chat.delete
+- chat.meMessage
 - chat.postMessage
 - chat.update
 - emoji.list
