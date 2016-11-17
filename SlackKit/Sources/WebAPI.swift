@@ -36,6 +36,7 @@ internal enum Endpoint: String {
     case ChannelsSetTopic = "channels.setTopic"
     case ChatDelete = "chat.delete"
     case ChatPostMessage = "chat.postMessage"
+    case ChatMeMessage = "chat.meMessage"
     case ChatUpdate = "chat.update"
     case DNDInfo = "dnd.info"
     case DNDTeamInfo = "dnd.teamInfo"
@@ -228,6 +229,16 @@ public final class WebAPI {
                 success?((ts: response["ts"] as? String, response["channel"] as? String))
             }) {(error) -> Void in
                 failure?(error)
+        }
+    }
+    
+    public func sendMeMessage(_ channel: String, text: String, success: (((ts: String?, channel: String?))->Void)?, failure: FailureClosure?) {
+        let parameters: [String: Any?] = ["channel": channel, "text": text.slackFormatEscaping]
+        networkInterface.request(.ChatMeMessage, token: token, parameters: WebAPI.filterNilParameters(parameters), successClosure: {
+            (response) -> Void in
+            success?((ts: response["ts"] as? String, response["channel"] as? String))
+        }) {(error) -> Void in
+            failure?(error)
         }
     }
     
