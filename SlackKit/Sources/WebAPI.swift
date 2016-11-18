@@ -316,7 +316,7 @@ public final class WebAPI {
     }
     
     public func uploadFile(_ file: Data, filename: String, filetype: String = "auto", title: String? = nil, initialComment: String? = nil, channels: [String]? = nil, success: ((_ file: File)->Void)?, failure: FailureClosure?) {
-        let parameters: [String: Any?] = ["file": file, "filename": filename, "filetype": filetype, "title": title, "initial_comment": initialComment, "channels": channels?.joined(separator: ",")]
+        let parameters: [String: Any?] = ["filename": filename, "filetype": filetype, "title": title, "initial_comment": initialComment, "channels": channels?.joined(separator: ",")]
         networkInterface.uploadRequest(token, data: file, parameters: WebAPI.filterNilParameters(parameters), successClosure: {
             (response) -> Void in
                 success?(File(file: response["file"] as? [String: Any]))
