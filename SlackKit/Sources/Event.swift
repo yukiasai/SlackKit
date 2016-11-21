@@ -123,8 +123,7 @@ internal enum MessageSubtype: String {
     case unpinnedItem = "unpinned_item"
 }
 
-internal struct Event {
-    
+internal class Event {
     let type: EventType?
     let ts: String?
     let subtype: String?
@@ -162,7 +161,7 @@ internal struct Event {
     let subteamID: String?
     var profile: CustomProfile?
     
-    init(event:[String: Any]) {
+    init(_ event:[String: Any]) {
         type = EventType(rawValue: event["type"] as? String ?? "ok")
         ts = event["ts"] as? String
         subtype = event["subtype"] as? String

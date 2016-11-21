@@ -24,10 +24,8 @@
 internal extension Client {
 
     func dispatch(_ event: [String: Any]) {
-        let event = Event(event: event)
-        guard let type = event.type else {
-            return
-        }
+        let event = Event(event)
+        let type = event.type ?? .error
         switch type {
         case .hello:
             connected = true
