@@ -1,6 +1,6 @@
 ![SlackKit](https://cloud.githubusercontent.com/assets/8311605/10260893/5ec60f96-694e-11e5-91fd-da6845942201.png)
 
-![Swift Version](https://img.shields.io/badge/Swift-3.0-orange.svg) ![Plaforms](https://img.shields.io/badge/Platforms-macOS,iOS,tvOS-lightgrey.svg) ![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg) [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg)](https://github.com/Carthage/Carthage) 
+![Swift Version](https://img.shields.io/badge/Swift-3.0-orange.svg) ![Plaforms](https://img.shields.io/badge/Platforms-macOS,iOS,tvOS-lightgrey.svg) ![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg) [![CocoaPods compatible](https://img.shields.io/badge/CocoaPods-compatible-brightgreen.svg)](https://cocoapods.org) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg)](https://github.com/Carthage/Carthage) [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 ## SlackKit: A Swift Slack Client Library
 ### Description
 
@@ -18,11 +18,11 @@ To build the SlackKit project directly, first build the dependencies using Carth
 Add SlackKit to your pod file:
 ```
 use_frameworks!
-pod 'SlackKit', '~> 3.1.2'
+pod 'SlackKit', '~> 3.1.5'
 ```
 and run
 ```
-# Use CocoaPods version >= 1.1.0.rc.2 (gem install cocoapods --pre)
+# Use CocoaPods version >= 1.1.0
 pod install
 ```
 
@@ -88,7 +88,7 @@ incoming.postMessage(message)
 #### Slash Commands
 After [configuring your slash command in Slack](https://my.slack.com/services/new/slash-commands) (you can also provide slash commands as part of a [Slack App](https://api.slack.com/slack-apps)), initialize a webhook server with the token for the slash command, a configured route, and a response.
 ```swift
-let response = Response(text: "Hello, World!", responseType: .InChannel)
+let response = Response(text: "Hello, World!", responseType: .inChannel)
 let webhook = WebhookServer(token: "SLASH-COMMAND-TOKEN", route: "hello_world", response: response)
 webhook.start()
 ```
@@ -111,7 +111,7 @@ let attachment = Attachment(fallback: "Hello World Attachment", title: "Attachme
 To act on message actions, initialize an instance of the `MessageActionServer` using your app’s verification token, your specified interactive messages request URL route, and a `MessageActionResponder`:
 ```swift
 let action = Action(name: "hello_world", text: "Hello, World!")
-let response = Response(text: "Hello, 🌎!", responseType: .InChannel)
+let response = Response(text: "Hello, 🌎!", responseType: .inChannel)
 let responder = MessageActionResponder(responses: [(action, response)])
 let server = MessageActionServer(token: "SLACK-APP-VERIFICATION-TOKEN", route: "actions", responder: responder)
 server.start()
