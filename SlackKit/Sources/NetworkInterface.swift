@@ -36,24 +36,24 @@ internal struct NetworkInterface {
             requestString += params.requestStringFromParameters
         }
         guard let url =  URL(string: requestString) else {
-            errorClosure(SlackError.ClientNetworkError)
+            errorClosure(SlackError.clientNetworkError)
             return
         }
         let request = URLRequest(url:url)
-        
+    
         URLSession.shared.dataTask(with: request) {
             (data, response, internalError) -> Void in
-            self.handleResponse(data, response: response, internalError: internalError, successClosure: {(json) in
-                successClosure(json)
-            }, errorClosure: {(error) in
-                errorClosure(error)
-            })
+            do {
+                successClosure(try self.handleResponse(data, response: response, internalError: internalError))
+            } catch let error {
+                errorClosure(error as? SlackError ?? SlackError.unknownError)
+            }
         }.resume()
     }
     
     internal func customRequest(_ url: String, data: Data, success: @escaping (Bool)->Void, errorClosure: @escaping (SlackError)->Void) {
         guard let url =  URL(string: url.removePercentEncoding()) else {
-            errorClosure(SlackError.ClientNetworkError)
+            errorClosure(SlackError.clientNetworkError)
             return
         }
         var request = URLRequest(url:url)
@@ -67,18 +67,18 @@ internal struct NetworkInterface {
             if internalError == nil {
                 success(true)
             } else {
-                errorClosure(SlackError.ClientNetworkError)
+                errorClosure(SlackError.clientNetworkError)
             }
         }.resume()
     }
     
     internal func uploadRequest(_ token: String, data: Data, parameters: [String: Any]?, successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
-        var requestString = "\(apiUrl)\(Endpoint.FilesUpload.rawValue)?token=\(token)"
+        var requestString = "\(apiUrl)\(Endpoint.filesUpload.rawValue)?token=\(token)"
         if let params = parameters {
             requestString = requestString + params.requestStringFromParameters
         }
         guard let url =  URL(string: requestString) else {
-            errorClosure(SlackError.ClientNetworkError)
+            errorClosure(SlackError.clientNetworkError)
             return
         }
         var request = URLRequest(url:url)
@@ -103,46 +103,44 @@ internal struct NetworkInterface {
 
         URLSession.shared.dataTask(with: request) {
             (data, response, internalError) -> Void in
-            self.handleResponse(data, response: response, internalError: internalError, successClosure: {(json) in
-                successClosure(json)
-            }, errorClosure: {(error) in
-                errorClosure(error)
-            })
+            do {
+                successClosure(try self.handleResponse(data, response: response, internalError: internalError))
+            } catch let error {
+                errorClosure(error as? SlackError ?? SlackError.unknownError)
+            }
         }.resume()
     }
     
-    private func handleResponse(_ data: Data?, response:URLResponse?, internalError:Error?, successClosure: ([String: Any])->Void, errorClosure: (SlackError)->Void) {
+    private func handleResponse(_ data: Data?, response:URLResponse?, internalError:Error?) throws -> [String: Any] {
         guard let data = data, let response = response as? HTTPURLResponse else {
-            errorClosure(SlackError.ClientNetworkError)
-            return
+            throw SlackError.clientNetworkError
         }
         do {
             guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-                errorClosure(SlackError.ClientJSONError)
-                return
+                throw SlackError.clientJSONError
             }
             
             switch response.statusCode {
             case 200:
                 if (json["ok"] as! Bool == true) {
-                    successClosure(json)
+                    return json
                 } else {
                     if let errorString = json["error"] as? String {
-                        throw SlackError(rawValue: errorString) ?? .UnknownError
+                        throw SlackError(rawValue: errorString) ?? .unknownError
                     } else {
-                        throw SlackError.UnknownError
+                        throw SlackError.unknownError
                     }
                 }
             case 429:
-                throw SlackError.TooManyRequests
+                throw SlackError.tooManyRequests
             default:
-                throw SlackError.ClientNetworkError
+                throw SlackError.clientNetworkError
             }
         } catch let error {
             if let slackError = error as? SlackError {
-                errorClosure(slackError)
+                throw slackError
             } else {
-                errorClosure(SlackError.UnknownError)
+                throw SlackError.unknownError
             }
         }
     }
