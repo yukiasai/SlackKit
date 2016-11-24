@@ -4,15 +4,15 @@ use_frameworks!
 
 target 'SlackKit OS X' do
 	pod 'Starscream', '~> 2.0.2'
-	pod 'Swifter', '~> 1.3.2'
+	pod 'Swifter', :git => 'https://github.com/pvzig/swifter.git', :tag => '3.0.4'
 end
 
 target 'SlackKit iOS' do
 	pod 'Starscream', '~> 2.0.2'
-	pod 'Swifter', '~> 1.3.2'
+	pod 'Swifter', :git => 'https://github.com/pvzig/swifter.git', :tag => '3.0.4'
 end
 
 target 'SlackKit tvOS' do
 	pod 'Starscream', '~> 2.0.2'
-	pod 'Swifter', '~> 1.3.2'
+	pod 'Swifter', :git => 'https://github.com/pvzig/swifter.git', :tag => '3.0.4'
 end
