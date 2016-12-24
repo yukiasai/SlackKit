@@ -1,5 +1,5 @@
 //
-// Extensions.swift
+// History.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -23,34 +23,21 @@
 
 import Foundation
 
-public extension Date {
+public struct History {
     
-    var slackTimestamp: Double {
-        return NSNumber(value: timeIntervalSince1970).doubleValue
-    }
-}
-
-internal extension String {
+    internal(set) public var latest: Date?
+    internal(set) public var messages = [Message]()
+    public let hasMore: Bool?
     
-    var slackFormatEscaping: String {
-        var escapedString = replacingOccurrences(of: "&", with: "&amp;")
-        escapedString = replacingOccurrences(of: "<", with: "&lt;")
-        escapedString = replacingOccurrences(of: ">", with: "&gt;")
-        return escapedString
-    }
-}
-
-internal extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
-    
-    var requestStringFromParameters: String {
-        var requestString = ""
-        for key in self.keys {
-            if let value = self[key] as? String, let encodedValue = value.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-                requestString += "&\(key)=\(encodedValue)"
-            } else if let value = self[key] {
-                requestString += "&\(key)=\(value)"
+    internal init(history: [String: Any]?) {
+        if let latestStr = history?["latest"] as? String, let latestDouble = Double(latestStr) {
+            latest = Date(timeIntervalSince1970: TimeInterval(latestDouble))
+        }
+        if let msgs = history?["messages"] as? [[String: Any]] {
+            for message in msgs {
+                messages.append(Message(dictionary: message))
             }
         }
-        return requestString
+        hasMore = history?["has_more"] as? Bool
     }
 }

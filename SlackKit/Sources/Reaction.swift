@@ -1,5 +1,5 @@
 //
-// Extensions.swift
+// Reaction.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,36 +21,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-
-public extension Date {
+public struct Reaction: Equatable {
     
-    var slackTimestamp: Double {
-        return NSNumber(value: timeIntervalSince1970).doubleValue
+    public let name: String?
+    internal(set) public var user: String?
+    
+    internal init(reaction:[String: Any]?) {
+        name = reaction?["name"] as? String
     }
-}
-
-internal extension String {
     
-    var slackFormatEscaping: String {
-        var escapedString = replacingOccurrences(of: "&", with: "&amp;")
-        escapedString = replacingOccurrences(of: "<", with: "&lt;")
-        escapedString = replacingOccurrences(of: ">", with: "&gt;")
-        return escapedString
+    internal init(name: String, user: String) {
+        self.name = name
+        self.user = user
     }
-}
-
-internal extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
     
-    var requestStringFromParameters: String {
-        var requestString = ""
-        for key in self.keys {
-            if let value = self[key] as? String, let encodedValue = value.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-                requestString += "&\(key)=\(encodedValue)"
-            } else if let value = self[key] {
-                requestString += "&\(key)=\(value)"
+    static func reactionsFromArray(_ array: [[String: Any]]?) -> [Reaction] {
+        var reactions = [Reaction]()
+        if let array = array {
+            for reaction in array {
+                if let users = reaction["users"] as? [String], let name = reaction["name"] as? String {
+                    for user in users {
+                        reactions.append(Reaction(name: name, user: user))
+                    }
+                }
             }
         }
-        return requestString
+        return reactions
+    }
+    
+    public static func ==(lhs: Reaction, rhs: Reaction) -> Bool {
+        return lhs.name == rhs.name
     }
 }

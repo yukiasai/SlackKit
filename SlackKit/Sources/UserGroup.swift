@@ -21,11 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
 public struct UserGroup {
     
     public let id: String?
-    
     internal(set) public var teamID: String?
     public let isUserGroup: Bool?
     internal(set) public var name: String?
@@ -43,7 +41,7 @@ public struct UserGroup {
     internal(set) public var users: [String]?
     internal(set) public var userCount: Int?
     
-    internal init?(userGroup: [String: Any]?) {
+    internal init(userGroup: [String: Any]?) {
         id = userGroup?["id"] as? String
         teamID = userGroup?["team_id"] as? String
         isUserGroup = userGroup?["is_usergroup"] as? Bool
@@ -64,5 +62,4 @@ public struct UserGroup {
             userCount = Int(count)
         }
     }
-    
 }

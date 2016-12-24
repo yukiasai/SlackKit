@@ -21,8 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-public struct File {
-
+public struct File: Equatable {
+    
     public let id: String?
     public let created: Int?
     public let name: String?
@@ -44,6 +44,22 @@ public struct File {
     public let thumb360gif: String?
     public let thumb360w: String?
     public let thumb360h: String?
+    public let thumb480: String?
+    public let thumb480gif: String?
+    public let thumb480w: String?
+    public let thumb480h: String?
+    public let thumb720: String?
+    public let thumb720gif: String?
+    public let thumb720w: String?
+    public let thumb720h: String?
+    public let thumb960: String?
+    public let thumb960gif: String?
+    public let thumb960w: String?
+    public let thumb960h: String?
+    public let thumb1024: String?
+    public let thumb1024gif: String?
+    public let thumb1024w: String?
+    public let thumb1024h: String?
     public let permalink: String?
     public let editLink: String?
     public let preview: String?
@@ -60,9 +76,9 @@ public struct File {
     internal(set) public var isStarred: Bool?
     internal(set) public var pinnedTo: [String]?
     internal(set) public var comments = [String: Comment]()
-    internal(set) public var reactions = [String: Reaction]()
+    internal(set) public var reactions = [Reaction]()
     
-    public init?(file:[String: Any]?) {
+    public init(file:[String: Any]?) {
         id = file?["id"] as? String
         created = file?["created"] as? Int
         name = file?["name"] as? String
@@ -84,6 +100,22 @@ public struct File {
         thumb360gif = file?["thumb_360_gif"] as? String
         thumb360w = file?["thumb_360_w"] as? String
         thumb360h = file?["thumb_360_h"] as? String
+        thumb480 = file?["thumb_480"] as? String
+        thumb480gif = file?["thumb_480_gif"] as? String
+        thumb480w = file?["thumb_480_w"] as? String
+        thumb480h = file?["thumb_480_h"] as? String
+        thumb720 = file?["thumb_720"] as? String
+        thumb720gif = file?["thumb_720_gif"] as? String
+        thumb720w = file?["thumb_720_w"] as? String
+        thumb720h = file?["thumb_720_h"] as? String
+        thumb960 = file?["thumb_960"] as? String
+        thumb960gif = file?["thumb_960_gif"] as? String
+        thumb960w = file?["thumb_960_w"] as? String
+        thumb960h = file?["thumb_960_h"] as? String
+        thumb1024 = file?["thumb_1024"] as? String
+        thumb1024gif = file?["thumb_1024_gif"] as? String
+        thumb1024w = file?["thumb_1024_w"] as? String
+        thumb1024h = file?["thumb_1024_h"] as? String
         permalink = file?["permalink"] as? String
         editLink = file?["edit_link"] as? String
         preview = file?["preview"] as? String
@@ -99,13 +131,10 @@ public struct File {
         stars = file?["num_stars"] as? Int
         isStarred = file?["is_starred"] as? Bool
         pinnedTo = file?["pinned_to"] as? [String]
-        if let reactions = file?["reactions"] as? [Any] {
-            self.reactions = Reaction.reactionsFromArray(array: reactions)
-        }
-        
+        reactions = Reaction.reactionsFromArray(file?["reactions"] as? [[String: Any]])
     }
     
-    internal init?(id:String?) {
+    internal init(id:String?) {
         self.id = id
         created = nil
         name = nil
@@ -126,6 +155,22 @@ public struct File {
         thumb360gif = nil
         thumb360w = nil
         thumb360h = nil
+        thumb480 = nil
+        thumb480gif = nil
+        thumb480w = nil
+        thumb480h = nil
+        thumb720 = nil
+        thumb720gif = nil
+        thumb720w = nil
+        thumb720h = nil
+        thumb960 = nil
+        thumb960gif = nil
+        thumb960w = nil
+        thumb960h = nil
+        thumb1024 = nil
+        thumb1024gif = nil
+        thumb1024w = nil
+        thumb1024h = nil
         permalink = nil
         editLink = nil
         preview = nil
@@ -134,11 +179,8 @@ public struct File {
         linesMore = nil
         initialComment = nil
     }
-}
-
-extension File: Equatable {}
-
-public func ==(lhs: File, rhs: File) -> Bool {
-    return lhs.id == rhs.id
-}
     
+    public static func ==(lhs: File, rhs: File) -> Bool {
+        return lhs.id == rhs.id
+    }
+}

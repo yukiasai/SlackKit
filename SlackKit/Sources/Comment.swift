@@ -1,5 +1,5 @@
 //
-// Extensions.swift
+// Comment.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,36 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-
-public extension Date {
+public struct Comment: Equatable {
     
-    var slackTimestamp: Double {
-        return NSNumber(value: timeIntervalSince1970).doubleValue
+    public let id: String?
+    public let user: String?
+    internal(set) public var created: Int?
+    internal(set) public var comment: String?
+    internal(set) public var starred: Bool?
+    internal(set) public var stars: Int?
+    internal(set) public var reactions = [Reaction]()
+    
+    internal init(comment:[String: Any]?) {
+        id = comment?["id"] as? String
+        created = comment?["created"] as? Int
+        user = comment?["user"] as? String
+        starred = comment?["is_starred"] as? Bool
+        stars = comment?["num_stars"] as? Int
+        self.comment = comment?["comment"] as? String
     }
-}
-
-internal extension String {
     
-    var slackFormatEscaping: String {
-        var escapedString = replacingOccurrences(of: "&", with: "&amp;")
-        escapedString = replacingOccurrences(of: "<", with: "&lt;")
-        escapedString = replacingOccurrences(of: ">", with: "&gt;")
-        return escapedString
+    internal init(id: String?) {
+        self.id = id
+        self.user = nil
     }
-}
-
-internal extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
     
-    var requestStringFromParameters: String {
-        var requestString = ""
-        for key in self.keys {
-            if let value = self[key] as? String, let encodedValue = value.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-                requestString += "&\(key)=\(encodedValue)"
-            } else if let value = self[key] {
-                requestString += "&\(key)=\(value)"
-            }
-        }
-        return requestString
+    public static func ==(lhs: Comment, rhs: Comment) -> Bool {
+        return lhs.id == rhs.id
     }
 }
