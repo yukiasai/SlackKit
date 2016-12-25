@@ -21,8 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import C7
-import Jay
+import Foundation
 import Venice
 import WebSocketClient
 
@@ -41,6 +40,7 @@ public class SlackClient {
     internal(set) public var sentMessages = [String: Message]()
     
     //MARK: - Delegates
+    public weak var connectionEventsDelegate: ConnectionEventsDelegate?
     public weak var slackEventsDelegate: SlackEventsDelegate?
     public weak var messageEventsDelegate: MessageEventsDelegate?
     public weak var doNotDisturbEventsDelegate: DoNotDisturbEventsDelegate?
@@ -61,16 +61,14 @@ public class SlackClient {
     }
     
     public var webAPI: SlackWebAPI {
-        return SlackWebAPI(slackClient: self)
+        return SlackWebAPI(token: token)
     }
 
-    internal var webSocket: Client?
+    internal var client: WebSocketClient?
     internal var socket: WebSocket?
-    internal let api = NetworkInterface()
     
     internal var ping: Double?
     internal var pong: Double?
-    
     internal var pingInterval: Double?
     internal var timeout: Double?
     internal var reconnect: Bool?
@@ -83,37 +81,34 @@ public class SlackClient {
         self.pingInterval = pingInterval
         self.timeout = timeout
         self.reconnect = reconnect
-        webAPI.rtmStart(simpleLatest: simpleLatest, noUnreads: noUnreads, mpimAware: mpimAware, success: {
-            (response) -> Void in
-            self.initialSetup(json: response)
-            if let socketURL = response["url"] as? String {
+        webAPI.rtmStart(simpleLatest: simpleLatest, noUnreads: noUnreads, mpimAware: mpimAware, success: { (response) in
+            self.initialSetup(JSON: response)
+            if let socketURL = response["url"] as? String, let url = URL(string: socketURL) {
                 do {
-                    let uri = try URI(socketURL)
-                    self.webSocket = try Client(uri: uri, didConnect: {(socket) in
-                        self.setupSocket(socket: socket)
-                        if let pingInterval = self.pingInterval {
-                            self.pingRTMServerAtInterval(interval: pingInterval)
-                        }
+                    self.client = try WebSocketClient(url: url, didConnect: { (socket) in
+                        self.setupSocket(socket)
+                        self.pingRTMServerAtInterval(interval: self.pingInterval ?? 0)
                     })
-                    try self.webSocket?.connect(uri.description)
-                } catch _ {
-                    
+                    try self.client?.connect()
+                } catch let error {
+                    print("WebSocket client could not correct: \(error)")
                 }
             }
-            }, failure:nil)
+        }, failure:nil)
     }
     
-    /*TO-DO: Bug in Zewo/WebSocket
     public func disconnect() {
         _ = try? socket?.close()
-    }*/
+    }
     
-    //MARK: - RTM Message send
+    //MARK: - RTM message send
     public func sendMessage(message: String, channelID: String) {
-        if (connected) {
+        if connected {
             if let data = formatMessageToSlackJsonString(message: message, channel: channelID) {
-                if let string = try? data.string() {
-                    _ = try? socket?.send(string)
+                do {
+                    try socket?.send(data.base64EncodedString())
+                } catch let error {
+                    print("Message failed to send: \(error)")
                 }
             }
         }
@@ -121,123 +116,128 @@ public class SlackClient {
     
     private func formatMessageToSlackJsonString(message: String, channel: String) -> Data? {
         let json: [String: Any] = [
-            "id": Time.slackTimestamp(),
+            "id": Date().slackTimestamp,
             "type": "message",
             "channel": channel,
-            "text": message.slackFormatEscaping()
+            "text": message.slackFormatEscaping
         ]
         
         do {
-            let bytes = try Jay().dataFromJson(json)
-            return Data(bytes)
+            return try JSONSerialization.data(withJSONObject: json, options: [])
         } catch {
             return nil
         }
     }
     
-    private func addSentMessage(dictionary: [String: Any]) {
+    fileprivate func addSentMessage(_ dictionary: [String: Any]) {
         var message = dictionary
-        let ts = message["id"] as? Int
-        message.removeValue(forKey:"id")
-        message["ts"] = "\(ts)"
+        guard let id = message["id"] as? NSNumber else {
+            return
+        }
+        let ts = String(describing: id)
+        message.removeValue(forKey: "id")
+        message["ts"] = ts
         message["user"] = self.authenticatedUser?.id
-        sentMessages["\(ts)"] = Message(message: message)
+        sentMessages[ts] = Message(dictionary: message)
     }
     
     //MARK: - RTM Ping
+    var connectionIsActive: Bool {
+        if let pong = pong, let ping = ping, let timeout = timeout {
+            if pong - ping < timeout {
+                return true
+            } else {
+                return false
+            }
+            // Ping-pong or timeout not configured
+        } else {
+            return true
+        }
+    }
+    
     private func pingRTMServerAtInterval(interval: Double) {
         co { [weak self] in
-            let weakSelf = self
             repeat {
                 nap(for: interval)
-                weakSelf?.sendRTMPing()
-            } while weakSelf?.connected == true && weakSelf?.timeoutCheck() == true
-            //weakSelf?.disconnect()
+                self?.sendRTMPing()
+            } while self?.connected == true && self?.connectionIsActive == true
+            self?.disconnect()
         }
     }
     
     private func sendRTMPing() {
         if connected {
             let json: [String: Any] = [
-                "id": Double.slackTimestamp(),
+                "id": Date().slackTimestamp,
                 "type": "ping",
             ]
             do {
-                let data = try Jay().dataFromJson(json)
-                let string = try data.string()
+                let string = try JSONSerialization.data(withJSONObject: json, options: []).base64EncodedString()
                 ping = json["id"] as? Double
                 try socket?.send(string)
             }
-            catch _ {
-                
+            catch let error {
+                print("Failed to send RTM ping: \(error)")
             }
         }
     }
-    
-    private func timeoutCheck() -> Bool {
-        if let pong = pong, ping = ping, timeout = timeout {
-            if pong - ping < timeout {
-                return true
-            } else {
-                return false
-            }
-        // Ping-pong or timeout not configured
-        } else {
-            return true
-        }
-    }
-    
+
     //MARK: - Client setup
-    private func initialSetup(json: [String: Any]) {
-        team = Team(team: json["team"] as? [String: Any])
-        authenticatedUser = User(user: json["self"] as? [String: Any])
-        authenticatedUser?.doNotDisturbStatus = DoNotDisturbStatus(status: json["dnd"] as? [String: Any])
-        enumerateObjects(array: json["users"] as? Array) { (user) in self.addUser(aUser: user) }
-        enumerateObjects(array: json["channels"] as? Array) { (channel) in self.addChannel(aChannel: channel) }
-        enumerateObjects(array: json["groups"] as? Array) { (group) in self.addChannel(aChannel: group) }
-        enumerateObjects(array: json["mpims"] as? Array) { (mpim) in self.addChannel(aChannel: mpim) }
-        enumerateObjects(array: json["ims"] as? Array) { (ims) in self.addChannel(aChannel: ims) }
-        enumerateObjects(array: json["bots"] as? Array) { (bots) in self.addBot(aBot: bots) }
-        enumerateSubteams(subteams: json["subteams"] as? [String: Any])
+    fileprivate func initialSetup(JSON: [String: Any]) {
+        team = Team(team: JSON["team"] as? [String: Any])
+        authenticatedUser = User(user: JSON["self"] as? [String: Any])
+        authenticatedUser?.doNotDisturbStatus = DoNotDisturbStatus(status: JSON["dnd"] as? [String: Any])
+        enumerateObjects(JSON["users"] as? Array) { (user) in self.addUser(user) }
+        enumerateObjects(JSON["channels"] as? Array) { (channel) in self.addChannel(channel) }
+        enumerateObjects(JSON["groups"] as? Array) { (group) in self.addChannel(group) }
+        enumerateObjects(JSON["mpims"] as? Array) { (mpim) in self.addChannel(mpim) }
+        enumerateObjects(JSON["ims"] as? Array) { (ims) in self.addChannel(ims) }
+        enumerateObjects(JSON["bots"] as? Array) { (bots) in self.addBot(bots) }
+        enumerateSubteams(JSON["subteams"] as? [String: Any])
     }
     
-    private func addUser(aUser: [String: Any]) {
-        if let user = User(user: aUser), id = user.id {
+    fileprivate func addUser(_ aUser: [String: Any]) {
+        let user = User(user: aUser)
+        if let id = user.id {
             users[id] = user
         }
     }
     
-    private func addChannel(aChannel: [String: Any]) {
-        if let channel = Channel(channel: aChannel), id = channel.id {
+    fileprivate func addChannel(_ aChannel: [String: Any]) {
+        let channel = Channel(channel: aChannel)
+        if let id = channel.id {
             channels[id] = channel
         }
     }
     
-    private func addBot(aBot: [String: Any]) {
-        if let bot = Bot(bot: aBot), id = bot.id {
+    fileprivate func addBot(_ aBot: [String: Any]) {
+        let bot = Bot(bot: aBot)
+        if let id = bot.id {
             bots[id] = bot
         }
     }
     
-    private func enumerateSubteams(subteams: [String: Any]?) {
+    fileprivate func enumerateSubteams(_ subteams: [String: Any]?) {
         if let subteams = subteams {
-            if let all = subteams["all"] as? [Any] {
+            if let all = subteams["all"] as? [[String: Any]] {
                 for item in all {
-                    let u = UserGroup(userGroup: item as? [String: Any])
-                    self.userGroups[u!.id!] = u
+                    let u = UserGroup(userGroup: item)
+                    if let id = u.id {
+                        self.userGroups[id] = u
+                    }
                 }
             }
             if let auth = subteams["self"] as? [String] {
                 for item in auth {
                     authenticatedUser?.userGroups = [String: String]()
-                    authenticatedUser?.userGroups![item] = item
+                    authenticatedUser?.userGroups?[item] = item
                 }
             }
         }
     }
     
     // MARK: - Utilities
-    private func enumerateObjects(array: [Any]?, initalizer: ([String: Any])-> Void) {
+    fileprivate func enumerateObjects(_ array: [Any]?, initalizer: ([String: Any])-> Void) {
         if let array = array {
             for object in array {
                 if let dictionary = object as? [String: Any] {
@@ -247,9 +247,8 @@ public class SlackClient {
         }
     }
     
-    
     // MARK: - WebSocket
-    private func setupSocket(socket: WebSocket) {
+    private func setupSocket(_ socket: WebSocket) {
         socket.onText {(message) in
             self.websocketDidReceive(message: message)
         }
@@ -263,24 +262,27 @@ public class SlackClient {
     
     private func websocketDidReceive(message: String) {
         do {
-            let json = try Jay().jsonFromData(message.data.bytes)
+            guard let message = message.data(using: .utf8) else {
+                print("Failed to decode message")
+                return
+            }
+            let json = try JSONSerialization.jsonObject(with: message, options: [])
             if let event = json as? [String: Any] {
-                dispatch(event:event)
+                dispatch(event)
             }
         }
-        catch _ {
-            
+        catch let error {
+            print("Failed to dispatch message: \(error)")
         }
-
     }
     
     private func websocketDidDisconnect(closeCode: CloseCode?, error: String?) {
         connected = false
         authenticated = false
-        webSocket = nil
+        client = nil
         socket = nil
         authenticatedUser = nil
-        slackEventsDelegate?.clientDisconnected()
+        connectionEventsDelegate?.disconnected(self)
         if reconnect == true {
             connect(pingInterval: pingInterval, timeout: timeout, reconnect: reconnect)
         }
