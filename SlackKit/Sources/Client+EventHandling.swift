@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 
 import Foundation
+import Dispatch
 
 internal extension SlackClient {
     
@@ -79,7 +80,7 @@ internal extension SlackClient {
         channels[channelID]?.usersTyping.append(userID)
         channelEventsDelegate?.userTypingIn(channel, user: user, client: self)
         
-        let timeout = DispatchTime.now() + Double(Int64(5.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let timeout = DispatchTime.now() + Double(Int64(5.0 * Double(CLOCKS_PER_SEC))) / Double(CLOCKS_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: timeout, execute: {
             if let index = self.channels[channelID]?.usersTyping.index(of: userID) {
                 self.channels[channelID]?.usersTyping.remove(at: index)
