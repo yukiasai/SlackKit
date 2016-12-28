@@ -21,19 +21,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import C7
-import HTTPSClient
-import Jay
+import Foundation
+import HTTPClient
 import WebSocketClient
 
 internal struct NetworkInterface {
     
     private let apiUrl = "https://slack.com/api/"
-    private let client: HTTPSClient.Client?
+    private let client: HTTPClient.Client?
     
     init() {
         do {
-            self.client = try Client(uri: URI("https://slack.com"))
+            self.client = try Client(url: URL(string: "https://slack.com")!)
         } catch {
             self.client = nil
         }
@@ -42,24 +41,23 @@ internal struct NetworkInterface {
     internal func request(endpoint: SlackAPIEndpoint, token: String, parameters: [String: Any]?, successClosure: ([String: Any])->Void, errorClosure: (SlackError)->Void) {
         var requestString = "\(apiUrl)\(endpoint.rawValue)?token=\(token)"
         if let params = parameters {
-            requestString += requestStringFromParameters(parameters: params)
+            requestString += params.requestStringFromParameters
         }
         
         do {
-            var response: Response?
-            response = try client?.get(requestString)
-            
-            let data = try response?.body.becomeBuffer()
-            if let data = data {
-                let json = try Jay().jsonFromData(data.bytes)
+            let contentNegotiation = ContentNegotiationMiddleware(mediaTypes: [.json, .urlEncodedForm], mode: .client)
+            var response = try client?.get(requestString, middleware: [contentNegotiation])
+            if let buffer = try response?.body.becomeBuffer(deadline: 5) {
+                let data = Data(bytes: buffer.bytes)
+                let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
                 if let result = json as? [String: Any] {
                     if (result["ok"] as? Bool == true) {
                         successClosure(result)
                     } else {
                         if let errorString = result["error"] as? String {
-                            throw ErrorDispatcher.dispatch(error: errorString)
+                            throw SlackError(rawValue: errorString) ?? SlackError.unknownError
                         } else {
-                            throw SlackError.UnknownError
+                            throw SlackError.unknownError
                         }
                     }
                 }
@@ -68,15 +66,15 @@ internal struct NetworkInterface {
             if let slackError = error as? SlackError {
                 errorClosure(slackError)
             } else {
-                errorClosure(SlackError.UnknownError)
+                errorClosure(SlackError.unknownError)
             }
         }
     }
     
     internal func uploadRequest(token: String, data: Data, parameters: [String: Any]?, successClosure: ([String: Any])->Void, errorClosure: (SlackError)->Void) {
-        var requestString = "\(apiUrl)\(SlackAPIEndpoint.FilesUpload.rawValue)?token=\(token)"
+        var requestString = "\(apiUrl)\(SlackAPIEndpoint.filesUpload.rawValue)?token=\(token)"
         if let params = parameters {
-            requestString = requestString + requestStringFromParameters(parameters: params)
+            requestString = requestString + params.requestStringFromParameters
         }
     
         let boundaryConstant = randomBoundary()
@@ -85,31 +83,34 @@ internal struct NetworkInterface {
         let contentDispositionString = "Content-Disposition: form-data; name=\"file\"; filename=\"\(parameters!["filename"])\"\r\n"
         let contentTypeString = "Content-Type: \(parameters!["filetype"])\r\n\r\n"
 
+        guard let boundaryStartData = boundaryStart.data(using: .utf8), let dispositionData = contentDispositionString.data(using: .utf8), let contentTypeData = contentTypeString.data(using: .utf8), let newLineData = "\r\n".data(using: .utf8), let boundaryEndData = boundaryEnd.data(using: .utf8) else {
+            errorClosure(SlackError.clientNetworkError)
+            return
+        }
         var requestBodyData = Data()
-        requestBodyData.append(contentsOf: boundaryStart.data.bytes)
-        requestBodyData.append(contentsOf: contentDispositionString.data.bytes)
-        requestBodyData.append(contentsOf: contentTypeString.data.bytes)
+        requestBodyData.append(contentsOf: boundaryStartData)
+        requestBodyData.append(contentsOf: dispositionData)
+        requestBodyData.append(contentsOf: contentTypeData)
         requestBodyData.append(contentsOf: data)
-        requestBodyData.append(contentsOf: "\r\n".data.bytes)
-        requestBodyData.append(contentsOf: boundaryEnd.data.bytes)
+        requestBodyData.append(contentsOf: newLineData)
+        requestBodyData.append(contentsOf: boundaryEndData)
         
-        let header: Headers = ["Content-Type":"multipart/form-data; boundary=" + boundaryConstant]
+        let header: Headers = ["Content-Type":"multipart/form-data; boundary=\(boundaryConstant)"]
         
         do {
             var response: Response?
-            response = try client?.post(requestString, headers: header, body: requestBodyData)
-            
-            let data = try response?.body.becomeBuffer()
-            if let data = data {
-                let json = try Jay().jsonFromData(data.bytes)
+            response = try client?.post(requestString, headers: header, body: Buffer(requestBodyData.map({$0})))
+            if let buffer = try response?.body.becomeBuffer(deadline: 5) {
+                let data = Data(bytes: buffer.bytes)
+                let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
                 if let result = json as? [String: Any] {
                     if (result["ok"] as? Bool == true) {
                         successClosure(result)
                     } else {
                         if let errorString = result["error"] as? String {
-                            throw ErrorDispatcher.dispatch(error: errorString)
+                            throw SlackError(rawValue: errorString) ?? SlackError.unknownError
                         } else {
-                            throw SlackError.UnknownError
+                            throw SlackError.unknownError
                         }
                     }
                 }
@@ -119,7 +120,7 @@ internal struct NetworkInterface {
             if let slackError = error as? SlackError {
                 errorClosure(slackError)
             } else {
-                errorClosure(SlackError.UnknownError)
+                errorClosure(SlackError.unknownError)
             }
         }
     }
@@ -131,25 +132,4 @@ internal struct NetworkInterface {
             return "slackkit.boundary.\(arc4random())\(arc4random())"
         #endif
     }
-    
-    private func requestStringFromParameters(parameters: [String: Any]) -> String {
-        var requestString = ""
-        for key in parameters.keys {
-            if let value = parameters[key] as? String {
-                do {
-                    let encodedValue = try value.percentEncoded(allowing: .uriQueryAllowed)
-                    requestString += "&\(key)=\(encodedValue)"
-                } catch _ {
-                    print("Error encoding parameters.")
-                }
-            } else if let value = parameters[key] as? Int {
-                requestString += "&\(key)=\(value)"
-            } else if let value = parameters[key] as? Bool {
-                requestString += "&\(key)=\(value)"
-            }
-        }
-        
-        return requestString
-    }
-    
 }

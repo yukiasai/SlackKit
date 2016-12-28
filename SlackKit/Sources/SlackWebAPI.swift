@@ -104,16 +104,12 @@ public class SlackWebAPI {
         case im = "im"
     }
     
-    private let networkInterface: NetworkInterface
-    private let token: String
+    fileprivate let networkInterface: NetworkInterface
+    fileprivate let token: String
     
-    init(networkInterface: NetworkInterface, token: String) {
-        self.networkInterface = networkInterface
+    public init(token: String) {
+        self.networkInterface = NetworkInterface()
         self.token = token
-    }
-    
-    convenience public init(slackClient: SlackClient) {
-        self.init(networkInterface: slackClient.api, token: slackClient.token)
     }
     
     //MARK: - RTM
