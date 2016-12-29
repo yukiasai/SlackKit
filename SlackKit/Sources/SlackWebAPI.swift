@@ -199,7 +199,7 @@ public class SlackWebAPI {
     }
     
     public func sendMessage(channel: String, text: String, username: String? = nil, asUser: Bool? = nil, parse: ParseMode? = nil, linkNames: Bool? = nil, attachments: [Attachment?]? = nil, unfurlLinks: Bool? = nil, unfurlMedia: Bool? = nil, iconURL: String? = nil, iconEmoji: String? = nil, success: (((ts: String?, channel: String?))->Void)?, failure: FailureClosure?) {
-        let parameters: [String: Any?] = ["channel":channel, "text":text.slackFormatEscaping, "as_user":asUser, "parse":parse?.rawValue, "link_names":linkNames, "unfurl_links":unfurlLinks, "unfurlMedia":unfurlMedia, "username":username, "attachments":encodeAttachments(attachments: attachments), "icon_url":iconURL, "icon_emoji":iconEmoji]
+        let parameters: [String: Any?] = ["channel":channel, "text":text.slackFormatEscaping, "as_user":asUser, "parse":parse?.rawValue, "link_names":linkNames, "unfurl_links":unfurlLinks, "unfurlMedia":unfurlMedia, "username":username, "attachments":encodeAttachments(attachments), "icon_url":iconURL, "icon_emoji":iconEmoji]
         networkInterface.request(endpoint: .chatPostMessage, token: token, parameters: filterNilParameters(parameters), successClosure: {
             (response) -> Void in
                 success?((ts: response["ts"] as? String, response["channel"] as? String))
@@ -219,7 +219,7 @@ public class SlackWebAPI {
     }
     
     public func updateMessage(channel: String, ts: String, message: String, attachments: [Attachment?]? = nil, parse:ParseMode = .none, linkNames: Bool = false, success: ((_ updated: Bool)->Void)?, failure: FailureClosure?) {
-        let parameters: [String: Any?] = ["channel": channel, "ts": ts, "text": message.slackFormatEscaping, "parse": parse.rawValue, "link_names": linkNames, "attachments":encodeAttachments(attachments: attachments)]
+        let parameters: [String: Any?] = ["channel": channel, "ts": ts, "text": message.slackFormatEscaping, "parse": parse.rawValue, "link_names": linkNames, "attachments":encodeAttachments(attachments)]
         networkInterface.request(endpoint: .chatUpdate, token: token, parameters: filterNilParameters(parameters), successClosure: {
             (response) -> Void in
                 success?(true)
@@ -243,7 +243,7 @@ public class SlackWebAPI {
         let parameters: [String: Any?] = ["users":users?.joined(separator: ",")]
         networkInterface.request(endpoint: .dndTeamInfo, token: token, parameters: filterNilParameters(parameters), successClosure: {
             (response) -> Void in
-                success?(self.enumerateDNDStauses(statuses: response["users"] as? [String: Any]))
+                success?(self.enumerateDNDStatuses(response["users"] as? [String: Any] ?? [:]))
             }) {(error) -> Void in
                 failure?(error)
         }
@@ -693,30 +693,19 @@ public class SlackWebAPI {
                 failure?(error)
         }
     }
-
-    //MARK: - Filter Nil Parameters
-    private func filterNilParameters(_ parameters: [String: Any?]) -> [String: Any] {
-        var finalParameters = [String: Any]()
-        for key in parameters.keys {
-            if parameters[key] != nil {
-                finalParameters[key] = parameters[key]!
-            }
-        }
-        return finalParameters
-    }
     
     //MARK: - Encode Attachments
-    private func encodeAttachments(attachments: [Attachment?]?) -> String? {
+    fileprivate func encodeAttachments(_ attachments: [Attachment?]?) -> String? {
         if let attachments = attachments {
-            var attachmentArray: [Any] = []
+            var attachmentArray: [[String: Any]] = []
             for attachment in attachments {
                 if let attachment = attachment {
                     attachmentArray.append(attachment.dictionary)
                 }
             }
             do {
-                let string = try JSONSerialization.data(withJSONObject: attachmentArray, options: []).base64EncodedString()
-                return string
+                let data = try JSONSerialization.data(withJSONObject: attachmentArray, options: [])
+                return String(data: data, encoding: String.Encoding.utf8)
             } catch _ {
                 print("Error encoding attachments")
             }
@@ -724,13 +713,22 @@ public class SlackWebAPI {
         return nil
     }
     
-    //MARK: - Enumerate Do Not Distrub Status
-    private func enumerateDNDStauses(statuses: [String: Any]?) -> [String: DoNotDisturbStatus] {
-        var retVal = [String: DoNotDisturbStatus]()
-        if let keys = statuses?.keys {
-            for key in keys {
-                retVal[key] = DoNotDisturbStatus(status: statuses?[key] as? [String: Any])
+    //MARK: - Filter Nil Parameters
+    internal func filterNilParameters(_ parameters: [String: Any?]) -> [String: Any] {
+        var finalParameters = [String: Any]()
+        for (key, value) in parameters {
+            if let unwrapped = value {
+                finalParameters[key] = unwrapped
             }
+        }
+        return finalParameters
+    }
+    
+    //MARK: - Enumerate Do Not Disturb Status
+    fileprivate func enumerateDNDStatuses(_ statuses: [String: Any]) -> [String: DoNotDisturbStatus] {
+        var retVal = [String: DoNotDisturbStatus]()
+        for key in statuses.keys {
+            retVal[key] = DoNotDisturbStatus(status: statuses[key] as? [String: Any])
         }
         return retVal
     }
