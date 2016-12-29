@@ -87,7 +87,6 @@ public class SlackClient {
                 do {
                     self.client = try WebSocketClient(url: url, didConnect: { (socket) in
                         self.setupSocket(socket)
-                        self.pingRTMServerAtInterval(interval: self.pingInterval ?? 0)
                     })
                     try self.client?.connect()
                 } catch let error {
@@ -141,47 +140,6 @@ public class SlackClient {
         sentMessages[ts] = Message(dictionary: message)
     }
     
-    //MARK: - RTM Ping
-    var connectionIsActive: Bool {
-        if let pong = pong, let ping = ping, let timeout = timeout {
-            if pong - ping < timeout {
-                return true
-            } else {
-                return false
-            }
-            // Ping-pong or timeout not configured
-        } else {
-            return true
-        }
-    }
-    
-    private func pingRTMServerAtInterval(interval: Double) {
-        co { [weak self] in
-            repeat {
-                nap(for: interval)
-                self?.sendRTMPing()
-            } while self?.connected == true && self?.connectionIsActive == true
-            self?.disconnect()
-        }
-    }
-    
-    private func sendRTMPing() {
-        if connected {
-            let json: [String: Any] = [
-                "id": Date().slackTimestamp,
-                "type": "ping",
-            ]
-            do {
-                let string = try JSONSerialization.data(withJSONObject: json, options: []).base64EncodedString()
-                ping = json["id"] as? Double
-                try socket?.send(string)
-            }
-            catch let error {
-                print("Failed to send RTM ping: \(error)")
-            }
-        }
-    }
-
     //MARK: - Client setup
     fileprivate func initialSetup(JSON: [String: Any]) {
         team = Team(team: JSON["team"] as? [String: Any])
@@ -249,15 +207,47 @@ public class SlackClient {
     
     // MARK: - WebSocket
     private func setupSocket(_ socket: WebSocket) {
+        //Ping RTM web socket
+        if let interval = pingInterval {
+            pingRTMWebSocket(socket, interval: interval)
+        }
+        //Capture pong
+        socket.onPong { (data) in
+            self.pong = Date().timeIntervalSince1970
+        }
+        //Receive RTMmessages
         socket.onText {(message) in
             self.websocketDidReceive(message: message)
         }
-        socket.onPing { (data) in try socket.pong() }
-        socket.onPong { (data) in try socket.ping() }
+        //Disconnect
         socket.onClose{ (code: CloseCode?, reason: String?) in
             self.websocketDidDisconnect(closeCode: code, error: reason)
         }
         self.socket = socket
+    }
+    
+    //MARK: - RTM Ping
+    var connectionIsActive: Bool {
+        if let pong = pong, let ping = ping, let timeout = timeout {
+            if pong - ping < timeout {
+                return true
+            } else {
+                return false
+            }
+            // Ping-pong or timeout not configured
+        } else {
+            return true
+        }
+    }
+    
+    private func pingRTMWebSocket(_ webSocket: WebSocket, interval: Double) {
+        co {
+            repeat {
+                nap(for: interval)
+                try? webSocket.ping()
+            } while self.connected == true && self.connectionIsActive == true
+            self.disconnect()
+        }
     }
     
     private func websocketDidReceive(message: String) {
