@@ -90,7 +90,7 @@ public class SlackClient {
                     })
                     try self.client?.connect()
                 } catch let error {
-                    print("WebSocket client could not correct: \(error)")
+                    print("WebSocket client could not connect: \(error)")
                 }
             }
         }, failure:nil)
