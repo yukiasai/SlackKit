@@ -47,7 +47,7 @@ internal struct NetworkInterface {
         do {
             let contentNegotiation = ContentNegotiationMiddleware(mediaTypes: [.json, .urlEncodedForm], mode: .client)
             var response = try client?.get(requestString, middleware: [contentNegotiation])
-            if let buffer = try response?.body.becomeBuffer(deadline: 5) {
+            if let buffer = try response?.body.becomeBuffer(deadline: 3.seconds.fromNow()) {
                 let data = Data(bytes: buffer.bytes)
                 let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
                 if let result = json as? [String: Any] {
@@ -100,7 +100,7 @@ internal struct NetworkInterface {
         do {
             var response: Response?
             response = try client?.post(requestString, headers: header, body: Buffer(requestBodyData.map({$0})))
-            if let buffer = try response?.body.becomeBuffer(deadline: 5) {
+            if let buffer = try response?.body.becomeBuffer(deadline: 3.seconds.fromNow()) {
                 let data = Data(bytes: buffer.bytes)
                 let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
                 if let result = json as? [String: Any] {
