@@ -69,15 +69,15 @@ public class SlackClient {
     
     internal var ping: Double?
     internal var pong: Double?
-    internal var pingInterval: Double?
-    internal var timeout: Double?
-    internal var reconnect: Bool?
+    internal var pingInterval: Double = 30
+    internal var timeout: Double = 300
+    internal var reconnect: Bool = false
     
     required public init(apiToken: String) {
         self.token = apiToken
     }
     
-    public func connect(simpleLatest: Bool? = nil, noUnreads: Bool? = nil, mpimAware: Bool? = nil, pingInterval: Double? = nil, timeout: Double? = nil, reconnect: Bool? = nil) {
+    public func connect(simpleLatest: Bool? = nil, noUnreads: Bool? = nil, mpimAware: Bool? = nil, pingInterval: Double = 30, timeout: Double = 300, reconnect: Bool = false) {
         self.pingInterval = pingInterval
         self.timeout = timeout
         self.reconnect = reconnect
@@ -93,7 +93,9 @@ public class SlackClient {
                     print("WebSocket client could not connect: \(error)")
                 }
             }
-        }, failure:nil)
+        }, failure: {(error) -> Void in
+            print("rtm.start failed with error: \(error)")
+        })
     }
     
     public func disconnect() {
@@ -205,49 +207,63 @@ public class SlackClient {
         }
     }
     
-    // MARK: - WebSocket
-    private func setupSocket(_ socket: WebSocket) {
-        //Ping RTM web socket
-        if let interval = pingInterval {
-            pingRTMWebSocket(socket, interval: interval)
+    //MARK: - RTM Ping
+    internal func pingRTMServer() {
+        co {
+            self.sendRTMPing()
+            nap(for: self.pingInterval.seconds)
+            guard self.connected && self.isConnectionTimedOut else {
+                self.disconnect()
+                return
+            }
+            self.pingRTMServer()
         }
-        //Capture pong
-        socket.onPong { (data) in
-            self.pong = Date().timeIntervalSince1970
-        }
-        //Receive RTMmessages
-        socket.onText {(message) in
-            self.websocketDidReceive(message: message)
-        }
-        //Disconnect
-        socket.onClose{ (code: CloseCode?, reason: String?) in
-            self.websocketDidDisconnect(closeCode: code, error: reason)
-        }
-        self.socket = socket
     }
     
-    //MARK: - RTM Ping
-    var connectionIsActive: Bool {
-        if let pong = pong, let ping = ping, let timeout = timeout {
+    private func sendRTMPing() {
+        guard connected else {
+            return
+        }
+        let json: [String: Any] = [
+            "id": Date().slackTimestamp,
+            "type": "ping"
+        ]
+        guard let data = try? JSONSerialization.data(withJSONObject: json, options: []) else {
+            return
+        }
+        if let string = String(data: data, encoding: String.Encoding.utf8) {
+            ping = json["id"] as? Double
+            do {
+                try socket?.send(string)
+            } catch let error {
+                print("Failed to send ping with error: \(error)")
+            }
+        }
+    }
+    
+    var isConnectionTimedOut: Bool {
+        if let pong = pong, let ping = ping {
             if pong - ping < timeout {
                 return true
             } else {
                 return false
             }
-            // Ping-pong or timeout not configured
         } else {
             return true
         }
     }
     
-    private func pingRTMWebSocket(_ webSocket: WebSocket, interval: Double) {
-        co {
-            repeat {
-                nap(for: interval)
-                try? webSocket.ping()
-            } while self.connected == true && self.connectionIsActive == true
-            self.disconnect()
+    // MARK: - WebSocket
+    private func setupSocket(_ socket: WebSocket) {
+        socket.onText {(message) in
+            self.websocketDidReceive(message: message)
         }
+        socket.onClose{ (code: CloseCode?, reason: String?) in
+            self.websocketDidDisconnect(closeCode: code, error: reason)
+        }
+        socket.onPing { (data) in try socket.pong() }
+        socket.onPong { (data) in try socket.ping() }
+        self.socket = socket
     }
     
     private func websocketDidReceive(message: String) {
@@ -277,5 +293,4 @@ public class SlackClient {
             connect(pingInterval: pingInterval, timeout: timeout, reconnect: reconnect)
         }
     }
-    
 }

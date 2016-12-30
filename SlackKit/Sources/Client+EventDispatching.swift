@@ -29,6 +29,7 @@ internal extension SlackClient {
         switch type {
         case .hello:
             connected = true
+            pingRTMServer()
             connectionEventsDelegate?.connected(self)
         case .ok:
             messageSent(event)
