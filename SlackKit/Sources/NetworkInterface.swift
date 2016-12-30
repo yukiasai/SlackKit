@@ -79,11 +79,11 @@ internal struct NetworkInterface {
     
         let boundaryConstant = randomBoundary()
         let boundaryStart = "--\(boundaryConstant)\r\n"
-        let boundaryEnd = "--\(boundaryConstant)--\r\n"
+        let boundaryEnd = "\r\n--\(boundaryConstant)--\r\n"
         let contentDispositionString = "Content-Disposition: form-data; name=\"file\"; filename=\"\(parameters!["filename"])\"\r\n"
         let contentTypeString = "Content-Type: \(parameters!["filetype"])\r\n\r\n"
-
-        guard let boundaryStartData = boundaryStart.data(using: .utf8), let dispositionData = contentDispositionString.data(using: .utf8), let contentTypeData = contentTypeString.data(using: .utf8), let newLineData = "\r\n".data(using: .utf8), let boundaryEndData = boundaryEnd.data(using: .utf8) else {
+        
+        guard let boundaryStartData = boundaryStart.data(using: .utf8), let dispositionData = contentDispositionString.data(using: .utf8), let contentTypeData = contentTypeString.data(using: .utf8), let boundaryEndData = boundaryEnd.data(using: .utf8) else {
             errorClosure(SlackError.clientNetworkError)
             return
         }
@@ -92,14 +92,13 @@ internal struct NetworkInterface {
         requestBodyData.append(contentsOf: dispositionData)
         requestBodyData.append(contentsOf: contentTypeData)
         requestBodyData.append(contentsOf: data)
-        requestBodyData.append(contentsOf: newLineData)
         requestBodyData.append(contentsOf: boundaryEndData)
         
         let header: Headers = ["Content-Type":"multipart/form-data; boundary=\(boundaryConstant)"]
         
         do {
-            var response: Response?
-            response = try client?.post(requestString, headers: header, body: Buffer(requestBodyData.map({$0})))
+            let body = Buffer([UInt8](requestBodyData))
+            var response = try client?.post(requestString, headers: header, body: body)
             if let buffer = try response?.body.becomeBuffer(deadline: 3.seconds.fromNow()) {
                 let data = Data(bytes: buffer.bytes)
                 let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)

@@ -270,13 +270,13 @@ public class SlackWebAPI {
         }
     }
     
-    public func uploadFile(file: Data, filename: String, filetype: String = "auto", title: String? = nil, initialComment: String? = nil, channels: [String]? = nil, success: ((_ file: File?)->Void)?, failure: FailureClosure?) {
-        let parameters: [String: Any?] = ["file":file, "filename": filename, "filetype":filetype, "title":title, "initial_comment":initialComment, "channels":channels?.joined(separator: ",")]
+    public func uploadFile(_ file: Data, filename: String, filetype: String = "auto", title: String? = nil, initialComment: String? = nil, channels: [String]? = nil, success: ((_ file: File)->Void)?, failure: FailureClosure?) {
+        let parameters: [String: Any?] = ["filename": filename, "filetype": filetype, "title": title, "initial_comment": initialComment, "channels": channels?.joined(separator: ",")]
         networkInterface.uploadRequest(token: token, data: file, parameters: filterNilParameters(parameters), successClosure: {
             (response) -> Void in
-                success?(File(file: response["file"] as? [String: Any]))
-            }) {(error) -> Void in
-                failure?(error)
+            success?(File(file: response["file"] as? [String: Any]))
+        }) {(error) -> Void in
+            failure?(error)
         }
     }
     
