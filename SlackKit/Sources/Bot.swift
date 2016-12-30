@@ -24,13 +24,18 @@
 public struct Bot {
     
     public let id: String?
+    internal(set) public var botToken: String?
     internal(set) public var name: String?
     internal(set) public var icons: [String: Any]?
     
-    internal init?(bot: [String: Any]?) {
+    internal init(bot: [String: Any]?) {
         id = bot?["id"] as? String
         name = bot?["name"] as? String
         icons = bot?["icons"] as? [String: Any]
     }
     
+    internal init(botUser: [String: Any]?) {
+        id = botUser?["bot_user_id"] as? String
+        botToken = botUser?["bot_access_token"] as? String
+    }
 }

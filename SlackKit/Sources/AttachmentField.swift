@@ -1,5 +1,5 @@
 //
-// Extensions.swift
+// AttachmentField.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,36 +21,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-
-public extension Date {
+public struct AttachmentField {
     
-    var slackTimestamp: Double {
-        return NSNumber(value: timeIntervalSince1970).doubleValue
+    public let title: String?
+    public let value: String?
+    public let short: Bool?
+    
+    internal init(field: [String: Any]?) {
+        title = field?["title"] as? String
+        value = field?["value"] as? String
+        short = field?["short"] as? Bool
     }
-}
-
-internal extension String {
     
-    var slackFormatEscaping: String {
-        var escapedString = replacingOccurrences(of: "&", with: "&amp;")
-        escapedString = replacingOccurrences(of: "<", with: "&lt;")
-        escapedString = replacingOccurrences(of: ">", with: "&gt;")
-        return escapedString
+    public init(title:String, value:String, short: Bool? = nil) {
+        self.title = title
+        self.value = value.slackFormatEscaping
+        self.short = short
     }
-}
-
-internal extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
     
-    var requestStringFromParameters: String {
-        var requestString = ""
-        for key in self.keys {
-            if let value = self[key] as? String, let encodedValue = value.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-                requestString += "&\(key)=\(encodedValue)"
-            } else if let value = self[key] {
-                requestString += "&\(key)=\(value)"
-            }
-        }
-        return requestString
+    internal var dictionary: [String: Any] {
+        var field = [String: Any]()
+        field["title"] = title
+        field["value"] = value
+        field["short"] = short
+        return field
     }
 }

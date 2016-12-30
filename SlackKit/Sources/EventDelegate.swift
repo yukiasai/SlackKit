@@ -21,85 +21,89 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-public protocol SlackEventsDelegate: class {
-    func clientConnected()
-    func clientDisconnected()
-    func preferenceChanged(preference: String, value: Any)
-    func userChanged(user: User)
-    func presenceChanged(user: User?, presence: String?)
-    func manualPresenceChanged(user: User?, presence: String?)
-    func botEvent(bot: Bot)
+public protocol ConnectionEventsDelegate: class {
+    func connected(_ client: SlackClient)
+    func disconnected(_ client: SlackClient)
+    func connectionFailed(_ client: SlackClient, error: SlackError)
 }
 
 public protocol MessageEventsDelegate: class {
-    func messageSent(message: Message)
-    func messageReceived(message: Message)
-    func messageChanged(message: Message)
-    func messageDeleted(message: Message?)
+    func sent(_ message: Message, client: SlackClient)
+    func received(_ message: Message, client: SlackClient)
+    func changed(_ message: Message, client: SlackClient)
+    func deleted(_ message: Message?, client: SlackClient)
 }
 
 public protocol ChannelEventsDelegate: class {
-    func userTyping(channel: Channel?, user: User?)
-    func channelMarked(channel: Channel, timestamp: String?)
-    func channelCreated(channel: Channel)
-    func channelDeleted(channel: Channel)
-    func channelRenamed(channel: Channel)
-    func channelArchived(channel: Channel)
-    func channelHistoryChanged(channel: Channel)
-    func channelJoined(channel: Channel)
-    func channelLeft(channel: Channel)
+    func userTypingIn(_ channel: Channel, user: User, client: SlackClient)
+    func marked(_ channel: Channel, timestamp: String, client: SlackClient)
+    func created(_ channel: Channel, client: SlackClient)
+    func deleted(_ channel: Channel, client: SlackClient)
+    func renamed(_ channel: Channel, client: SlackClient)
+    func archived(_ channel: Channel, client: SlackClient)
+    func historyChanged(_ channel: Channel, client: SlackClient)
+    func joined(_ channel: Channel, client: SlackClient)
+    func left(_ channel: Channel, client: SlackClient)
 }
 
 public protocol DoNotDisturbEventsDelegate: class {
-    func doNotDisturbUpdated(dndStatus: DoNotDisturbStatus)
-    func doNotDisturbUserUpdated(dndStatus: DoNotDisturbStatus, user: User?)
+    func updated(_ status: DoNotDisturbStatus, client: SlackClient)
+    func userUpdated(_ status: DoNotDisturbStatus, user: User, client: SlackClient)
 }
 
 public protocol GroupEventsDelegate: class {
-    func groupOpened(group: Channel)
+    func opened(_ group: Channel, client: SlackClient)
 }
 
 public protocol FileEventsDelegate: class {
-    func fileProcessed(file: File)
-    func fileMadePrivate(file: File)
-    func fileDeleted(file: File)
-    func fileCommentAdded(file: File, comment: Comment)
-    func fileCommentEdited(file: File, comment: Comment)
-    func fileCommentDeleted(file: File, comment: Comment)
+    func processed(_ file: File, client: SlackClient)
+    func madePrivate(_ file: File, client: SlackClient)
+    func deleted(_ file: File, client: SlackClient)
+    func commentAdded(_ file: File, comment: Comment, client: SlackClient)
+    func commentEdited(_ file: File, comment: Comment, client: SlackClient)
+    func commentDeleted(_ file: File, comment: Comment, client: SlackClient)
 }
 
 public protocol PinEventsDelegate: class {
-    func itemPinned(item: Item?, channel: Channel?)
-    func itemUnpinned(item: Item?, channel: Channel?)
+    func pinned(_ item: Item, channel: Channel?, client: SlackClient)
+    func unpinned(_ item: Item, channel: Channel?, client: SlackClient)
 }
 
 public protocol StarEventsDelegate: class {
-    func itemStarred(item: Item, star: Bool)
+    func starred(_ item: Item, starred: Bool, _ client: SlackClient)
 }
 
 public protocol ReactionEventsDelegate: class {
-    func reactionAdded(reaction: String?, item: Item?, itemUser: String?)
-    func reactionRemoved(reaction: String?, item: Item?, itemUser: String?)
+    func added(_ reaction: String, item: Item, itemUser: String, client: SlackClient)
+    func removed(_ reaction: String, item: Item, itemUser: String, client: SlackClient)
+}
+
+public protocol SlackEventsDelegate: class {
+    func preferenceChanged(_ preference: String, value: Any?, client: SlackClient)
+    func userChanged(_ user: User, client: SlackClient)
+    func presenceChanged(_ user: User, presence: String, client: SlackClient)
+    func manualPresenceChanged(_ user: User, presence: String, client: SlackClient)
+    func botEvent(_ bot: Bot, client: SlackClient)
 }
 
 public protocol TeamEventsDelegate: class {
-    func teamJoined(user: User)
-    func teamPlanChanged(plan: String)
-    func teamPreferencesChanged(preference: String, value: Any)
-    func teamNameChanged(name: String)
-    func teamDomainChanged(domain: String)
-    func teamEmailDomainChanged(domain: String)
-    func teamEmojiChanged()
+    func userJoined(_ user: User, client: SlackClient)
+    func planChanged(_ plan: String, client: SlackClient)
+    func preferencesChanged(_ preference: String, value: Any?, client: SlackClient)
+    func nameChanged(_ name: String, client: SlackClient)
+    func domainChanged(_ domain: String, client: SlackClient)
+    func emailDomainChanged(_ domain: String, client: SlackClient)
+    func emojiChanged(_ client: SlackClient)
 }
 
 public protocol SubteamEventsDelegate: class {
-    func subteamEvent(userGroup: UserGroup)
-    func subteamSelfAdded(subteamID: String)
-    func subteamSelfRemoved(subteamID: String)
+    func event(_ userGroup: UserGroup, client: SlackClient)
+    func selfAdded(_ subteamID: String, client: SlackClient)
+    func selfRemoved(_ subteamID: String, client: SlackClient)
 }
 
 public protocol TeamProfileEventsDelegate: class {
-    func teamProfileChanged(profile: CustomProfile?)
-    func teamProfileDeleted(profile: CustomProfile?)
-    func teamProfileReordered(profile: CustomProfile?)
+    func changed(_ profile: CustomProfile, client: SlackClient)
+    func deleted(_ profile: CustomProfile, client: SlackClient)
+    func reordered(_ profile: CustomProfile, client: SlackClient)
 }

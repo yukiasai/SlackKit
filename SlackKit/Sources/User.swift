@@ -24,6 +24,7 @@
 public struct User {
     
     public struct Profile {
+        
         internal(set) public var firstName: String?
         internal(set) public var lastName: String?
         internal(set) public var realName: String?
@@ -37,7 +38,7 @@ public struct User {
         internal(set) public var image192: String?
         internal(set) public var customProfile: CustomProfile?
         
-        internal init?(profile: [String: Any]?) {
+        internal init(profile: [String: Any]?) {
             firstName = profile?["first_name"] as? String
             lastName = profile?["last_name"] as? String
             realName = profile?["real_name"] as? String
@@ -52,7 +53,6 @@ public struct User {
             customProfile = CustomProfile(customFields: profile?["fields"] as? [String: Any])
         }
     }
-    
     
     public let id: String?
     internal(set) public var name: String?
@@ -77,7 +77,7 @@ public struct User {
     // Client properties
     internal(set) public var userGroups: [String: String]?
     
-    internal init?(user: [String: Any]?) {
+    internal init(user: [String: Any]?) {
         id = user?["id"] as? String
         name = user?["name"] as? String
         deleted = user?["deleted"] as? Bool
@@ -99,7 +99,7 @@ public struct User {
         preferences = user?["prefs"] as? [String: Any]
     }
     
-    internal init?(id: String?) {
+    internal init(id: String?) {
         self.id = id
         self.isBot = nil
     }

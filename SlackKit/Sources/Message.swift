@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-public class Message {
+public final class Message: Equatable {
     
     public let type = "message"
     public let subtype: String?
@@ -45,38 +45,42 @@ public class Message {
     internal(set) var pinnedTo: [String]?
     public let comment: Comment?
     public let file: File?
-    internal(set) public var reactions = [String: Reaction]()
+    internal(set) public var reactions = [Reaction]()
     internal(set) public var attachments: [Attachment]?
+    internal(set) public var responseType: ResponseType?
+    internal(set) public var replaceOriginal: Bool?
+    internal(set) public var deleteOriginal: Bool?
     
-    public init?(message: [String: Any]?) {
-        subtype = message?["subtype"] as? String
-        ts = message?["ts"] as? String
-        user = message?["user"] as? String
-        channel = message?["channel"] as? String
-        hidden = message?["hidden"] as? Bool
-        text = message?["text"] as? String
-        botID = message?["bot_id"] as? String
-        username = message?["username"] as? String
-        icons = message?["icons"] as? [String: Any]
-        deletedTs = message?["deleted_ts"] as? String
-        purpose = message?["purpose"] as? String
-        topic = message?["topic"] as? String
-        name = message?["name"] as? String
-        members = message?["members"] as? [String]
-        oldName = message?["old_name"] as? String
-        upload = message?["upload"] as? Bool
-        itemType = message?["item_type"] as? String
-        isStarred = message?["is_starred"] as? Bool
-        pinnedTo = message?["pinned_to"] as? [String]
-        comment = Comment(comment: message?["comment"] as? [String: Any])
-        file = File(file: message?["file"] as? [String: Any])
-        reactions = messageReactions(reactions: message?["reactions"] as? [Any])
-        attachments = (message?["attachments"] as? [Any])?.objectArrayFromDictionaryArray(intializer: {(attachment) -> Attachment? in
-            return Attachment(attachment: attachment)
-        })
+    public init(dictionary: [String: Any]?) {
+        subtype = dictionary?["subtype"] as? String
+        ts = dictionary?["ts"] as? String
+        user = dictionary?["user"] as? String
+        channel = dictionary?["channel"] as? String
+        hidden = dictionary?["hidden"] as? Bool
+        text = dictionary?["text"] as? String
+        botID = dictionary?["bot_id"] as? String
+        username = dictionary?["username"] as? String
+        icons = dictionary?["icons"] as? [String: Any]
+        deletedTs = dictionary?["deleted_ts"] as? String
+        purpose = dictionary?["purpose"] as? String
+        topic = dictionary?["topic"] as? String
+        name = dictionary?["name"] as? String
+        members = dictionary?["members"] as? [String]
+        oldName = dictionary?["old_name"] as? String
+        upload = dictionary?["upload"] as? Bool
+        itemType = dictionary?["item_type"] as? String
+        isStarred = dictionary?["is_starred"] as? Bool
+        pinnedTo = dictionary?["pinned_to"] as? [String]
+        comment = Comment(comment: dictionary?["comment"] as? [String: Any])
+        file = File(file: dictionary?["file"] as? [String: Any])
+        reactions = Reaction.reactionsFromArray(dictionary?["reactions"] as? [[String: Any]])
+        attachments = (dictionary?["attachments"] as? [[String: Any]])?.map{Attachment(attachment: $0)}
+        responseType = ResponseType(rawValue: dictionary?["response_type"] as? String ?? "")
+        replaceOriginal = dictionary?["replace_original"] as? Bool
+        deleteOriginal = dictionary?["delete_original"] as? Bool
     }
     
-    internal init?(ts:String?) {
+    internal init(ts:String?) {
         self.ts = ts
         subtype = nil
         user = nil
@@ -91,21 +95,7 @@ public class Message {
         file = nil
     }
     
-    private func messageReactions(reactions: [Any]?) -> [String: Reaction] {
-        var returnValue = [String: Reaction]()
-        if let r = reactions {
-            for react in r {
-                if let reaction = Reaction(reaction: react as? [String: Any]), reactionName = reaction.name {
-                    returnValue[reactionName] = reaction
-                }
-            }
-        }
-        return returnValue
+    public static func ==(lhs: Message, rhs: Message) -> Bool {
+        return lhs.ts == rhs.ts && lhs.user == rhs.user && lhs.text == rhs.text
     }
-}
-
-extension Message: Equatable {}
-
-public func ==(lhs: Message, rhs: Message) -> Bool {
-    return lhs.ts == rhs.ts && lhs.user == rhs.user && lhs.text == rhs.text
 }

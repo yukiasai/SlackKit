@@ -1,5 +1,5 @@
 //
-// Extensions.swift
+// TeamIcon.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,36 +21,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-
-public extension Date {
+public struct TeamIcon {
     
-    var slackTimestamp: Double {
-        return NSNumber(value: timeIntervalSince1970).doubleValue
-    }
-}
-
-internal extension String {
+    internal(set) public var image34: String?
+    internal(set) public var image44: String?
+    internal(set) public var image68: String?
+    internal(set) public var image88: String?
+    internal(set) public var image102: String?
+    internal(set) public var image132: String?
+    internal(set) public var imageOriginal: String?
+    internal(set) public var imageDefault: Bool?
     
-    var slackFormatEscaping: String {
-        var escapedString = replacingOccurrences(of: "&", with: "&amp;")
-        escapedString = replacingOccurrences(of: "<", with: "&lt;")
-        escapedString = replacingOccurrences(of: ">", with: "&gt;")
-        return escapedString
-    }
-}
-
-internal extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
-    
-    var requestStringFromParameters: String {
-        var requestString = ""
-        for key in self.keys {
-            if let value = self[key] as? String, let encodedValue = value.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-                requestString += "&\(key)=\(encodedValue)"
-            } else if let value = self[key] {
-                requestString += "&\(key)=\(value)"
-            }
-        }
-        return requestString
+    internal init(icon: [String: Any]?) {
+        image34 = icon?["image_34"] as? String
+        image44 = icon?["image_44"] as? String
+        image68 = icon?["image_68"] as? String
+        image88 = icon?["image_88"] as? String
+        image102 = icon?["image_102"] as? String
+        image132 = icon?["image_132"] as? String
+        imageOriginal = icon?["image_original"] as? String
+        imageDefault = icon?["image_default"] as? Bool
     }
 }
