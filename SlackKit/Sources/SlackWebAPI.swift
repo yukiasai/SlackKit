@@ -105,8 +105,8 @@ public class SlackWebAPI {
         case im = "im"
     }
     
-    fileprivate let networkInterface: NetworkInterface
-    fileprivate let token: String
+    private let networkInterface: NetworkInterface
+    private let token: String
     
     public init(token: String) {
         self.networkInterface = NetworkInterface()
@@ -658,7 +658,7 @@ public class SlackWebAPI {
     }
     
     //MARK: - Encode Attachments
-    fileprivate func encodeAttachments(_ attachments: [Attachment?]?) -> String? {
+    private func encodeAttachments(_ attachments: [Attachment?]?) -> String? {
         if let attachments = attachments {
             var attachmentArray: [[String: Any]] = []
             for attachment in attachments {
@@ -688,7 +688,7 @@ public class SlackWebAPI {
     }
     
     //MARK: - Enumerate Do Not Disturb Status
-    fileprivate func enumerateDNDStatuses(_ statuses: [String: Any]) -> [String: DoNotDisturbStatus] {
+    private func enumerateDNDStatuses(_ statuses: [String: Any]) -> [String: DoNotDisturbStatus] {
         var retVal = [String: DoNotDisturbStatus]()
         for key in statuses.keys {
             retVal[key] = DoNotDisturbStatus(status: statuses[key] as? [String: Any])

@@ -130,7 +130,7 @@ public class SlackClient {
         }
     }
     
-    fileprivate func addSentMessage(_ dictionary: [String: Any]) {
+    private func addSentMessage(_ dictionary: [String: Any]) {
         var message = dictionary
         guard let id = message["id"] as? NSNumber else {
             return
@@ -143,7 +143,7 @@ public class SlackClient {
     }
     
     //MARK: - Client setup
-    fileprivate func initialSetup(JSON: [String: Any]) {
+    private func initialSetup(JSON: [String: Any]) {
         team = Team(team: JSON["team"] as? [String: Any])
         authenticatedUser = User(user: JSON["self"] as? [String: Any])
         authenticatedUser?.doNotDisturbStatus = DoNotDisturbStatus(status: JSON["dnd"] as? [String: Any])
@@ -156,28 +156,28 @@ public class SlackClient {
         enumerateSubteams(JSON["subteams"] as? [String: Any])
     }
     
-    fileprivate func addUser(_ aUser: [String: Any]) {
+    private func addUser(_ aUser: [String: Any]) {
         let user = User(user: aUser)
         if let id = user.id {
             users[id] = user
         }
     }
     
-    fileprivate func addChannel(_ aChannel: [String: Any]) {
+    private func addChannel(_ aChannel: [String: Any]) {
         let channel = Channel(channel: aChannel)
         if let id = channel.id {
             channels[id] = channel
         }
     }
     
-    fileprivate func addBot(_ aBot: [String: Any]) {
+    private func addBot(_ aBot: [String: Any]) {
         let bot = Bot(bot: aBot)
         if let id = bot.id {
             bots[id] = bot
         }
     }
     
-    fileprivate func enumerateSubteams(_ subteams: [String: Any]?) {
+    private func enumerateSubteams(_ subteams: [String: Any]?) {
         if let subteams = subteams {
             if let all = subteams["all"] as? [[String: Any]] {
                 for item in all {
@@ -197,7 +197,7 @@ public class SlackClient {
     }
     
     // MARK: - Utilities
-    fileprivate func enumerateObjects(_ array: [Any]?, initalizer: ([String: Any])-> Void) {
+    private func enumerateObjects(_ array: [Any]?, initalizer: ([String: Any])-> Void) {
         if let array = array {
             for object in array {
                 if let dictionary = object as? [String: Any] {
