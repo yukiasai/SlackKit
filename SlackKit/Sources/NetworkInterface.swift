@@ -38,7 +38,7 @@ internal struct NetworkInterface {
         }
     }
     
-    internal func request(endpoint: SlackAPIEndpoint, token: String, parameters: [String: Any]?, successClosure: ([String: Any])->Void, errorClosure: (SlackError)->Void) {
+    internal func request(_ endpoint: Endpoint, token: String, parameters: [String: Any]?, successClosure: ([String: Any])->Void, errorClosure: (SlackError)->Void) {
         var requestString = "\(apiUrl)\(endpoint.rawValue)?token=\(token)"
         if let params = parameters {
             requestString += params.requestStringFromParameters
@@ -72,7 +72,7 @@ internal struct NetworkInterface {
     }
     
     internal func uploadRequest(token: String, data: Data, parameters: [String: Any]?, successClosure: ([String: Any])->Void, errorClosure: (SlackError)->Void) {
-        var requestString = "\(apiUrl)\(SlackAPIEndpoint.filesUpload.rawValue)?token=\(token)"
+        var requestString = "\(apiUrl)\(Endpoint.filesUpload.rawValue)?token=\(token)"
         if let params = parameters {
             requestString = requestString + params.requestStringFromParameters
         }

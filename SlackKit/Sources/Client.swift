@@ -93,7 +93,7 @@ public class SlackClient {
                     print("WebSocket client could not connect: \(error)")
                 }
             }
-        }, failure: {(error) -> Void in
+        }, failure: {(error) in
             print("rtm.start failed with error: \(error)")
         })
     }
