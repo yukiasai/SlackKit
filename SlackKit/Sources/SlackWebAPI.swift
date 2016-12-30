@@ -43,6 +43,7 @@ internal enum SlackAPIEndpoint: String {
     case filesCommentsEdit = "files.comments.edit"
     case filesCommentsDelete = "files.comments.delete"
     case filesDelete = "files.delete"
+    case filesInfo = "files.info"
     case filesUpload = "files.upload"
     case groupsClose = "groups.close"
     case groupsHistory = "groups.history"
@@ -267,6 +268,22 @@ public class SlackWebAPI {
                 success?(true)
             }) {(error) -> Void in
                 failure?(error)
+        }
+    }
+    
+    public func fileInfo(_ fileID: String, commentCount: Int = 100, totalPages: Int = 1, success: ((_ file: File)->Void)?, failure: FailureClosure?) {
+        let parameters: [String: Any] = ["file": fileID, "count": commentCount, "totalPages": totalPages]
+        networkInterface.request(.filesInfo, token: token, parameters: parameters, successClosure: {(response) in
+            var file = File(file: response["file"] as? [String: Any])
+            (response["comments"] as? [[String: Any]])?.forEach { comment in
+                let comment = Comment(comment: comment)
+                if let id = comment.id {
+                    file.comments[id] = comment
+                }
+            }
+            success?(file)
+        }) {(error) in
+            failure?(error)
         }
     }
     
