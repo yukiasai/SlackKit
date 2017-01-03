@@ -44,7 +44,7 @@ public final class Client: WebSocketDelegate {
     }
 
     internal var webSocket: WebSocket?
-    fileprivate let pingPongQueue = DispatchQueue(label: "com.launchsoft.SlackKit")
+    private let pingPongQueue = DispatchQueue(label: "com.launchsoft.SlackKit")
     internal var ping: Double?
     internal var pong: Double?
     internal var options: ClientOptions?
@@ -101,7 +101,7 @@ public final class Client: WebSocketDelegate {
         }
     }
     
-    fileprivate func format(message: String, channel: String) throws -> Data {
+    private func format(message: String, channel: String) throws -> Data {
         let json: [String: Any] = [
             "id": Date().slackTimestamp,
             "type": "message",
@@ -112,7 +112,7 @@ public final class Client: WebSocketDelegate {
         return try JSONSerialization.data(withJSONObject: json, options: [])
     }
     
-    fileprivate func addSentMessage(_ dictionary: [String: Any]) {
+    private func addSentMessage(_ dictionary: [String: Any]) {
         var message = dictionary
         guard let id = message["id"] as? NSNumber else {
             return
@@ -125,7 +125,7 @@ public final class Client: WebSocketDelegate {
     }
     
     //MARK: - RTM Ping
-    fileprivate func pingRTMServerAt(interval: TimeInterval) {
+    private func pingRTMServerAt(interval: TimeInterval) {
         let delay = DispatchTime.now() + Double(Int64(interval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         pingPongQueue.asyncAfter(deadline: delay, execute: {
             guard self.connected && self.timeoutCheck() else {
@@ -137,7 +137,7 @@ public final class Client: WebSocketDelegate {
         })
     }
     
-    fileprivate func sendRTMPing() {
+    private func sendRTMPing() {
         guard connected else {
             return
         }
@@ -154,7 +154,7 @@ public final class Client: WebSocketDelegate {
         }
     }
     
-    fileprivate func timeoutCheck() -> Bool {
+    private func timeoutCheck() -> Bool {
         if let pong = pong, let ping = ping, let timeout = options?.timeout {
             if pong - ping < timeout {
                 return true
@@ -168,7 +168,7 @@ public final class Client: WebSocketDelegate {
     }
     
     //MARK: - Client setup
-    fileprivate func initialSetup(JSON: [String: Any]) {
+    private func initialSetup(JSON: [String: Any]) {
         team = Team(team: JSON["team"] as? [String: Any])
         authenticatedUser = User(user: JSON["self"] as? [String: Any])
         authenticatedUser?.doNotDisturbStatus = DoNotDisturbStatus(status: JSON["dnd"] as? [String: Any])
@@ -181,28 +181,28 @@ public final class Client: WebSocketDelegate {
         enumerateSubteams(JSON["subteams"] as? [String: Any])
     }
     
-    fileprivate func addUser(_ aUser: [String: Any]) {
+    private func addUser(_ aUser: [String: Any]) {
         let user = User(user: aUser)
         if let id = user.id {
             users[id] = user
         }
     }
     
-    fileprivate func addChannel(_ aChannel: [String: Any]) {
+    private func addChannel(_ aChannel: [String: Any]) {
         let channel = Channel(channel: aChannel)
         if let id = channel.id {
             channels[id] = channel
         }
     }
     
-    fileprivate func addBot(_ aBot: [String: Any]) {
+    private func addBot(_ aBot: [String: Any]) {
         let bot = Bot(bot: aBot)
         if let id = bot.id {
             bots[id] = bot
         }
     }
     
-    fileprivate func enumerateSubteams(_ subteams: [String: Any]?) {
+    private func enumerateSubteams(_ subteams: [String: Any]?) {
         if let subteams = subteams {
             if let all = subteams["all"] as? [[String: Any]] {
                 for item in all {
@@ -222,7 +222,7 @@ public final class Client: WebSocketDelegate {
     }
     
     // MARK: - Utilities
-    fileprivate func enumerateObjects(_ array: [Any]?, initalizer: ([String: Any])-> Void) {
+    private func enumerateObjects(_ array: [Any]?, initalizer: ([String: Any])-> Void) {
         if let array = array {
             for object in array {
                 if let dictionary = object as? [String: Any] {

@@ -39,7 +39,7 @@ open class WebhookServer: Server {
         }
     }
     
-    fileprivate func replyForResponse(_ response: Response) -> Reply {
+    private func replyForResponse(_ response: Response) -> Reply {
         if response.attachments == nil && response.responseType == nil {
             return Reply.text(body: response.text)
         } else {
