@@ -36,10 +36,7 @@ and run
 ```
 carthage bootstrap
 ```
-**Note:** SlackKit currently takes a _long_ time for the compiler to compile with optimizations turned on. I'm currently exploring a potential fix for this issue. In the meantime, you may want to skip the waiting and build it in the debug configuration instead:
-```
-carthage bootstrap --configuration "Debug"
-```
+**Note:** If you’re seeing long compile times with optimizations turned on, try updating to the latest version of Xcode, 8.2.1.
 
 Drag the built `SlackKit.framework` into your Xcode project.
 
