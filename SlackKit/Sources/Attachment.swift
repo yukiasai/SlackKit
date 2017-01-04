@@ -109,7 +109,7 @@ public struct Attachment {
 }
 
 public enum AttachmentColor: String {
-    case Good = "good"
-    case Warning = "warning"
-    case Danger = "danger"
+    case good = "good"
+    case warning = "warning"
+    case danger = "danger"
 }

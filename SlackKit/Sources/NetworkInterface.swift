@@ -41,8 +41,7 @@ internal struct NetworkInterface {
         }
         let request = URLRequest(url:url)
     
-        URLSession.shared.dataTask(with: request) {
-            (data, response, internalError) -> Void in
+        URLSession.shared.dataTask(with: request) {(data, response, internalError) in
             do {
                 successClosure(try self.handleResponse(data, response: response, internalError: internalError))
             } catch let error {
@@ -62,8 +61,7 @@ internal struct NetworkInterface {
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = data
         
-        URLSession.shared.dataTask(with: request) {
-            (data, response, internalError) -> Void in
+        URLSession.shared.dataTask(with: request) {(data, response, internalError) in
             if internalError == nil {
                 success(true)
             } else {
@@ -101,8 +99,7 @@ internal struct NetworkInterface {
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = requestBodyData as Data
 
-        URLSession.shared.dataTask(with: request) {
-            (data, response, internalError) -> Void in
+        URLSession.shared.dataTask(with: request) {(data, response, internalError) in
             do {
                 successClosure(try self.handleResponse(data, response: response, internalError: internalError))
             } catch let error {

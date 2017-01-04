@@ -39,7 +39,7 @@ public struct Action {
         confirm = Confirm(confirm:action?["confirm"] as? [String: Any])
     }
     
-    public init(name: String, text: String, style: ActionStyle = .Default, value: String? = nil, confirm: Confirm? = nil) {
+    public init(name: String, text: String, style: ActionStyle = .defaultStyle, value: String? = nil, confirm: Confirm? = nil) {
         self.type = "button"
         self.name = name
         self.text = text
@@ -92,12 +92,12 @@ public struct Action {
 }
 
 public enum ActionStyle: String {
-    case Default = "default"
-    case Primary = "primary"
-    case Danger = "danger"
+    case defaultStyle = "default"
+    case primary = "primary"
+    case danger = "danger"
 }
 
 public enum ResponseType: String {
-    case InChannel = "in_channel"
-    case Ephemeral = "ephemeral"
+    case inChannel = "in_channel"
+    case ephemeral = "ephemeral"
 }
