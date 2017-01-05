@@ -22,7 +22,6 @@
 // THE SOFTWARE.
 
 internal enum EventType: String {
-    
     case hello = "hello"
     case message = "message"
     case userTyping = "user_typing"
@@ -97,7 +96,6 @@ internal enum EventType: String {
 }
 
 internal enum MessageSubtype: String {
-    
     case botMessage = "bot_message"
     case meMessage = "me_message"
     case messageChanged = "message_changed"

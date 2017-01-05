@@ -27,20 +27,17 @@ internal struct NetworkInterface {
     
     private let apiUrl = "https://slack.com/api/"
     
-    internal func request(_ endpoint: Endpoint, token: String? = nil, parameters: [String: Any]?, successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
-        var requestString = "\(apiUrl)\(endpoint.rawValue)?"
-        if let token = token {
-            requestString += "token=\(token)"
+    internal func request(_ endpoint: Endpoint, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
+        var components = URLComponents(string: "\(apiUrl)\(endpoint.rawValue)")
+        if parameters.count > 0 {
+            components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
         }
-        if let params = parameters {
-            requestString += params.requestStringFromParameters
-        }
-        guard let url =  URL(string: requestString) else {
+        guard let url = components?.url else {
             errorClosure(SlackError.clientNetworkError)
             return
         }
-        let request = URLRequest(url:url)
-    
+        let request = URLRequest(url: url)
+        
         URLSession.shared.dataTask(with: request) {(data, response, internalError) in
             do {
                 successClosure(try self.handleResponse(data, response: response, internalError: internalError))
@@ -70,12 +67,12 @@ internal struct NetworkInterface {
         }.resume()
     }
     
-    internal func uploadRequest(_ token: String, data: Data, parameters: [String: Any]?, successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
-        var requestString = "\(apiUrl)\(Endpoint.filesUpload.rawValue)?token=\(token)"
-        if let params = parameters {
-            requestString = requestString + params.requestStringFromParameters
+    internal func uploadRequest(data: Data, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
+        var components = URLComponents(string: "\(apiUrl)\(Endpoint.filesUpload.rawValue)")
+        if parameters.count > 0 {
+            components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
         }
-        guard let url =  URL(string: requestString) else {
+        guard let url = components?.url else {
             errorClosure(SlackError.clientNetworkError)
             return
         }
@@ -85,9 +82,9 @@ internal struct NetworkInterface {
         let contentType = "multipart/form-data; boundary=" + boundaryConstant
         let boundaryStart = "--\(boundaryConstant)\r\n"
         let boundaryEnd = "--\(boundaryConstant)--\r\n"
-        let contentDispositionString = "Content-Disposition: form-data; name=\"file\"; filename=\"\(parameters!["filename"])\"\r\n"
-        let contentTypeString = "Content-Type: \(parameters!["filetype"])\r\n\r\n"
-
+        let contentDispositionString = "Content-Disposition: form-data; name=\"file\"; filename=\"\(parameters["filename"])\"\r\n"
+        let contentTypeString = "Content-Type: \(parameters["filetype"])\r\n\r\n"
+        
         var requestBodyData: Data = Data()
         requestBodyData.append(boundaryStart.data(using: String.Encoding.utf8)!)
         requestBodyData.append(contentDispositionString.data(using: String.Encoding.utf8)!)
@@ -98,7 +95,7 @@ internal struct NetworkInterface {
         
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = requestBodyData as Data
-
+        
         URLSession.shared.dataTask(with: request) {(data, response, internalError) in
             do {
                 successClosure(try self.handleResponse(data, response: response, internalError: internalError))
@@ -144,5 +141,16 @@ internal struct NetworkInterface {
     
     private func randomBoundary() -> String {
         return String(format: "slackkit.boundary.%08x%08x", arc4random(), arc4random())
+    }
+    
+    //MARK: - Filter Nil Parameters
+    private func filterNilParameters(_ parameters: [String: Any?]) -> [String: Any] {
+        var finalParameters = [String: Any]()
+        for (key, value) in parameters {
+            if let unwrapped = value {
+                finalParameters[key] = unwrapped
+            }
+        }
+        return finalParameters
     }
 }

@@ -31,7 +31,7 @@ internal protocol OAuthDelegate {
 public struct OAuthServer {
     
     private let oauthURL = "https://slack.com/oauth/authorize"
-
+    
     private let http = HttpServer()
     private let clientID: String
     private let clientSecret: String
@@ -66,7 +66,7 @@ public struct OAuthServer {
             guard let response = AuthorizeResponse(queryParameters: request.queryParams), response.state == self.state else {
                 return .badRequest(.text("Bad request."))
             }
-            WebAPI.oauthAccess(self.clientID, clientSecret: self.clientSecret, code: response.code, redirectURI: self.redirectURI, success: {(response) in
+            WebAPI.oauthAccess(clientID: self.clientID, clientSecret: self.clientSecret, code: response.code, redirectURI: self.redirectURI, success: {(response) in
                 self.delegate?.userAuthed(OAuthResponse(response: response))
             }, failure: {(error) in
                 print("Authorization failed")
@@ -79,12 +79,12 @@ public struct OAuthServer {
     }
     
     private func oauthURLRequest(_ authorize: AuthorizeRequest) -> URLRequest? {
-        var requestString = "\(oauthURL)?client_id=\(authorize.clientID)"
-        requestString += authorize.parameters.requestStringFromParameters
-        guard let url = URL(string: requestString) else {
+        var components = URLComponents(string: "\(oauthURL)")
+        components?.queryItems = [URLQueryItem(name: "client_id", value: "\(authorize.clientID)")]
+        guard let url = components?.url else {
             return nil
         }
-        return URLRequest(url:url)
+        return URLRequest(url: url)
     }
     
     public func authorizeRequest(_ scope:[Scope], redirectURI: String, state: String = "slackkit", team: String? = nil) -> URLRequest? {
