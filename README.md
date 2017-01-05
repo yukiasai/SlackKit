@@ -36,7 +36,6 @@ and run
 ```
 carthage bootstrap
 ```
-**Note:** If you’re seeing long compile times with optimizations turned on, try updating to the latest version of Xcode, 8.2.1.
 
 Drag the built `SlackKit.framework` into your Xcode project.
 
