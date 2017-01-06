@@ -107,11 +107,10 @@ internal struct NetworkInterface {
         guard var response = response else {
             throw SlackError.clientNetworkError
         }
-        
         do {
             let buffer = try response.body.becomeBuffer(deadline: 3.seconds.fromNow())
-            switch response.status {
-            case .ok:
+            switch response.statusCode {
+            case 200:
                 let data = Data(bytes: buffer.bytes)
                 if let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] {
                     if json["ok"] as? Bool == true {
@@ -124,7 +123,7 @@ internal struct NetworkInterface {
                 } else {
                     throw SlackError.unknownError
                 }
-            case .tooManyRequests:
+            case 429:
                 throw SlackError.tooManyRequests
             default:
                 throw SlackError.clientNetworkError
