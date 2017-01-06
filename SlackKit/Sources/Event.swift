@@ -22,7 +22,6 @@
 // THE SOFTWARE.
 
 internal enum EventType: String {
-    
     case hello = "hello"
     case message = "message"
     case userTyping = "user_typing"
@@ -93,11 +92,11 @@ internal enum EventType: String {
     case subteamSelfAdded = "subteam_self_added"
     case subteamSelfRemoved = "subteam_self_removed"
     case ok = "ok"
+    case error = "error"
     case unknown = "unknown"
 }
 
 internal enum MessageSubtype: String {
-    
     case botMessage = "bot_message"
     case meMessage = "me_message"
     case messageChanged = "message_changed"

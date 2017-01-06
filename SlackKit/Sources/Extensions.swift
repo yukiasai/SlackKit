@@ -39,18 +39,3 @@ internal extension String {
         return escapedString
     }
 }
-
-internal extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
-    
-    var requestStringFromParameters: String {
-        var requestString = ""
-        for key in self.keys {
-            if let value = self[key] as? String, let encodedValue = value.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-                requestString += "&\(key)=\(encodedValue)"
-            } else if let value = self[key] {
-                requestString += "&\(key)=\(value)"
-            }
-        }
-        return requestString
-    }
-}

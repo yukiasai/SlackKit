@@ -153,8 +153,10 @@ internal extension SlackClient {
             subteamAddedSelf(event)
         case .subteamSelfRemoved:
             subteamRemovedSelf(event)
+        case .error:
+            print("Error: \(anEvent)")
         case .unknown:
-            print("Unknown event of type: \(anEvent["type"] ?? "No Type Information")")
+            print("Unsupported event of type: \(anEvent["type"] ?? "No Type Information")")
         }
     }
     
