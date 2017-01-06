@@ -42,6 +42,13 @@ internal struct NetworkInterface {
         var requestString = "\(apiUrl)\(endpoint.rawValue)?token=\(token)"
         if let params = parameters {
             requestString += params.requestStringFromParameters
+        var components = URLComponents(string: "\(apiUrl)\(endpoint.rawValue)")
+        if parameters.count > 0 {
+            components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
+        }
+        guard let requestString = components?.string else {
+            errorClosure(SlackError.clientNetworkError)
+            return
         }
         
         do {
@@ -75,6 +82,13 @@ internal struct NetworkInterface {
         var requestString = "\(apiUrl)\(Endpoint.filesUpload.rawValue)?token=\(token)"
         if let params = parameters {
             requestString = requestString + params.requestStringFromParameters
+        var components = URLComponents(string: "\(apiUrl)\(Endpoint.filesUpload.rawValue)")
+        if parameters.count > 0 {
+            components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
+        }
+        guard let requestString = components?.string else {
+            errorClosure(SlackError.clientNetworkError)
+            return
         }
     
         let boundaryConstant = randomBoundary()
