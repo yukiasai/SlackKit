@@ -156,7 +156,7 @@ internal extension SlackClient {
         case .error:
             print("Error: \(event)")
         case .unknown:
-            print("Unknown event of type: \(anEvent["type"] ?? "No Type Information")")
+            print("Unsupported event of type: \(anEvent["type"] ?? "No Type Information")")
         }
     }
     
