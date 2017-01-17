@@ -23,9 +23,9 @@
 
 internal extension Client {
 
-    func dispatch(_ event: [String: Any]) {
-        let event = Event(event)
-        let type = event.type ?? .error
+    func dispatch(_ anEvent: [String: Any]) {
+        let event = Event(anEvent)
+        let type = event.type ?? .unknown
         switch type {
         case .hello:
             connected = true
@@ -153,7 +153,9 @@ internal extension Client {
         case .subteamSelfRemoved:
             subteamRemovedSelf(event)
         case .error:
-            print("Error: \(event)")
+            print("Error: \(anEvent)")
+        case .unknown:
+            print("Unsupported event of type: \(anEvent["type"] ?? "No Type Information")")
         }
     }
     

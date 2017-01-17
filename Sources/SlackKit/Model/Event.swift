@@ -93,6 +93,7 @@ internal enum EventType: String {
     case subteamSelfRemoved = "subteam_self_removed"
     case ok = "ok"
     case error = "error"
+    case unknown = "unknown"
 }
 
 internal enum MessageSubtype: String {
