@@ -80,7 +80,10 @@ public struct OAuthServer {
     
     private func oauthURLRequest(_ authorize: AuthorizeRequest) -> URLRequest? {
         var components = URLComponents(string: "\(oauthURL)")
-        components?.queryItems = [URLQueryItem(name: "client_id", value: "\(authorize.clientID)")]
+        components?.queryItems = [
+            URLQueryItem(name: "client_id", value: "\(authorize.clientID)"),
+            URLQueryItem(name: "scope", value: "\(authorize.scope)"),
+        ]
         guard let url = components?.url else {
             return nil
         }
