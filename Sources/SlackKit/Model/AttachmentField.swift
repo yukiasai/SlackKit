@@ -33,9 +33,9 @@ public struct AttachmentField {
         short = field?["short"] as? Bool
     }
     
-    public init(title:String, value:String, short: Bool? = nil) {
+    public init(title: String?, value: String?, short: Bool? = nil) {
         self.title = title
-        self.value = value.slackFormatEscaping
+        self.value = value?.slackFormatEscaping
         self.short = short
     }
     

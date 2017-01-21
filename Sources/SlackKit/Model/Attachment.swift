@@ -41,6 +41,8 @@ public struct Attachment {
     public let footer: String?
     public let footerIcon: String?
     public let ts: Int?
+    
+    public let markdownEnabledFields: Set<AttachmentTextField>?
 
     internal init(attachment: [String: Any]?) {
         fallback = attachment?["fallback"] as? String
@@ -61,9 +63,11 @@ public struct Attachment {
         ts = attachment?["ts"] as? Int
         fields = (attachment?["fields"] as? [[String: Any]])?.map { AttachmentField(field: $0) }
         actions = (attachment?["actions"] as? [[String: Any]])?.map { Action(action: $0) }
+        
+        markdownEnabledFields = (attachment?["mrkdwn_in"] as? [String]).map { Set($0.flatMap(AttachmentTextField.init)) }
     }
     
-    public init(fallback: String, title:String, callbackID: String? = nil, type: String? = nil, colorHex: String? = nil, pretext: String? = nil, authorName: String? = nil, authorLink: String? = nil, authorIcon: String? = nil, titleLink: String? = nil, text: String? = nil, fields: [AttachmentField]? = nil, actions: [Action]? = nil, imageURL: String? = nil, thumbURL: String? = nil, footer: String? = nil, footerIcon:String? = nil, ts:Int? = nil) {
+    public init(fallback: String, title: String?, callbackID: String? = nil, type: String? = nil, colorHex: String? = nil, pretext: String? = nil, authorName: String? = nil, authorLink: String? = nil, authorIcon: String? = nil, titleLink: String? = nil, text: String? = nil, fields: [AttachmentField]? = nil, actions: [Action]? = nil, imageURL: String? = nil, thumbURL: String? = nil, footer: String? = nil, footerIcon:String? = nil, ts:Int? = nil, markdownFields: Set<AttachmentTextField>? = nil) {
         self.fallback = fallback
         self.callbackID = callbackID
         self.type = type
@@ -82,6 +86,7 @@ public struct Attachment {
         self.footer = footer
         self.footerIcon = footerIcon
         self.ts = ts
+        self.markdownEnabledFields = markdownFields
     }
     
     internal var dictionary: [String: Any] {
@@ -91,7 +96,7 @@ public struct Attachment {
         attachment["attachment_type"] = type
         attachment["color"] = color
         attachment["pretext"] = pretext
-        attachment["authorName"] = authorName
+        attachment["author_name"] = authorName
         attachment["author_link"] = authorLink
         attachment["author_icon"] = authorIcon
         attachment["title"] = title
@@ -104,6 +109,7 @@ public struct Attachment {
         attachment["footer"] = footer
         attachment["footer_icon"] = footerIcon
         attachment["ts"] = ts
+        attachment["mrkdwn_in"] = markdownEnabledFields?.map { $0.rawValue }
         return attachment
     }
 }
@@ -112,4 +118,14 @@ public enum AttachmentColor: String {
     case good = "good"
     case warning = "warning"
     case danger = "danger"
+}
+
+public enum AttachmentTextField: String {
+    case fallback = "fallback"
+    case pretext = "pretext"
+    case authorName = "author_name"
+    case title = "title"
+    case text = "text"
+    case fields = "fields"
+    case footer = "footer"
 }
