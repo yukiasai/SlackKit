@@ -49,21 +49,6 @@ public final class Client: WebSocketDelegate {
     internal var ping: Double?
     internal var pong: Double?
     internal var options: ClientOptions?
-        
-    //MARK: - Delegates
-    public weak var connectionEventsDelegate: ConnectionEventsDelegate?
-    public weak var slackEventsDelegate: SlackEventsDelegate?
-    public weak var messageEventsDelegate: MessageEventsDelegate?
-    public weak var doNotDisturbEventsDelegate: DoNotDisturbEventsDelegate?
-    public weak var channelEventsDelegate: ChannelEventsDelegate?
-    public weak var groupEventsDelegate: GroupEventsDelegate?
-    public weak var fileEventsDelegate: FileEventsDelegate?
-    public weak var pinEventsDelegate: PinEventsDelegate?
-    public weak var starEventsDelegate: StarEventsDelegate?
-    public weak var reactionEventsDelegate: ReactionEventsDelegate?
-    public weak var teamEventsDelegate: TeamEventsDelegate?
-    public weak var subteamEventsDelegate: SubteamEventsDelegate?
-    public weak var teamProfileEventsDelegate: TeamProfileEventsDelegate?
 
     // If you already have an API token
     public init(apiToken: String) {
@@ -85,7 +70,7 @@ public final class Client: WebSocketDelegate {
             self.webSocket?.delegate = self
             self.webSocket?.connect()
         }, failure: {(error) in
-            self.connectionEventsDelegate?.connectionFailed(self, error: error)
+            //self.connectionEventsDelegate?.connectionFailed(self, error: error)
         })
     }
     
@@ -244,7 +229,7 @@ public final class Client: WebSocketDelegate {
         connected = false
         webSocket = nil
         authenticatedUser = nil
-        connectionEventsDelegate?.disconnected(self)
+        //connectionEventsDelegate?.disconnected(self)
         if let options = options, options.reconnect == true {
             connect(options: options)
         }

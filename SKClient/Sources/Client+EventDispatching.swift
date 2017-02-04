@@ -31,7 +31,6 @@ internal extension Client {
         switch type {
         case .hello:
             connected = true
-            connectionEventsDelegate?.connected(self)
         case .ok:
             messageSent(event)
         case .message:
@@ -156,6 +155,8 @@ internal extension Client {
             subteamRemovedSelf(event)
         case .error:
             print("Error: \(anEvent)")
+        case .goodbye:
+            connect(options: options ?? ClientOptions())
         case .unknown:
             print("Unsupported event of type: \(anEvent["type"] ?? "No Type Information")")
         }
