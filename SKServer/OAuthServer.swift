@@ -22,11 +22,8 @@
 // THE SOFTWARE.
 
 import Foundation
+import SKCommon
 import Swifter
-
-internal protocol OAuthDelegate {
-    func userAuthed(_ response: OAuthResponse)
-}
 
 public struct OAuthServer {
     
@@ -39,7 +36,7 @@ public struct OAuthServer {
     private let redirectURI: String?
     private var delegate: OAuthDelegate?
     
-    internal init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, port:in_port_t = 8080, forceIPV4: Bool = false, delegate: OAuthDelegate? = nil) throws {
+    public init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, port:in_port_t = 8080, forceIPV4: Bool = false, delegate: OAuthDelegate? = nil) throws {
         self.clientID = clientID
         self.clientSecret = clientSecret
         self.state = state ?? "state"

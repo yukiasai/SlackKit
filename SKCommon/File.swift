@@ -32,7 +32,7 @@ public struct File: Equatable {
     public let prettyType: String?
     public let user: String?
     public let mode: String?
-    internal(set) public var editable: Bool?
+    public var editable: Bool?
     public let isExternal: Bool?
     public let externalType: String?
     public let size: Int?
@@ -66,17 +66,17 @@ public struct File: Equatable {
     public let previewHighlight: String?
     public let lines: Int?
     public let linesMore: Int?
-    internal(set) public var isPublic: Bool?
-    internal(set) public var publicSharedURL: Bool?
-    internal(set) public var channels: [String]?
-    internal(set) public var groups: [String]?
-    internal(set) public var ims: [String]?
+    public var isPublic: Bool?
+    public var publicSharedURL: Bool?
+    public var channels: [String]?
+    public var groups: [String]?
+    public var ims: [String]?
     public let initialComment: Comment?
-    internal(set) public var stars: Int?
-    internal(set) public var isStarred: Bool?
-    internal(set) public var pinnedTo: [String]?
-    internal(set) public var comments = [String: Comment]()
-    internal(set) public var reactions = [Reaction]()
+    public var stars: Int?
+    public var isStarred: Bool?
+    public var pinnedTo: [String]?
+    public var comments = [String: Comment]()
+    public var reactions = [Reaction]()
     
     public init(file:[String: Any]?) {
         id = file?["id"] as? String
@@ -134,7 +134,7 @@ public struct File: Equatable {
         reactions = Reaction.reactionsFromArray(file?["reactions"] as? [[String: Any]])        
     }
     
-    internal init(id:String?) {
+    public init(id:String?) {
         self.id = id
         created = nil
         name = nil

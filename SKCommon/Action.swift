@@ -30,7 +30,7 @@ public struct Action {
     public let style: ActionStyle?
     public let confirm: Confirm?
     
-    internal init(action:[String: Any]?) {
+    public init(action:[String: Any]?) {
         name = action?["name"] as? String
         text = action?["text"] as? String
         type = action?["type"] as? String
@@ -48,7 +48,7 @@ public struct Action {
         self.confirm = confirm
     }
     
-    internal var dictionary: [String: Any] {
+    public var dictionary: [String: Any] {
         var dict = [String: Any]()
         dict["name"] = name
         dict["text"] = text
@@ -66,7 +66,7 @@ public struct Action {
         public let okText: String?
         public let dismissText: String?
         
-        internal init(confirm:[String: Any]?) {
+        public init(confirm:[String: Any]?) {
             title = confirm?["title"] as? String
             text = confirm?["text"] as? String
             okText = confirm?["ok_text"] as? String
@@ -80,7 +80,7 @@ public struct Action {
             self.dismissText = dismissText
         }
         
-        internal var dictionary: [String: Any] {
+        public var dictionary: [String: Any] {
             var dict = [String: Any]()
             dict["title"] = title
             dict["text"] = text

@@ -24,13 +24,13 @@
 public struct Reaction: Equatable {
     
     public let name: String?
-    internal(set) public var user: String?
+    public var user: String?
     
-    internal init(reaction:[String: Any]?) {
+    public init(reaction:[String: Any]?) {
         name = reaction?["name"] as? String
     }
     
-    internal init(name: String, user: String) {
+    public init(name: String, user: String) {
         self.name = name
         self.user = user
     }

@@ -25,20 +25,20 @@ public struct User {
     
     public struct Profile {
         
-        internal(set) public var firstName: String?
-        internal(set) public var lastName: String?
-        internal(set) public var realName: String?
-        internal(set) public var email: String?
-        internal(set) public var skype: String?
-        internal(set) public var phone: String?
-        internal(set) public var image24: String?
-        internal(set) public var image32: String?
-        internal(set) public var image48: String?
-        internal(set) public var image72: String?
-        internal(set) public var image192: String?
-        internal(set) public var customProfile: CustomProfile?
+        public var firstName: String?
+        public var lastName: String?
+        public var realName: String?
+        public var email: String?
+        public var skype: String?
+        public var phone: String?
+        public var image24: String?
+        public var image32: String?
+        public var image48: String?
+        public var image72: String?
+        public var image192: String?
+        public var customProfile: CustomProfile?
         
-        internal init(profile: [String: Any]?) {
+        public init(profile: [String: Any]?) {
             firstName = profile?["first_name"] as? String
             lastName = profile?["last_name"] as? String
             realName = profile?["real_name"] as? String
@@ -55,29 +55,29 @@ public struct User {
     }
     
     public let id: String?
-    internal(set) public var name: String?
-    internal(set) public var deleted: Bool?
-    internal(set) public var profile: Profile?
-    internal(set) public var doNotDisturbStatus: DoNotDisturbStatus?
-    internal(set) public var presence: String?
-    internal(set) public var color: String?
+    public var name: String?
+    public var deleted: Bool?
+    public var profile: Profile?
+    public var doNotDisturbStatus: DoNotDisturbStatus?
+    public var presence: String?
+    public var color: String?
     public let isBot: Bool?
-    internal(set) public var isAdmin: Bool?
-    internal(set) public var isOwner: Bool?
-    internal(set) public var isPrimaryOwner: Bool?
-    internal(set) public var isRestricted: Bool?
-    internal(set) public var isUltraRestricted: Bool?
-    internal(set) public var has2fa: Bool?
-    internal(set) public var hasFiles: Bool?
-    internal(set) public var status: String?
-    internal(set) public var timeZone: String?
-    internal(set) public var timeZoneLabel: String?
-    internal(set) public var timeZoneOffSet: Int?
-    internal(set) public var preferences: [String: Any]?
+    public var isAdmin: Bool?
+    public var isOwner: Bool?
+    public var isPrimaryOwner: Bool?
+    public var isRestricted: Bool?
+    public var isUltraRestricted: Bool?
+    public var has2fa: Bool?
+    public var hasFiles: Bool?
+    public var status: String?
+    public var timeZone: String?
+    public var timeZoneLabel: String?
+    public var timeZoneOffSet: Int?
+    public var preferences: [String: Any]?
     // Client properties
-    internal(set) public var userGroups: [String: String]?
+    public var userGroups: [String: String]?
     
-    internal init(user: [String: Any]?) {
+    public init(user: [String: Any]?) {
         id = user?["id"] as? String
         name = user?["name"] as? String
         deleted = user?["deleted"] as? Bool
@@ -99,7 +99,7 @@ public struct User {
         preferences = user?["prefs"] as? [String: Any]
     }
     
-    internal init(id: String?) {
+    public init(id: String?) {
         self.id = id
         self.isBot = nil
     }

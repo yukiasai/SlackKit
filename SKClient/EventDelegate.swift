@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import SKCommon
+
 public protocol ConnectionEventsDelegate: class {
     func connected(_ client: Client)
     func disconnected(_ client: Client)

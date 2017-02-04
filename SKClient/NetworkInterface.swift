@@ -23,11 +23,11 @@
 
 import Foundation
 
-internal struct NetworkInterface {
+public struct NetworkInterface {
     
     private let apiUrl = "https://slack.com/api/"
     
-    internal func request(_ endpoint: Endpoint, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
+    public func request(_ endpoint: Endpoint, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
         var components = URLComponents(string: "\(apiUrl)\(endpoint.rawValue)")
         if parameters.count > 0 {
             components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
@@ -38,17 +38,17 @@ internal struct NetworkInterface {
         }
         let request = URLRequest(url: url)
         
-        URLSession.shared.dataTask(with: request) {(data, response, internalError) in
+        URLSession.shared.dataTask(with: request) {(data, response, publicError) in
             do {
-                successClosure(try self.handleResponse(data, response: response, internalError: internalError))
+                successClosure(try self.handleResponse(data, response: response, publicError: publicError))
             } catch let error {
                 errorClosure(error as? SlackError ?? SlackError.unknownError)
             }
         }.resume()
     }
     
-    internal func customRequest(_ url: String, data: Data, success: @escaping (Bool)->Void, errorClosure: @escaping (SlackError)->Void) {
-        guard let url =  URL(string: url.removePercentEncoding()) else {
+    public func customRequest(_ url: String, data: Data, success: @escaping (Bool)->Void, errorClosure: @escaping (SlackError)->Void) {
+        guard let string = url.removingPercentEncoding, let url =  URL(string: string) else {
             errorClosure(SlackError.clientNetworkError)
             return
         }
@@ -58,8 +58,8 @@ internal struct NetworkInterface {
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = data
         
-        URLSession.shared.dataTask(with: request) {(data, response, internalError) in
-            if internalError == nil {
+        URLSession.shared.dataTask(with: request) {(data, response, publicError) in
+            if publicError == nil {
                 success(true)
             } else {
                 errorClosure(SlackError.clientNetworkError)
@@ -67,7 +67,7 @@ internal struct NetworkInterface {
         }.resume()
     }
     
-    internal func uploadRequest(data: Data, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
+    public func uploadRequest(data: Data, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
         var components = URLComponents(string: "\(apiUrl)\(Endpoint.filesUpload.rawValue)")
         if parameters.count > 0 {
             components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
@@ -96,16 +96,16 @@ internal struct NetworkInterface {
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = requestBodyData as Data
         
-        URLSession.shared.dataTask(with: request) {(data, response, internalError) in
+        URLSession.shared.dataTask(with: request) {(data, response, publicError) in
             do {
-                successClosure(try self.handleResponse(data, response: response, internalError: internalError))
+                successClosure(try self.handleResponse(data, response: response, publicError: publicError))
             } catch let error {
                 errorClosure(error as? SlackError ?? SlackError.unknownError)
             }
         }.resume()
     }
     
-    private func handleResponse(_ data: Data?, response:URLResponse?, internalError:Error?) throws -> [String: Any] {
+    private func handleResponse(_ data: Data?, response:URLResponse?, publicError:Error?) throws -> [String: Any] {
         guard let data = data, let response = response as? HTTPURLResponse else {
             throw SlackError.clientNetworkError
         }

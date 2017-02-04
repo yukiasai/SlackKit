@@ -25,12 +25,12 @@ import Foundation
 
 public struct ClientOptions {
     
-    let simpleLatest: Bool?
-    let noUnreads: Bool?
-    let mpimAware: Bool?
-    let pingInterval: TimeInterval?
-    let timeout: TimeInterval?
-    let reconnect: Bool?
+    public let simpleLatest: Bool?
+    public let noUnreads: Bool?
+    public let mpimAware: Bool?
+    public let pingInterval: TimeInterval?
+    public let timeout: TimeInterval?
+    public let reconnect: Bool?
     
     public init(simpleLatest: Bool? = nil, noUnreads: Bool? = nil, mpimAware: Bool? = nil, pingInterval: TimeInterval? = nil, timeout: TimeInterval? = nil, reconnect: Bool? = nil) {
         self.simpleLatest = simpleLatest

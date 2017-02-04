@@ -25,11 +25,11 @@ import Foundation
 
 public struct History {
     
-    internal(set) public var latest: Date?
-    internal(set) public var messages = [Message]()
+    public var latest: Date?
+    public var messages = [Message]()
     public let hasMore: Bool?
     
-    internal init(history: [String: Any]?) {
+    public init(history: [String: Any]?) {
         if let latestStr = history?["latest"] as? String, let latestDouble = Double(latestStr) {
             latest = Date(timeIntervalSince1970: TimeInterval(latestDouble))
         }

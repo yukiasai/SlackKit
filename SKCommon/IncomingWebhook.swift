@@ -32,7 +32,7 @@ public struct IncomingWebhook {
     public let iconEmoji: String?
     public let iconURL: String?
     
-    internal init(webhook: [String: Any]?) {
+    public init(webhook: [String: Any]?) {
         url = webhook?["url"] as? String
         channel = webhook?["channel"] as? String
         configurationURL = webhook?["configuration_url"] as? String

@@ -24,16 +24,16 @@
 public struct Team {
     
     public let id: String?
-    internal(set) public var name: String?
-    internal(set) public var domain: String?
-    internal(set) public var emailDomain: String?
-    internal(set) public var messageEditWindowMinutes: Int?
-    internal(set) public var overStorageLimit: Bool?
-    internal(set) public var prefs: [String: Any]?
-    internal(set) public var plan: String?
-    internal(set) public var icon: TeamIcon?
+    public var name: String?
+    public var domain: String?
+    public var emailDomain: String?
+    public var messageEditWindowMinutes: Int?
+    public var overStorageLimit: Bool?
+    public var prefs: [String: Any]?
+    public var plan: String?
+    public var icon: TeamIcon?
     
-    internal init(team: [String: Any]?) {
+    public init(team: [String: Any]?) {
         id = team?["id"] as? String
         name = team?["name"] as? String
         domain = team?["domain"] as? String

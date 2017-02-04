@@ -22,6 +22,9 @@
 // THE SOFTWARE.
 
 import Foundation
+import SKClient
+import SKCommon
+import SKServer
 
 public final class SlackKit: OAuthDelegate {
     
@@ -48,7 +51,7 @@ public final class SlackKit: OAuthDelegate {
         oauth = try? OAuthServer(clientID: clientID, clientSecret: clientSecret, state: state, redirectURI: redirectURI, port: port, forceIPV4: forceIPV4, delegate: self)
     }
     
-    internal func userAuthed(_ response: OAuthResponse) {
+    public func userAuthed(_ response: OAuthResponse) {
         // User auth
         if let token = response.accessToken {
             let client = Client(apiToken: token)

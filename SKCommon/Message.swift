@@ -25,31 +25,31 @@ public final class Message: Equatable {
     
     public let type = "message"
     public let subtype: String?
-    internal(set) public var ts: String?
+    public var ts: String?
     public let user: String?
     public let channel: String?
-    internal(set) public var hidden: Bool?
-    internal(set) public var text: String?
+    public var hidden: Bool?
+    public var text: String?
     public let botID: String?
     public let username: String?
     public let icons: [String: Any]?
     public let deletedTs: String?
-    internal(set) var purpose: String?
-    internal(set) var topic: String?
-    internal(set) var name: String?
-    internal(set) var members: [String]?
-    internal(set) var oldName: String?
+    public var purpose: String?
+    public var topic: String?
+    public var name: String?
+    public var members: [String]?
+    public var oldName: String?
     public let upload: Bool?
     public let itemType: String?
-    internal(set) public var isStarred: Bool?
-    internal(set) var pinnedTo: [String]?
+    public var isStarred: Bool?
+    public var pinnedTo: [String]?
     public let comment: Comment?
     public let file: File?
-    internal(set) public var reactions = [Reaction]()
-    internal(set) public var attachments: [Attachment]?
-    internal(set) public var responseType: ResponseType?
-    internal(set) public var replaceOriginal: Bool?
-    internal(set) public var deleteOriginal: Bool?
+    public var reactions = [Reaction]()
+    public var attachments: [Attachment]?
+    public var responseType: ResponseType?
+    public var replaceOriginal: Bool?
+    public var deleteOriginal: Bool?
     
     public init(dictionary: [String: Any]?) {
         subtype = dictionary?["subtype"] as? String
@@ -80,7 +80,7 @@ public final class Message: Equatable {
         deleteOriginal = dictionary?["delete_original"] as? Bool
     }
     
-    internal init(ts:String?) {
+    public init(ts:String?) {
         self.ts = ts
         subtype = nil
         user = nil

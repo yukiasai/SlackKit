@@ -66,7 +66,7 @@ public final class Client: WebSocketDelegate {
     public weak var teamProfileEventsDelegate: TeamProfileEventsDelegate?
 
     // If you already have an API token
-    internal init(apiToken: String) {
+    public init(apiToken: String) {
         self.token = apiToken
     }
     

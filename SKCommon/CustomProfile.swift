@@ -23,9 +23,9 @@
 
 public struct CustomProfile {
     
-    internal(set) public var fields = [String: CustomProfileField]()
+    public var fields = [String: CustomProfileField]()
     
-    internal init(profile: [String: Any]?) {
+    public init(profile: [String: Any]?) {
         if let eventFields = profile?["fields"] as? [Any] {
             for field in eventFields {
                 var cpf: CustomProfileField?
@@ -39,7 +39,7 @@ public struct CustomProfile {
         }
     }
     
-    internal init(customFields: [String: Any]?) {
+    public init(customFields: [String: Any]?) {
         if let customFields = customFields {
             for key in customFields.keys {
                 let cpf = CustomProfileField(field: customFields[key] as? [String: Any])

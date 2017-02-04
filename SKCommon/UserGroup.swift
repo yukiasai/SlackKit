@@ -24,24 +24,24 @@
 public struct UserGroup {
     
     public let id: String?
-    internal(set) public var teamID: String?
+    public var teamID: String?
     public let isUserGroup: Bool?
-    internal(set) public var name: String?
-    internal(set) public var description: String?
-    internal(set) public var handle: String?
-    internal(set) public var isExternal: Bool?
+    public var name: String?
+    public var description: String?
+    public var handle: String?
+    public var isExternal: Bool?
     public let dateCreated: Int?
-    internal(set) public var dateUpdated: Int?
-    internal(set) public var dateDeleted: Int?
-    internal(set) public var autoType: String?
+    public var dateUpdated: Int?
+    public var dateDeleted: Int?
+    public var autoType: String?
     public let createdBy: String?
-    internal(set) public var updatedBy: String?
-    internal(set) public var deletedBy: String?
-    internal(set) public var preferences: [String: Any]?
-    internal(set) public var users: [String]?
-    internal(set) public var userCount: Int?
+    public var updatedBy: String?
+    public var deletedBy: String?
+    public var preferences: [String: Any]?
+    public var users: [String]?
+    public var userCount: Int?
     
-    internal init(userGroup: [String: Any]?) {
+    public init(userGroup: [String: Any]?) {
         id = userGroup?["id"] as? String
         teamID = userGroup?["team_id"] as? String
         isUserGroup = userGroup?["is_usergroup"] as? Bool

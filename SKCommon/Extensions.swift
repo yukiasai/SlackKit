@@ -30,7 +30,7 @@ public extension Date {
     }
 }
 
-internal extension String {
+public extension String {
     
     var slackFormatEscaping: String {
         var escapedString = replacingOccurrences(of: "&", with: "&amp;")

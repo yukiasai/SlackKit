@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 
 import Foundation
+import SKCommon
 
 internal extension Client {
 

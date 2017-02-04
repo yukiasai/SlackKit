@@ -21,17 +21,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-internal struct OAuthResponse {
+public struct OAuthResponse {
 
-    let accessToken: String?
-    let scope: [Scope]?
-    let userID: String?
-    let teamName: String?
-    let teamID: String?
-    let incomingWebhook: IncomingWebhook?
-    let bot: Bot?
+    public let accessToken: String?
+    public let scope: [Scope]?
+    public let userID: String?
+    public let teamName: String?
+    public let teamID: String?
+    public let incomingWebhook: IncomingWebhook?
+    public let bot: Bot?
     
-    init(response: [String: Any]?) {
+    public init(response: [String: Any]?) {
         accessToken = response?["access_token"] as? String
         scope = (response?["scope"] as? String)?.components(separatedBy: ",").flatMap{Scope(rawValue:$0)}
         userID = response?["user_id"] as? String

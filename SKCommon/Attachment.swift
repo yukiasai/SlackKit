@@ -44,7 +44,7 @@ public struct Attachment {
     
     public let markdownEnabledFields: Set<AttachmentTextField>?
 
-    internal init(attachment: [String: Any]?) {
+    public init(attachment: [String: Any]?) {
         fallback = attachment?["fallback"] as? String
         callbackID = attachment?["callback_id"] as? String
         type = attachment?["attachment_type"] as? String
@@ -89,7 +89,7 @@ public struct Attachment {
         self.markdownEnabledFields = markdownFields
     }
     
-    internal var dictionary: [String: Any] {
+    public var dictionary: [String: Any] {
         var attachment = [String: Any]()
         attachment["fallback"] = fallback
         attachment["callback_id"] = callbackID

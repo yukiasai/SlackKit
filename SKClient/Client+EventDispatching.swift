@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import SKCommon
+
 internal extension Client {
 
     func dispatch(_ anEvent: [String: Any]) {

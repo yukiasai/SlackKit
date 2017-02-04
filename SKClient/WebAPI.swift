@@ -23,7 +23,7 @@
 
 import Foundation
 
-internal enum Endpoint: String {
+public enum Endpoint: String {
     case apiTest = "api.test"
     case authRevoke = "auth.revoke"
     case authTest = "auth.test"

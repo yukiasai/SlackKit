@@ -31,7 +31,7 @@ public struct Item: Equatable {
     public let comment: Comment?
     public let fileCommentID: String?
     
-    internal init(item:[String: Any]?) {
+    public init(item:[String: Any]?) {
         type = item?["type"] as? String
         ts = item?["ts"] as? String
         channel = item?["channel"] as? String

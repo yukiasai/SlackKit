@@ -23,18 +23,18 @@
 
 public struct CustomProfileField {
     
-    internal(set) public var id: String?
-    internal(set) public var alt: String?
-    internal(set) public var value: String?
-    internal(set) public var hidden: Bool?
-    internal(set) public var hint: String?
-    internal(set) public var label: String?
-    internal(set) public var options: String?
-    internal(set) public var ordering: Int?
-    internal(set) public var possibleValues: [String]?
-    internal(set) public var type: String?
+    public var id: String?
+    public var alt: String?
+    public var value: String?
+    public var hidden: Bool?
+    public var hint: String?
+    public var label: String?
+    public var options: String?
+    public var ordering: Int?
+    public var possibleValues: [String]?
+    public var type: String?
     
-    internal init(field: [String: Any]?) {
+    public init(field: [String: Any]?) {
         id = field?["id"] as? String
         alt = field?["alt"] as? String
         value = field?["value"] as? String
@@ -47,11 +47,11 @@ public struct CustomProfileField {
         type = field?["type"] as? String
     }
     
-    internal init(id: String?) {
+    public init(id: String?) {
         self.id = id
     }
     
-    internal mutating func updateProfileField(_ profile: CustomProfileField?) {
+    public mutating func updateProfileField(_ profile: CustomProfileField?) {
         id = profile?.id != nil ? profile?.id : id
         alt = profile?.alt != nil ? profile?.alt : alt
         value = profile?.value != nil ? profile?.value : value

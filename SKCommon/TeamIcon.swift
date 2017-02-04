@@ -23,16 +23,16 @@
 
 public struct TeamIcon {
     
-    internal(set) public var image34: String?
-    internal(set) public var image44: String?
-    internal(set) public var image68: String?
-    internal(set) public var image88: String?
-    internal(set) public var image102: String?
-    internal(set) public var image132: String?
-    internal(set) public var imageOriginal: String?
-    internal(set) public var imageDefault: Bool?
+    public var image34: String?
+    public var image44: String?
+    public var image68: String?
+    public var image88: String?
+    public var image102: String?
+    public var image132: String?
+    public var imageOriginal: String?
+    public var imageDefault: Bool?
     
-    internal init(icon: [String: Any]?) {
+    public init(icon: [String: Any]?) {
         image34 = icon?["image_34"] as? String
         image44 = icon?["image_44"] as? String
         image68 = icon?["image_68"] as? String

@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-internal enum EventType: String {
+public enum EventType: String {
     case hello = "hello"
     case message = "message"
     case userTyping = "user_typing"
@@ -96,7 +96,7 @@ internal enum EventType: String {
     case unknown = "unknown"
 }
 
-internal enum MessageSubtype: String {
+public enum MessageSubtype: String {
     case botMessage = "bot_message"
     case meMessage = "me_message"
     case messageChanged = "message_changed"
@@ -122,45 +122,45 @@ internal enum MessageSubtype: String {
     case unpinnedItem = "unpinned_item"
 }
 
-internal class Event {
-    let type: EventType?
-    let ts: String?
-    let subtype: String?
-    let channelID: String?
-    let text: String?
-    let eventTs: String?
-    let latest: String?
-    let hidden: Bool?
-    let isStarred: Bool?
-    let hasPins: Bool?
-    let pinnedTo: [String]?
-    let fileID: String?
-    let presence: String?
-    let name: String?
-    let value: Any?
-    let plan: String?
-    let url: String?
-    let domain: String?
-    let emailDomain: String?
-    let reaction: String?
-    let replyTo: Double?
-    let reactions: [[String: Any]]?
-    let edited: Edited?
-    let bot: Bot?
-    let channel: Channel?
-    let comment: Comment?
-    let user: User?
-    let file: File?
-    let message: Message?
-    let nestedMessage: Message?
-    let itemUser: String?
-    let item: Item?
-    let dndStatus: DoNotDisturbStatus?
-    let subteam: UserGroup?
-    let subteamID: String?
-    var profile: CustomProfile?
+public class Event {
+    public let type: EventType?
+    public let ts: String?
+    public let subtype: String?
+    public let channelID: String?
+    public let text: String?
+    public let eventTs: String?
+    public let latest: String?
+    public let hidden: Bool?
+    public let isStarred: Bool?
+    public let hasPins: Bool?
+    public let pinnedTo: [String]?
+    public let fileID: String?
+    public let presence: String?
+    public let name: String?
+    public let value: Any?
+    public let plan: String?
+    public let url: String?
+    public let domain: String?
+    public let emailDomain: String?
+    public let reaction: String?
+    public let replyTo: Double?
+    public let reactions: [[String: Any]]?
+    public let edited: Edited?
+    public let bot: Bot?
+    public let channel: Channel?
+    public let comment: Comment?
+    public let user: User?
+    public let file: File?
+    public let message: Message?
+    public let nestedMessage: Message?
+    public let itemUser: String?
+    public let item: Item?
+    public let dndStatus: DoNotDisturbStatus?
+    public let subteam: UserGroup?
+    public let subteamID: String?
+    public var profile: CustomProfile?
     
-    init(_ event:[String: Any]) {
+    public init(_ event:[String: Any]) {
         type = EventType(rawValue: event["type"] as? String ?? "ok")
         ts = event["ts"] as? String
         subtype = event["subtype"] as? String

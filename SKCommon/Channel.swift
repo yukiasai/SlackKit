@@ -26,30 +26,30 @@ public struct Channel {
     public let id: String?
     public let created: Int?
     public let creator: String?
-    internal(set) public var name: String?
-    internal(set) public var isArchived: Bool?
-    internal(set) public var isGeneral: Bool?
+    public var name: String?
+    public var isArchived: Bool?
+    public var isGeneral: Bool?
     public let isGroup: Bool?
     public let isIM: Bool?
     public let isMPIM: Bool?
-    internal(set) public var user: String?
-    internal(set) public var isUserDeleted: Bool?
-    internal(set) public var isOpen: Bool?
-    internal(set) public var topic: Topic?
-    internal(set) public var purpose: Topic?
-    internal(set) public var isMember: Bool?
+    public var user: String?
+    public var isUserDeleted: Bool?
+    public var isOpen: Bool?
+    public var topic: Topic?
+    public var purpose: Topic?
+    public var isMember: Bool?
     public var lastRead: String?
-    internal(set) public var latest: Message?
+    public var latest: Message?
     public var unread: Int?
     public var unreadCountDisplay: Int?
-    internal(set) public var hasPins: Bool?
-    internal(set) public var members: [String]?
+    public var hasPins: Bool?
+    public var members: [String]?
     // Client use
-    internal(set) public var pinnedItems = [Item]()
-    internal(set) public var usersTyping = [String]()
-    internal(set) public var messages = [String: Message]()
+    public var pinnedItems = [Item]()
+    public var usersTyping = [String]()
+    public var messages = [String: Message]()
     
-    internal init(channel: [String: Any]?) {
+    public init(channel: [String: Any]?) {
         id = channel?["id"] as? String
         name = channel?["name"] as? String
         created = channel?["created"] as? Int
@@ -78,7 +78,7 @@ public struct Channel {
         }
     }
     
-    internal init(id:String?) {
+    public init(id:String?) {
         self.id = id
         created = nil
         creator = nil

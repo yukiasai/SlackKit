@@ -25,13 +25,13 @@ public struct Comment: Equatable {
     
     public let id: String?
     public let user: String?
-    internal(set) public var created: Int?
-    internal(set) public var comment: String?
-    internal(set) public var starred: Bool?
-    internal(set) public var stars: Int?
-    internal(set) public var reactions = [Reaction]()
+    public var created: Int?
+    public var comment: String?
+    public var starred: Bool?
+    public var stars: Int?
+    public var reactions = [Reaction]()
     
-    internal init(comment:[String: Any]?) {
+    public init(comment:[String: Any]?) {
         id = comment?["id"] as? String
         created = comment?["created"] as? Int
         user = comment?["user"] as? String
@@ -40,7 +40,7 @@ public struct Comment: Equatable {
         self.comment = comment?["comment"] as? String
     }
     
-    internal init(id: String?) {
+    public init(id: String?) {
         self.id = id
         self.user = nil
     }
