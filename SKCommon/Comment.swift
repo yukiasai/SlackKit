@@ -1,5 +1,5 @@
 //
-// SlackKit.h
+// Comment.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,10 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-
-//! Project version number for SlackKit.
-FOUNDATION_EXPORT double SlackKitVersionNumber;
-
-//! Project version string for SlackKit.
-FOUNDATION_EXPORT const unsigned char SlackKitVersionString[];
+public struct Comment: Equatable {
+    
+    public let id: String?
+    public let user: String?
+    internal(set) public var created: Int?
+    internal(set) public var comment: String?
+    internal(set) public var starred: Bool?
+    internal(set) public var stars: Int?
+    internal(set) public var reactions = [Reaction]()
+    
+    internal init(comment:[String: Any]?) {
+        id = comment?["id"] as? String
+        created = comment?["created"] as? Int
+        user = comment?["user"] as? String
+        starred = comment?["is_starred"] as? Bool
+        stars = comment?["num_stars"] as? Int
+        self.comment = comment?["comment"] as? String
+    }
+    
+    internal init(id: String?) {
+        self.id = id
+        self.user = nil
+    }
+    
+    public static func ==(lhs: Comment, rhs: Comment) -> Bool {
+        return lhs.id == rhs.id
+    }
+}

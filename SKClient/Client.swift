@@ -23,6 +23,7 @@
 
 import Foundation
 import Starscream
+import SKCommon
 
 public final class Client: WebSocketDelegate {
     

@@ -50,16 +50,6 @@ public struct IncomingWebhook {
         self.configurationURL = nil
     }
     
-    public func postMessage(_ response: Response, success: ((Bool)->Void)? = nil, failure: ((SlackError)->Void)? = nil) {
-        if let url = self.url, let data = try? JSONSerialization.data(withJSONObject: jsonBody(response.json), options: []) {
-            NetworkInterface().customRequest(url, data: data, success: { _ in
-                success?(true)
-            }, errorClosure: {(error) in
-                failure?(error)
-            })
-        }
-    }
-    
     private func jsonBody(_ response: [String: Any]) -> [String: Any] {
         var json = response
         json["channel"] = channel
