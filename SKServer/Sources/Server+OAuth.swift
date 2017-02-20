@@ -1,5 +1,5 @@
 //
-// OAuthServer.swift
+// Server+OAuth.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -22,43 +22,17 @@
 // THE SOFTWARE.
 
 import Foundation
+import SKClient
 import SKCommon
 import Swifter
 
-public struct OAuthServer {
+public protocol OAuthDelegate {
+    func userAuthed(_ response: OAuthResponse)
+}
+
+extension Server {
     
-    private let oauthURL = "https://slack.com/oauth/authorize"
-    
-    private let http = HttpServer()
-    private let clientID: String
-    private let clientSecret: String
-    private let state: String?
-    private let redirectURI: String?
-    private var delegate: OAuthDelegate?
-    
-    public init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, port:in_port_t = 8080, forceIPV4: Bool = false, delegate: OAuthDelegate? = nil) throws {
-        self.clientID = clientID
-        self.clientSecret = clientSecret
-        self.state = state ?? "state"
-        self.redirectURI = redirectURI
-        self.delegate = delegate
-        oauthRoute()
-        start(port, forceIPV4: forceIPV4)
-    }
-    
-    public func start(_ port: in_port_t = 8080, forceIPV4: Bool = false) {
-        do {
-            try http.start(port, forceIPv4: forceIPV4)
-        } catch let error as NSError {
-            print("Server failed to start with error: \(error)")
-        }
-    }
-    
-    public func stop() {
-        http.stop()
-    }
-    
-    private func oauthRoute() {
+    internal func oauthRoute() {
         http["/oauth"] = { request in
             guard let response = AuthorizeResponse(queryParameters: request.queryParams), response.state == self.state else {
                 return .badRequest(.text("Bad request."))
@@ -87,7 +61,7 @@ public struct OAuthServer {
         return URLRequest(url: url)
     }
     
-    public func authorizeRequest(_ scope:[Scope], redirectURI: String, state: String = "slackkit", team: String? = nil) -> URLRequest? {
+    public func authorizeRequest(scope: [Scope], redirectURI: String, state: String = "slackkit", team: String? = nil) -> URLRequest? {
         let request = AuthorizeRequest(clientID: clientID, scope: scope, redirectURI: redirectURI, state: state, team: team)
         return oauthURLRequest(request)
     }

@@ -28,42 +28,40 @@ import SKServer
 
 public final class SlackKit: OAuthDelegate {
     
-    internal(set) public var oauth: OAuthServer?
-    internal(set) public var clients: [String: Client] = [:]
-    private let clientOptions: ClientOptions
-    // Initalization block
-    public var onClientInitalization: ((Client) -> Void)?
+    internal(set) public var rtm: RTMClient
+    internal(set) public var server: Server?
+    internal(set) public var clients: [String: RTMClient] = [:]
+    private let options: ClientOptions
     
     // If you already have an API token
-    public init(withAPIToken token: String, clientOptions: ClientOptions = ClientOptions()) {
-        self.clientOptions = clientOptions
-        let client = Client(apiToken: token)
-        DispatchQueue.main.async(execute: {
-            self.onClientInitalization?(client)
-        })
-        clients[token] = client
-        client.connect(options: self.clientOptions)
+    public init(withAPIToken token: String, client: Client? = Client(), options: ClientOptions = ClientOptions(), rtm: RTM? = nil) {
+        self.options = options
+        self.rtm = RTMClient(token: token, rtm: rtm, options: options)
+        self.rtm.client = client
+        clients[token] = self.rtm
+        self.rtm.connect()
     }
-    
+
     // If you're going to be receiving and/or initiating OAuth requests, provide a client ID and secret
-    public init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, port:in_port_t = 8080, forceIPV4: Bool = false, clientOptions: ClientOptions = ClientOptions()) {
-        self.clientOptions = clientOptions
-        oauth = try? OAuthServer(clientID: clientID, clientSecret: clientSecret, state: state, redirectURI: redirectURI, port: port, forceIPV4: forceIPV4, delegate: self)
+    public init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, rtm: RTM? = nil, options: ClientOptions = ClientOptions(), notifications: [EventType] = [], port: in_port_t = 8080, forceIPV4: Bool = false) {
+        self.options = options
+        server = Server(clientID: clientID, clientSecret: clientSecret, state: state, redirectURI: redirectURI, delegate: self)
+        server?.addEventsRoute()
+        server?.start(port, forceIPV4: forceIPV4)
     }
     
     public func userAuthed(_ response: OAuthResponse) {
+        // use team ids to add to clients array to prevent duplicate clients...
         // User auth
         if let token = response.accessToken {
-            let client = Client(apiToken: token)
-            self.onClientInitalization?(client)
+            let client = RTMClient(apiToken: token)
             clients[token] = client
         }
         // Bot User
         if let token = response.bot?.botToken {
-            let client = Client(apiToken: token)
-            self.onClientInitalization?(client)
+            let client = RTMClient(apiToken: token)
             clients[token] = client
-            client.connect(options: self.clientOptions)
+            //connect, rtm or events
         }
     }
 }

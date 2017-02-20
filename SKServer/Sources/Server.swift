@@ -34,16 +34,31 @@ internal protocol Request {
     var responseURL: String { get }
 }
 
-open class Server {
+public final class Server {
     
     internal let http = HttpServer()
-    internal let token: String
-    
-    internal init(token: String) {
-        self.token = token
+    //MARK: - OAuth
+    internal let oauthURL = "https://slack.com/oauth/authorize"
+    internal let clientID: String
+    internal let clientSecret: String
+    internal let state: String?
+    internal let redirectURI: String?
+    internal var delegate: OAuthDelegate?
+    //Verification tokens
+    internal var tokens = [String: String]()
+    //Message action responders
+    internal var responders = [String: MessageActionResponder]()
+
+    public init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, delegate: OAuthDelegate? = nil) {
+        self.clientID = clientID
+        self.clientSecret = clientSecret
+        self.state = state ?? "state"
+        self.redirectURI = redirectURI
+        self.delegate = delegate
+        oauthRoute()
     }
     
-    open func start(_ port: in_port_t = 8080, forceIPV4: Bool = false) {
+    public func start(_ port: in_port_t = 8080, forceIPV4: Bool = false) {
         do {
             try http.start(port, forceIPv4: forceIPV4)
         } catch let error as NSError {
@@ -51,7 +66,7 @@ open class Server {
         }
     }
     
-    open func stop() {
+    public func stop() {
         http.stop()
     }
     
@@ -66,19 +81,12 @@ open class Server {
         }
     }
     
-    internal func dictionaryFromRequest(_ body: [UInt8]) -> [String: Any]? {
-        let string = String(data: Data(bytes: UnsafePointer<UInt8>(body), count: body.count), encoding: String.Encoding.utf8)
-        if let body = string?.components(separatedBy: "&") {
-            var dict: [String: Any] = [:]
-            for argument in body {
-                let kv = argument.components(separatedBy: "=")
-                if let key = kv.first, let value = kv.last {
-                    dict[key] = value as Any?
-                }
-            }
-            return dict
+    internal func requestQueryItems(_ body: [UInt8]) -> [URLQueryItem]? {
+        guard let string = String(data: Data(bytes: UnsafePointer<UInt8>(body), count: body.count), encoding: String.Encoding.utf8) else {
+            return nil
         }
-        return nil
+        let components = URLComponents(string: string)
+        return components?.queryItems
     }
     
     internal func jsonFromRequest(_ string: String) -> [String: Any]? {

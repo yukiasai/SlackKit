@@ -1,5 +1,5 @@
 //
-// WebhookServer.swift
+// Server+Webhook.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,17 +21,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-open class WebhookServer: Server {
+extension Server {
     
-    public init(token: String, route: String, response: Response) {
-        super.init(token: token)
+    public func addWebhookWith(token: String, route: String, response: Response) {
+        tokens[route] = token
         addRoute(route, response: response)
     }
     
-    open func addRoute(_ route: String, response: Response) {
-        http["/\(route)"] = { request in
-            let webhookRequest = WebhookRequest(request: self.dictionaryFromRequest(request.body))
-            if webhookRequest.token == self.token {
+    private func addRoute(_ route: String, response: Response) {
+        http[route] = { request in
+            let webhookRequest = WebhookRequest(request: self.requestQueryItems(request.body))
+            if webhookRequest.token == self.tokens[request.path] {
                 return self.request(webhookRequest, reply: self.replyForResponse(response))
             } else {
                 return .badRequest(.text("Bad request."))

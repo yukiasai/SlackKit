@@ -7,11 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		263D9FEA1E465B5A00813791 /* Client+EventDispatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FE21E465B5A00813791 /* Client+EventDispatching.swift */; };
-		263D9FEB1E465B5A00813791 /* Client+EventHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FE31E465B5A00813791 /* Client+EventHandling.swift */; };
-		263D9FEC1E465B5A00813791 /* Client+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FE41E465B5A00813791 /* Client+Utilities.swift */; };
-		263D9FED1E465B5A00813791 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FE51E465B5A00813791 /* Client.swift */; };
-		263D9FEE1E465B5A00813791 /* EventNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FE61E465B5A00813791 /* EventNotifier.swift */; };
+		262E1E751E52A20D009E9DB9 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307A07F1CC6D0910011D5DE /* Starscream.framework */; };
+		262E1E761E52A270009E9DB9 /* Swifter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26B30B6B1D289FA0004D4AB5 /* Swifter.framework */; };
+		262E1EA71E52A456009E9DB9 /* SKClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263D9F251E46465C00813791 /* SKClient.framework */; };
+		262E1EA81E52A456009E9DB9 /* SKCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263D9F181E46464900813791 /* SKCommon.framework */; };
+		262E1EA91E52A456009E9DB9 /* SKServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263D9F321E46467700813791 /* SKServer.framework */; };
+		262E1EAA1E52A460009E9DB9 /* SKCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263D9F181E46464900813791 /* SKCommon.framework */; };
+		262E1EAB1E52A464009E9DB9 /* SKCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263D9F181E46464900813791 /* SKCommon.framework */; };
+		2638C38E1E5A13FD000F894A /* StarscreamClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2638C38D1E5A13FD000F894A /* StarscreamClient.swift */; };
+		2638C3901E5B66BE000F894A /* ZewoClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2638C38F1E5B66BE000F894A /* ZewoClient.swift */; };
+		263D9FEA1E465B5A00813791 /* RTMClient+Notifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FE21E465B5A00813791 /* RTMClient+Notifiable.swift */; };
+		263D9FEB1E465B5A00813791 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FE31E465B5A00813791 /* Client.swift */; };
+		263D9FED1E465B5A00813791 /* RTMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FE51E465B5A00813791 /* RTMClient.swift */; };
 		263D9FF01E465B5A00813791 /* SKClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 263D9FE91E465B5A00813791 /* SKClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		263DA0151E465B6C00813791 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FF41E465B6C00813791 /* Action.swift */; };
 		263DA0161E465B6C00813791 /* Attachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263D9FF51E465B6C00813791 /* Attachment.swift */; };
@@ -31,7 +38,6 @@
 		263DA0241E465B6C00813791 /* IncomingWebhook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0031E465B6C00813791 /* IncomingWebhook.swift */; };
 		263DA0251E465B6C00813791 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0041E465B6C00813791 /* Item.swift */; };
 		263DA0261E465B6C00813791 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0051E465B6C00813791 /* Message.swift */; };
-		263DA0271E465B6C00813791 /* OAuthDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0061E465B6C00813791 /* OAuthDelegate.swift */; };
 		263DA0281E465B6C00813791 /* OAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0071E465B6C00813791 /* OAuthResponse.swift */; };
 		263DA0291E465B6C00813791 /* Reaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0081E465B6C00813791 /* Reaction.swift */; };
 		263DA02A1E465B6C00813791 /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0091E465B6C00813791 /* Scope.swift */; };
@@ -45,30 +51,32 @@
 		263DA0321E465B6C00813791 /* WebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0111E465B6C00813791 /* WebAPI.swift */; };
 		263DA0341E465B6C00813791 /* SKCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 263DA0141E465B6C00813791 /* SKCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		263DA0451E465B8200813791 /* MessageActionResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0371E465B8200813791 /* MessageActionResponder.swift */; };
-		263DA0461E465B8200813791 /* MessageActionServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0381E465B8200813791 /* MessageActionServer.swift */; };
+		263DA0461E465B8200813791 /* Server+MessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0381E465B8200813791 /* Server+MessageAction.swift */; };
 		263DA0471E465B8200813791 /* AuthorizeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA03A1E465B8200813791 /* AuthorizeRequest.swift */; };
 		263DA0481E465B8200813791 /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA03B1E465B8200813791 /* AuthorizeResponse.swift */; };
 		263DA0491E465B8200813791 /* MessageActionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA03C1E465B8200813791 /* MessageActionRequest.swift */; };
 		263DA04A1E465B8200813791 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA03D1E465B8200813791 /* Response.swift */; };
 		263DA04B1E465B8200813791 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA03E1E465B8200813791 /* WebhookRequest.swift */; };
-		263DA04C1E465B8200813791 /* OAuthServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA03F1E465B8200813791 /* OAuthServer.swift */; };
+		263DA04C1E465B8200813791 /* Server+OAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA03F1E465B8200813791 /* Server+OAuth.swift */; };
 		263DA04D1E465B8200813791 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0401E465B8200813791 /* Server.swift */; };
-		263DA04E1E465B8200813791 /* WebhookServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0411E465B8200813791 /* WebhookServer.swift */; };
+		263DA04E1E465B8200813791 /* Server+Webhook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0411E465B8200813791 /* Server+Webhook.swift */; };
 		263DA0501E465B8200813791 /* SKServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 263DA0441E465B8200813791 /* SKServer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		263DA0571E465B8D00813791 /* SlackKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0531E465B8D00813791 /* SlackKit.swift */; };
 		263DA0591E465B8D00813791 /* SlackKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 263DA0561E465B8D00813791 /* SlackKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		263DA0981E47A11300813791 /* Server+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA0971E47A11300813791 /* Server+Event.swift */; };
+		263DA09C1E47A3BC00813791 /* EventEnvelope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263DA09B1E47A3BC00813791 /* EventEnvelope.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2638C38D1E5A13FD000F894A /* StarscreamClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarscreamClient.swift; sourceTree = "<group>"; };
+		2638C38F1E5B66BE000F894A /* ZewoClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZewoClient.swift; sourceTree = "<group>"; };
 		263D9F181E46464900813791 /* SKCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SKCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		263D9F251E46465C00813791 /* SKClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SKClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		263D9F321E46467700813791 /* SKServer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SKServer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		263D9FD41E46532200813791 /* SlackKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SlackKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		263D9FE21E465B5A00813791 /* Client+EventDispatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Client+EventDispatching.swift"; sourceTree = "<group>"; };
-		263D9FE31E465B5A00813791 /* Client+EventHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Client+EventHandling.swift"; sourceTree = "<group>"; };
-		263D9FE41E465B5A00813791 /* Client+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Client+Utilities.swift"; sourceTree = "<group>"; };
-		263D9FE51E465B5A00813791 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
-		263D9FE61E465B5A00813791 /* EventNotifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventNotifier.swift; sourceTree = "<group>"; };
+		263D9FE21E465B5A00813791 /* RTMClient+Notifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RTMClient+Notifiable.swift"; sourceTree = "<group>"; };
+		263D9FE31E465B5A00813791 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		263D9FE51E465B5A00813791 /* RTMClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMClient.swift; sourceTree = "<group>"; };
 		263D9FE81E465B5A00813791 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		263D9FE91E465B5A00813791 /* SKClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKClient.h; sourceTree = "<group>"; };
 		263D9FF41E465B6C00813791 /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
@@ -89,7 +97,6 @@
 		263DA0031E465B6C00813791 /* IncomingWebhook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncomingWebhook.swift; sourceTree = "<group>"; };
 		263DA0041E465B6C00813791 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		263DA0051E465B6C00813791 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		263DA0061E465B6C00813791 /* OAuthDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthDelegate.swift; sourceTree = "<group>"; };
 		263DA0071E465B6C00813791 /* OAuthResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthResponse.swift; sourceTree = "<group>"; };
 		263DA0081E465B6C00813791 /* Reaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reaction.swift; sourceTree = "<group>"; };
 		263DA0091E465B6C00813791 /* Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scope.swift; sourceTree = "<group>"; };
@@ -104,20 +111,22 @@
 		263DA0131E465B6C00813791 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		263DA0141E465B6C00813791 /* SKCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCommon.h; sourceTree = "<group>"; };
 		263DA0371E465B8200813791 /* MessageActionResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageActionResponder.swift; sourceTree = "<group>"; };
-		263DA0381E465B8200813791 /* MessageActionServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageActionServer.swift; sourceTree = "<group>"; };
+		263DA0381E465B8200813791 /* Server+MessageAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Server+MessageAction.swift"; sourceTree = "<group>"; };
 		263DA03A1E465B8200813791 /* AuthorizeRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizeRequest.swift; sourceTree = "<group>"; };
 		263DA03B1E465B8200813791 /* AuthorizeResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizeResponse.swift; sourceTree = "<group>"; };
 		263DA03C1E465B8200813791 /* MessageActionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageActionRequest.swift; sourceTree = "<group>"; };
 		263DA03D1E465B8200813791 /* Response.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		263DA03E1E465B8200813791 /* WebhookRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
-		263DA03F1E465B8200813791 /* OAuthServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthServer.swift; sourceTree = "<group>"; };
+		263DA03F1E465B8200813791 /* Server+OAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Server+OAuth.swift"; sourceTree = "<group>"; };
 		263DA0401E465B8200813791 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
-		263DA0411E465B8200813791 /* WebhookServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookServer.swift; sourceTree = "<group>"; };
+		263DA0411E465B8200813791 /* Server+Webhook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Server+Webhook.swift"; sourceTree = "<group>"; };
 		263DA0431E465B8200813791 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		263DA0441E465B8200813791 /* SKServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKServer.h; sourceTree = "<group>"; };
 		263DA0531E465B8D00813791 /* SlackKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlackKit.swift; sourceTree = "<group>"; };
 		263DA0551E465B8D00813791 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		263DA0561E465B8D00813791 /* SlackKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlackKit.h; sourceTree = "<group>"; };
+		263DA0971E47A11300813791 /* Server+Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Server+Event.swift"; sourceTree = "<group>"; };
+		263DA09B1E47A3BC00813791 /* EventEnvelope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventEnvelope.swift; sourceTree = "<group>"; };
 		2659FC1E1DADC4F2003F3930 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
 		2659FC211DADC4FC003F3930 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/tvOS/Starscream.framework; sourceTree = "<group>"; };
 		269B47CB1D3AE5670042D137 /* Swifter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swifter.framework; path = Carthage/Build/tvOS/Swifter.framework; sourceTree = "<group>"; };
@@ -138,6 +147,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				262E1EAA1E52A460009E9DB9 /* SKCommon.framework in Frameworks */,
+				262E1E751E52A20D009E9DB9 /* Starscream.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +156,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				262E1EAB1E52A464009E9DB9 /* SKCommon.framework in Frameworks */,
+				262E1E761E52A270009E9DB9 /* Swifter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +165,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				262E1EA71E52A456009E9DB9 /* SKClient.framework in Frameworks */,
+				262E1EA81E52A456009E9DB9 /* SKCommon.framework in Frameworks */,
+				262E1EA91E52A456009E9DB9 /* SKServer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,11 +209,11 @@
 		263D9FE11E465B5A00813791 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				263D9FE21E465B5A00813791 /* Client+EventDispatching.swift */,
-				263D9FE31E465B5A00813791 /* Client+EventHandling.swift */,
-				263D9FE41E465B5A00813791 /* Client+Utilities.swift */,
-				263D9FE51E465B5A00813791 /* Client.swift */,
-				263D9FE61E465B5A00813791 /* EventNotifier.swift */,
+				263D9FE31E465B5A00813791 /* Client.swift */,
+				263D9FE51E465B5A00813791 /* RTMClient.swift */,
+				263D9FE21E465B5A00813791 /* RTMClient+Notifiable.swift */,
+				2638C38D1E5A13FD000F894A /* StarscreamClient.swift */,
+				2638C38F1E5B66BE000F894A /* ZewoClient.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -245,13 +261,13 @@
 				263D9FFD1E465B6C00813791 /* DoNotDisturbStatus.swift */,
 				263D9FFE1E465B6C00813791 /* Edited.swift */,
 				263D9FFF1E465B6C00813791 /* Event.swift */,
+				263DA09B1E47A3BC00813791 /* EventEnvelope.swift */,
 				263DA0001E465B6C00813791 /* Extensions.swift */,
 				263DA0011E465B6C00813791 /* File.swift */,
 				263DA0021E465B6C00813791 /* History.swift */,
 				263DA0031E465B6C00813791 /* IncomingWebhook.swift */,
 				263DA0041E465B6C00813791 /* Item.swift */,
 				263DA0051E465B6C00813791 /* Message.swift */,
-				263DA0061E465B6C00813791 /* OAuthDelegate.swift */,
 				263DA0071E465B6C00813791 /* OAuthResponse.swift */,
 				263DA0081E465B6C00813791 /* Reaction.swift */,
 				263DA0091E465B6C00813791 /* Scope.swift */,
@@ -286,12 +302,13 @@
 		263DA0361E465B8200813791 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				263DA0371E465B8200813791 /* MessageActionResponder.swift */,
-				263DA0381E465B8200813791 /* MessageActionServer.swift */,
 				263DA0391E465B8200813791 /* Model */,
-				263DA03F1E465B8200813791 /* OAuthServer.swift */,
+				263DA0371E465B8200813791 /* MessageActionResponder.swift */,
 				263DA0401E465B8200813791 /* Server.swift */,
-				263DA0411E465B8200813791 /* WebhookServer.swift */,
+				263DA0971E47A11300813791 /* Server+Event.swift */,
+				263DA0381E465B8200813791 /* Server+MessageAction.swift */,
+				263DA03F1E465B8200813791 /* Server+OAuth.swift */,
+				263DA0411E465B8200813791 /* Server+Webhook.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -472,7 +489,7 @@
 		26072A2B1BB48B3A00CD650C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0730;
+				LastSwiftUpdateCheck = 0820;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Launch Software LLC";
 				TargetAttributes = {
@@ -558,6 +575,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				263DA09C1E47A3BC00813791 /* EventEnvelope.swift in Sources */,
 				263DA0171E465B6C00813791 /* AttachmentField.swift in Sources */,
 				263DA0191E465B6C00813791 /* Channel.swift in Sources */,
 				263DA0251E465B6C00813791 /* Item.swift in Sources */,
@@ -576,7 +594,6 @@
 				263DA01B1E465B6C00813791 /* Comment.swift in Sources */,
 				263DA0211E465B6C00813791 /* Extensions.swift in Sources */,
 				263DA02B1E465B6C00813791 /* SlackError.swift in Sources */,
-				263DA0271E465B6C00813791 /* OAuthDelegate.swift in Sources */,
 				263DA0231E465B6C00813791 /* History.swift in Sources */,
 				263DA0221E465B6C00813791 /* File.swift in Sources */,
 				263DA0291E465B6C00813791 /* Reaction.swift in Sources */,
@@ -595,11 +612,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263D9FEB1E465B5A00813791 /* Client+EventHandling.swift in Sources */,
-				263D9FEE1E465B5A00813791 /* EventNotifier.swift in Sources */,
-				263D9FEA1E465B5A00813791 /* Client+EventDispatching.swift in Sources */,
-				263D9FED1E465B5A00813791 /* Client.swift in Sources */,
-				263D9FEC1E465B5A00813791 /* Client+Utilities.swift in Sources */,
+				263D9FEB1E465B5A00813791 /* Client.swift in Sources */,
+				2638C38E1E5A13FD000F894A /* StarscreamClient.swift in Sources */,
+				263D9FEA1E465B5A00813791 /* RTMClient+Notifiable.swift in Sources */,
+				263D9FED1E465B5A00813791 /* RTMClient.swift in Sources */,
+				2638C3901E5B66BE000F894A /* ZewoClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -609,10 +626,11 @@
 			files = (
 				263DA0491E465B8200813791 /* MessageActionRequest.swift in Sources */,
 				263DA0481E465B8200813791 /* AuthorizeResponse.swift in Sources */,
-				263DA0461E465B8200813791 /* MessageActionServer.swift in Sources */,
+				263DA0981E47A11300813791 /* Server+Event.swift in Sources */,
+				263DA0461E465B8200813791 /* Server+MessageAction.swift in Sources */,
 				263DA0451E465B8200813791 /* MessageActionResponder.swift in Sources */,
-				263DA04E1E465B8200813791 /* WebhookServer.swift in Sources */,
-				263DA04C1E465B8200813791 /* OAuthServer.swift in Sources */,
+				263DA04E1E465B8200813791 /* Server+Webhook.swift in Sources */,
+				263DA04C1E465B8200813791 /* Server+OAuth.swift in Sources */,
 				263DA04A1E465B8200813791 /* Response.swift in Sources */,
 				263DA0471E465B8200813791 /* AuthorizeRequest.swift in Sources */,
 				263DA04D1E465B8200813791 /* Server.swift in Sources */,
@@ -787,6 +805,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(SRCROOT)/SKClient/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -814,6 +836,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(SRCROOT)/SKClient/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -840,6 +866,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(SRCROOT)/SKServer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -867,6 +897,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(SRCROOT)/SKServer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -980,6 +1014,7 @@
 				263D9FDB1E46532200813791 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

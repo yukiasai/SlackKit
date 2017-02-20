@@ -161,7 +161,7 @@ public class Event {
     public let subteamID: String?
     public var profile: CustomProfile?
     
-    public init(_ event:[String: Any]) {
+    public init(_ event: [String: Any]) {
         type = EventType(rawValue: event["type"] as? String ?? "ok")
         ts = event["ts"] as? String
         subtype = event["subtype"] as? String

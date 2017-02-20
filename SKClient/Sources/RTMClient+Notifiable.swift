@@ -1,5 +1,5 @@
 //
-// ClientOptions.swift
+// RTMClient+Notifiable.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,23 +21,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
+import SKCommon
 
-public struct ClientOptions {
-    
-    public let simpleLatest: Bool
-    public let noUnreads: Bool
-    public let mpimAware: Bool
-    public let pingInterval: TimeInterval
-    public let timeout: TimeInterval
-    public let reconnect: Bool
-    
-    public init(simpleLatest: Bool = false, noUnreads: Bool = false, mpimAware: Bool = true, pingInterval: TimeInterval = 30, timeout: TimeInterval = 300, reconnect: Bool = true) {
-        self.simpleLatest = simpleLatest
-        self.noUnreads = noUnreads
-        self.mpimAware = mpimAware
-        self.pingInterval = pingInterval
-        self.timeout = timeout
-        self.reconnect = reconnect
+public protocol Notifiable: class {
+    func notificationForEvent(_ event: Event, type: EventType)
+}
+
+internal extension RTMClient {
+
+    func dispatch(_ anEvent: [String: Any]) {
+        let event = Event(anEvent)
+        let type = event.type ?? .unknown
+        switch type {
+        case .hello:
+            connected = true
+        case .pong:
+            pong = event.replyTo
+        case .teamMigrationStarted:
+            connect()
+        case .error:
+            print("Error: \(anEvent)")
+        case .goodbye:
+            connect()
+        case .unknown:
+            print("Unsupported event of type: \(anEvent["type"] ?? "No Type Information")")
+        default:
+            break
+        }
+        client?.notificationForEvent(event, type: type)
     }
 }
