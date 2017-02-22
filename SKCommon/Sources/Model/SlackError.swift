@@ -112,11 +112,12 @@ public enum SlackError: String, Error {
     case userNotFound = "user_not_found"
     case userNotVisible = "user_not_visible"
     // Client
-    case clientRTMSendError
     case clientNetworkError
     case clientJSONError
     case clientOAuthError
     // HTTP
     case tooManyRequests
     case unknownHTTPError
+    // RTM
+    case rtmConnectionError
 }

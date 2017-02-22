@@ -7,46 +7,54 @@
 //
 
 import Foundation
+import SKCommon
+import WebSocketClient
 
-class ZewoClient {
-    // MARK: - WebSocket
-    private func setupSocket(_ socket: WebSocket) {
-        socket.onText {(message) in
-            self.websocketDidReceive(message: message)
-        }
-        socket.onClose{ (code: CloseCode?, reason: String?) in
-            self.websocketDidDisconnect(closeCode: code, error: reason)
-        }
-        socket.onPing { (data) in try socket.pong() }
-        socket.onPong { (data) in try socket.ping() }
-        self.socket = socket
-    }
+public class ZewoClient: RTM {
     
-    private func websocketDidReceive(message: String) {
+    public var delegate: RTMDelegate?
+    internal var client: WebSocketClient?
+    internal var webSocket: WebSocket?
+    
+    public required init() {}
+
+    //MARK: - RTM
+    public func connect(url: URL) {
         do {
-            guard let message = message.data(using: .utf8) else {
-                print("Failed to decode message")
-                return
-            }
-            let json = try JSONSerialization.jsonObject(with: message, options: [])
-            if let event = json as? [String: Any] {
-                dispatch(event)
-            }
-        }
-        catch let error {
-            print("Failed to dispatch message: \(error)")
+            self.client = try WebSocketClient(url: url, didConnect: { (webSocket) in
+                self.setupSocket(webSocket)
+            })
+            try self.client?.connect()
+        } catch let error {
+            print("WebSocket client could not connect: \(error)")
         }
     }
     
-    private func websocketDidDisconnect(closeCode: CloseCode?, error: String?) {
-        connected = false
-        authenticated = false
-        client = nil
-        socket = nil
-        authenticatedUser = nil
-        connectionEventsDelegate?.disconnected(self)
-        if reconnect == true {
-            connect(pingInterval: pingInterval, timeout: timeout, reconnect: reconnect)
+    public func disconnect() {
+        try? webSocket?.close()
+    }
+    
+    public func sendMessage(_ message: String) throws {
+        guard webSocket != nil else {
+            throw SlackError.rtmConnectionError
         }
+        do {
+            try webSocket?.send(message)
+        } catch let error {
+            throw error
+        }
+    }
+    
+    // MARK: - WebSocket
+    private func setupSocket(_ webSocket: WebSocket) {
+        webSocket.onText { (message) in
+            self.delegate?.receivedMessage(message)
+        }
+        webSocket.onClose { (code: CloseCode?, reason: String?) in
+            self.delegate?.disconnected()
+        }
+        webSocket.onPing { (data) in try webSocket.pong() }
+        webSocket.onPong { (data) in try webSocket.ping() }
+        self.webSocket = webSocket
     }
 }

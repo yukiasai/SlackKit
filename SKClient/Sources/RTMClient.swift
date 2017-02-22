@@ -25,22 +25,17 @@ import Foundation
 import SKCommon
 
 public protocol RTM {
+    init()
+    var delegate: RTMDelegate? { get set }
     func connect(url: URL)
     func disconnect()
     func sendMessage(_ message: String) throws
-    var delegate: RTMDelegate? { get set }
 }
 
 public protocol RTMDelegate {
     func didConnect()
     func disconnected()
     func receivedMessage(_ message: String)
-    func receivedData(_ data: Data)
-}
-
-public enum RTMError: Error {
-    case connectionError
-    case clientJSONError
 }
 
 public final class RTMClient: RTMDelegate {
@@ -50,10 +45,7 @@ public final class RTMClient: RTMDelegate {
     public var token = "xoxp-SLACK_AUTH_TOKEN"
     internal var options: ClientOptions
     var connected = false
-    #if os(Linux)
-    #else
-    private let pingPongQueue = DispatchQueue(label: "com.launchsoft.SlackKit")
-    #endif
+
     var ping: Double?
     var pong: Double?
     
@@ -68,7 +60,7 @@ public final class RTMClient: RTMDelegate {
             self.rtm = rtm
         } else {
             #if os(Linux)
-            self.rtm = StarscreamClient()
+            self.rtm = ZewoClient()
             #else
             self.rtm = StarscreamClient()
             #endif
@@ -94,7 +86,7 @@ public final class RTMClient: RTMDelegate {
     
     public func sendMessage(_ message: String, channelID: String) throws {
         guard connected else {
-            throw RTMError.connectionError
+            throw SlackError.rtmConnectionError
         }
         do {
             let string = try format(message: message, channel: channelID)
@@ -115,34 +107,34 @@ public final class RTMClient: RTMDelegate {
             let data = try? JSONSerialization.data(withJSONObject: json, options: []),
             let str = String(data: data, encoding: String.Encoding.utf8)
         else {
-            throw RTMError.clientJSONError
+            throw SlackError.clientJSONError
         }
         return str
     }
     
     //MARK: - RTM Ping
-    private func pingRTMServerAt(_ interval: TimeInterval) {
-        let delay = DispatchTime.now() + Double(Int64(interval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-        pingPongQueue.asyncAfter(deadline: delay) {
-            guard self.connected && self.timeoutCheck() else {
+    private func pingRTMServer() {
+        let delay = DispatchTime.now() + Double(Int64(options.pingInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        DispatchQueue.main.asyncAfter(deadline: delay) {
+            guard self.connected && self.isConnectionTimedOut else {
                 self.disconnect()
                 return
             }
             try? self.sendRTMPing()
-            self.pingRTMServerAt(interval)
+            self.pingRTMServer()
         }
     }
 
     private func sendRTMPing() throws {
         guard connected else {
-            throw RTMError.connectionError
+            throw SlackError.rtmConnectionError
         }
         let json: [String: Any] = [
             "id": Date().slackTimestamp,
             "type": "ping"
         ]
         guard let data = try? JSONSerialization.data(withJSONObject: json, options: []) else {
-            throw RTMError.clientJSONError
+            throw SlackError.clientJSONError
         }
         if let string = String(data: data, encoding: String.Encoding.utf8) {
             ping = json["id"] as? Double
@@ -150,10 +142,22 @@ public final class RTMClient: RTMDelegate {
         }
     }
     
+    var isConnectionTimedOut: Bool {
+        if let pong = pong, let ping = ping {
+            if pong - ping < options.timeout {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return true
+        }
+    }
+    
     //MARK: RTMDelegate
     public func didConnect() {
         connected = true
-        pingRTMServerAt(options.pingInterval)
+        pingRTMServer()
     }
     
     public func disconnected() {
@@ -170,22 +174,6 @@ public final class RTMClient: RTMDelegate {
 
         if let json = (try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)) as? [String: Any] {
             dispatch(json)
-        }
-    }
-    
-    public func receivedData(_ data: Data) {
-        
-    }
-    
-    private func timeoutCheck() -> Bool {
-        if let pong = pong, let ping = ping {
-            if pong - ping < options.timeout {
-                return true
-            } else {
-                return false
-            }
-        } else {
-            return true
         }
     }
 }

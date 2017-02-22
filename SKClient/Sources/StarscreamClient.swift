@@ -7,15 +7,15 @@
 //
 
 import Foundation
-import Starscream
 import SKCommon
+import Starscream
 
 public class StarscreamClient: RTM, WebSocketDelegate {
 
     public var delegate: RTMDelegate?
     private var webSocket: WebSocket?
     
-    public init() {}
+    public required init() {}
     
     //MARK: - RTM
     public func connect(url: URL) {
@@ -30,7 +30,7 @@ public class StarscreamClient: RTM, WebSocketDelegate {
     
     public func sendMessage(_ message: String) throws {
         guard webSocket != nil else {
-            throw RTMError.connectionError
+            throw SlackError.rtmConnectionError
         }
         webSocket?.write(string: message)
     }
@@ -53,7 +53,5 @@ public class StarscreamClient: RTM, WebSocketDelegate {
         delegate?.receivedMessage(text)
     }
     
-    public func websocketDidReceiveData(socket: WebSocket, data: Data) {
-        delegate?.receivedData(data)
-    }
+    public func websocketDidReceiveData(socket: WebSocket, data: Data) {}
 }
