@@ -1,5 +1,5 @@
 //
-// SKRtmApi.swift
+// SKRTMAPI.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -43,7 +43,7 @@ public protocol RTMDelegate {
     func receivedMessage(_ message: String)
 }
 
-public final class SKRtmApi: RTMDelegate {
+public final class SKRTMAPI: RTMDelegate {
     
     public var rtm: RTM
     public var adapter: RTMAdapter?
