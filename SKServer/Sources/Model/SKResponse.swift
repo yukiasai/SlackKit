@@ -23,7 +23,7 @@
 
 import Foundation
 import HTTPServer
-import SKCommon
+import SKCore
 
 public struct SKResponse {
     

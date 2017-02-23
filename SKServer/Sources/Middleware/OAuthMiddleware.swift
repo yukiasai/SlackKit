@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 
 import HTTPServer
-import SKCommon
+import SKCore
 import Venice
 
 public struct OAuthMiddleware: Middleware {
@@ -48,7 +48,7 @@ public struct OAuthMiddleware: Middleware {
         let channel = FallibleChannel<Response>()
         
         co {
-            RestAPI.oauthAccess(clientID: self.clientID, clientSecret: self.clientSecret, code: code, redirectURI: self.redirectURI, success: { (response) in
+            WebAPI.oauthAccess(clientID: self.clientID, clientSecret: self.clientSecret, code: code, redirectURI: self.redirectURI, success: { (response) in
                 self.authed?(OAuthResponse(response: response))
                 guard let redirect = self.redirectURI else {
                     channel.send(Response(status: .ok))

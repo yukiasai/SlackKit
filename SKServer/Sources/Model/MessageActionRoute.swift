@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 
 import HTTPServer
-import SKCommon
+import SKCore
 
 public struct MessageActionRoute {
     

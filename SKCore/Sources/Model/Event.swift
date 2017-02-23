@@ -123,11 +123,6 @@ public enum MessageSubtype: String {
     case unpinnedItem = "unpinned_item"
 }
 
-public protocol ClientDelegate: class {
-    func initialSetup(json: [String: Any])
-    func notificationForEvent(_ event: Event, type: EventType)
-}
-
 public class Event {
     public let type: EventType?
     public let ts: String?

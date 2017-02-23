@@ -1,5 +1,5 @@
 //
-//  ZewoClient.swift
+//  ZewoRTM.swift
 //  SlackKit
 //
 //  Created by Peter Zignego on 2/20/17.
@@ -10,7 +10,7 @@ import Foundation
 import SKCore
 import WebSocketClient
 
-public class ZewoClient: RTM {
+public class ZewoRTM: RTMWebSocket {
     
     public var delegate: RTMDelegate?
     internal var client: WebSocketClient?

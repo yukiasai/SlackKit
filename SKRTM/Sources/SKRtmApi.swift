@@ -1,5 +1,5 @@
 //
-// RTMClient.swift
+// SKRtmApi.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -24,12 +24,17 @@
 import Foundation
 import SKCore
 
-public protocol RTM {
+public protocol RTMWebSocket {
     init()
     var delegate: RTMDelegate? { get set }
     func connect(url: URL)
     func disconnect()
     func sendMessage(_ message: String) throws
+}
+
+public protocol RTMAdapter: class {
+    func initialSetup(json: [String: Any])
+    func notificationForEvent(_ event: Event, type: EventType)
 }
 
 public protocol RTMDelegate {
@@ -38,10 +43,10 @@ public protocol RTMDelegate {
     func receivedMessage(_ message: String)
 }
 
-public final class SKRTM: RTMDelegate {
+public final class SKRtmApi: RTMDelegate {
     
     public var rtm: RTM
-    public var clientDelegate: ClientDelegate?
+    public var adapter: RTMAdapter?
     public var token = "xoxp-SLACK_AUTH_TOKEN"
     internal var options: ClientOptions
     var connected = false
@@ -52,20 +57,21 @@ public final class SKRTM: RTMDelegate {
     private var webAPI: WebAPI {
         return WebAPI(token: token)
     }
-
-    public init(token: String, rtm: RTM?, options: ClientOptions = ClientOptions()) {
+    
+    public init(withAPIToken token: String, options: ClientOptions = ClientOptions(), rtm: RTM? = nil) {
         self.token = token
         self.options = options
         if let rtm = rtm {
             self.rtm = rtm
         } else {
             #if os(Linux)
-            self.rtm = ZewoClient()
+                self.rtm = ZewoClient()
             #else
-            self.rtm = StarscreamClient()
+                self.rtm = StarscreamClient()
             #endif
         }
         self.rtm.delegate = self
+        self.connect()
     }
     
     public func connect() {
@@ -74,7 +80,7 @@ public final class SKRTM: RTMDelegate {
                 return
             }
             self.rtm.connect(url: url)
-            self.clientDelegate?.initialSetup(json: response)
+            self.adapter?.initialSetup(json: response)
         }, failure: { (error) in
             print(error)
         })
@@ -196,6 +202,6 @@ public final class SKRTM: RTMDelegate {
         default:
             break
         }
-        clientDelegate?.notificationForEvent(event, type: type)
+        adapter?.notificationForEvent(event, type: type)
     }
 }

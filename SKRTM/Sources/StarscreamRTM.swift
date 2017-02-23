@@ -10,7 +10,7 @@ import Foundation
 import SKCore
 import Starscream
 
-public class StarscreamClient: RTM, WebSocketDelegate {
+public class StarscreamRTM: RTMWebSocket, WebSocketDelegate {
 
     public var delegate: RTMDelegate?
     private var webSocket: WebSocket?
