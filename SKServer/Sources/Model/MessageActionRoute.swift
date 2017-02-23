@@ -1,5 +1,5 @@
 //
-// Server+MessageAction.swift
+// MessageActionRoute.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,23 +21,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-extension Server {
-        
-    public func addResponderWith(token: String, route: String, responder: MessageActionResponder) {
-        tokens[route] = token
-        responders[route] = responder
-        addRoute(route)
+import HTTPServer
+import SKCommon
+
+public struct MessageActionRoute {
+    
+    let action: Action
+    let middleware: Middleware
+    
+    public init(action: Action, middleware: Middleware) {
+        self.action = action
+        self.middleware = middleware
     }
     
-    internal func addRoute(_ route: String) {
-        http.POST[route] = { request in
-            let payload = request.parseUrlencodedForm()
-            let actionRequest = MessageActionRequest(response: self.jsonFromRequest(payload[0].1))
-            if let reply = self.responders[route]?.responseForRequest(actionRequest), actionRequest.token == self.tokens[request.path] {
-                return self.request(actionRequest, reply: reply)
-            } else {
-                return .badRequest(.text("Bad request."))
-            }
-        }
-    }
 }

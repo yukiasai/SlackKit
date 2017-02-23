@@ -1,5 +1,5 @@
 //
-// MessageActionResponder.swift
+// Post.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -22,21 +22,23 @@
 // THE SOFTWARE.
 
 import Foundation
-import HTTPServer
+import HTTPClient
 
-public struct MessageActionResponder {
+public struct Post {
     
-    public let routes: [MessageActionRoute]
-    
-    public init(routes: [MessageActionRoute]) {
-        self.routes = routes
-    }
-    
-    internal func routes(_ request: MessageActionRequest) -> Middleware? {
-        if let route = routes.filter({$0.action.name == request.action?.name}).first {
-            return route.middleware
+    public static func response(url: String, message: SKResponse) throws {
+        guard let requestString = try? String(percentEncoded: url) else {
+            throw HTTPClientError.brokenConnection
         }
-        return nil
+        guard let data = message.data, let url = URL(string: requestString) else {
+            throw HTTPClientError.brokenConnection
+        }
+        do {
+            let client = try Client(url: url)
+            _ = try client.post(requestString, headers: ["Content-Type":"application/json"], body: Buffer([UInt8](data)))
+        } catch _ {
+            throw HTTPClientError.brokenConnection
+        }
     }
     
 }

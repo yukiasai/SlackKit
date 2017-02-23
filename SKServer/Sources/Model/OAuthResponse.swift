@@ -1,5 +1,5 @@
 //
-// MessageActionResponder.swift
+// OAuthResponse.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,22 +21,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-import HTTPServer
+import SKCommon
 
-public struct MessageActionResponder {
+public struct OAuthResponse {
     
-    public let routes: [MessageActionRoute]
+    public let accessToken: String?
+    public let scope: [Scope]?
+    public let userID: String?
+    public let teamName: String?
+    public let teamID: String?
+    public let incomingWebhook: IncomingWebhook?
+    public let bot: Bot?
     
-    public init(routes: [MessageActionRoute]) {
-        self.routes = routes
-    }
-    
-    internal func routes(_ request: MessageActionRequest) -> Middleware? {
-        if let route = routes.filter({$0.action.name == request.action?.name}).first {
-            return route.middleware
-        }
-        return nil
+    internal init(response: [String: Any]?) {
+        accessToken = response?["access_token"] as? String
+        scope = (response?["scope"] as? String)?.split(separator: ",").flatMap{Scope(rawValue: $0)}
+        userID = response?["user_id"] as? String
+        teamName = response?["team_name"] as? String
+        teamID = response?["team_id"] as? String
+        incomingWebhook = IncomingWebhook(webhook: response?["incoming_webhook"] as? [String: Any])
+        bot = Bot(botUser: response?["bot"] as? [String: Any])
     }
     
 }

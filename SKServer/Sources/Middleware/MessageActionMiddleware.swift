@@ -1,5 +1,5 @@
 //
-// MessageActionResponder.swift
+// MessageActionMiddleware.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -24,19 +24,29 @@
 import Foundation
 import HTTPServer
 
-public struct MessageActionResponder {
+public struct MessageActionMiddleware: Middleware {
     
-    public let routes: [MessageActionRoute]
-    
-    public init(routes: [MessageActionRoute]) {
-        self.routes = routes
+    let token: String
+    let responder: MessageActionResponder
+
+    public init(token: String, responder: MessageActionResponder) {
+        self.token = token
+        self.responder = responder
     }
     
-    internal func routes(_ request: MessageActionRequest) -> Middleware? {
-        if let route = routes.filter({$0.action.name == request.action?.name}).first {
-            return route.middleware
+    public func respond(to request: Request, chainingTo next: Responder) throws -> Response {
+        if let action = MessageActionRequest(request: request), let middleware = responder.routes(action), action.token == token {
+            return try middleware.respond(to: request, chainingTo: next)
         }
-        return nil
+        return Response(status: .badRequest)
     }
     
+}
+
+extension MessageActionRequest {
+    public init?(request: Request) {
+        var req = request
+        let encoded = try? URLEncodedFormMapParser().parse(try req.body.becomeBuffer(deadline: 3.seconds))
+        self.init(response: encoded!!.dictionary!["payload"]?.dictionary)
+    }
 }

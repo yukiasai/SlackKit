@@ -1,5 +1,5 @@
 //
-// Response.swift
+// SKResponseResponse.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,9 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import Foundation
+import HTTPServer
 import SKCommon
 
-public struct Response {
+public struct SKResponse {
     
     let text: String
     let responseType: ResponseType?
@@ -41,5 +43,9 @@ public struct Response {
         json["response_type"] = responseType?.rawValue
         json["attachments"] = attachments?.map({$0.dictionary})
         return json
+    }
+    
+    internal var data: Data? {
+        return try? JSONSerialization.data(withJSONObject: self.json, options: [])
     }
 }

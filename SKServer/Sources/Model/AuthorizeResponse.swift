@@ -21,16 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-internal struct AuthorizeResponse {
+import HTTPServer
+
+public struct AuthorizeResponse {
     
-    let code: String
-    let state: String
+    var code: String?
+    var state: String?
     
-    init?(queryParameters: [(String, String)]) {
-        guard let code = queryParameters.first?.1, let state = queryParameters.last?.1 else {
-            return nil
+    init?(queryItems: [URLQueryItem]) {
+        for item in queryItems {
+            switch item.name {
+            case "code":
+                self.code = item.value
+            case "state":
+                self.state = item.value
+            default:
+                continue
+            }
         }
-        self.code = code
-        self.state = state
     }
 }

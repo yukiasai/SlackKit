@@ -21,31 +21,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-
-internal struct WebhookRequest: Request {
+public struct WebhookRequest {
     
-    let token: String?
-    let teamID: String
-    let teamDomain: String
-    let channelID: String
-    let channelName: String
-    let userID: String
-    let userName: String
-    let command: String
-    let text: String
-    let responseURL: String
+    public let token: String?
+    public let teamID: String?
+    public let teamDomain: String?
+    public let channelID: String?
+    public let channelName: String?
+    public let ts: String?
+    public let userID: String?
+    public let userName: String?
+    public let command: String?
+    public let text: String?
+    public let triggerWord: String?
+    public let responseURL: String?
     
-    init(request: [URLQueryItem]?) {
-        token = request?.first(where: { $0.name == "token" })?.value
-        teamID = request?.first(where: { $0.name == "team_id" })?.value ?? ""
-        teamDomain = request?.first(where: { $0.name == "team_domain" })?.value ?? ""
-        channelID = request?.first(where: { $0.name == "channel_id" })?.value ?? ""
-        channelName = request?.first(where: { $0.name == "channel_name" })?.value ?? ""
-        userID = request?.first(where: { $0.name == "user_id" })?.value ?? ""
-        userName = request?.first(where: { $0.name == "user_name" })?.value ?? ""
-        command = request?.first(where: { $0.name == "command" })?.value ?? ""
-        text = request?.first(where: { $0.name == "text" })?.value ?? ""
-        responseURL = request?.first(where: { $0.name == "response_url" })?.value ?? ""
+    internal init(request: [String: Any]?) {
+        token = request?["token"] as? String
+        teamID = request?["team_id"] as? String
+        teamDomain = request?["team_domain"] as? String
+        channelID = request?["channel_id"] as? String
+        channelName = request?["channel_name"] as? String
+        ts = request?["timestamp"] as? String
+        userID = request?["user_id"] as? String
+        userName = request?["user_name"] as? String
+        command = request?["command"] as? String
+        text = request?["text"] as? String
+        triggerWord = request?["trigger_word"] as? String
+        responseURL = request?["response_url"] as? String
     }
+    
 }

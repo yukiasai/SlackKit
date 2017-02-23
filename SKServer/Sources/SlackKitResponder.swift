@@ -1,5 +1,5 @@
 //
-// AuthorizeRequest.swift
+// SlackKitResponder.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,29 +21,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import SKCommon
+import HTTPServer
+import Venice
 
-internal struct AuthorizeRequest {
+public struct SlackKitResponder: Responder {
     
-    let clientID: String
-    let scope: [Scope]
-    let redirectURI: String
-    let state: String
-    let team: String?
+    let routes: [RequestRoute]
     
-    var parameters: [String: Any] {
-        var json = [String : Any]()
-        json["scope"] = scope.map({$0.rawValue}).joined(separator: ",")
-        json["state"] = state
-        json["team"] = team
-        return json
+    public init(routes: [RequestRoute]) {
+        self.routes = routes
     }
     
-    init(clientID: String, scope:[Scope], redirectURI: String, state: String = "slackkit", team: String? = nil) {
-        self.clientID = clientID
-        self.scope = scope
-        self.redirectURI = redirectURI
-        self.state = state
-        self.team = team
+    public func respond(to request: Request) throws -> Response {
+        let channel = FallibleChannel<Response>()
+        // Timeout
+        after(3000.milliseconds) {
+            channel.send(Response(status:.ok))
+        }
+        // Response coroutine
+        co {
+            do {
+                channel.send(try self.routes.filter{$0.path == request.path}.first?.middleware.respond(to: request, chainingTo: self) ?? Response(status: .badRequest))
+            } catch {
+                channel.send(error)
+            }
+        }
+            
+        return try channel.receive()!
     }
+
 }

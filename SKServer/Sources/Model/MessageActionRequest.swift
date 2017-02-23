@@ -23,22 +23,22 @@
 
 import SKCommon
 
-internal struct MessageActionRequest: Request {
+public struct MessageActionRequest {
     
-    let action: Action?
-    let callbackID: String?
-    let team: Team?
-    let channel: Channel?
-    let user: User?
-    let actionTS: String?
-    let messageTS: String?
-    let attachmentID: String?
-    let token: String?
-    let originalMessage: Message?
-    let responseURL: String
+    public let action: Action?
+    public let callbackID: String?
+    public let team: Team?
+    public let channel: Channel?
+    public let user: User?
+    public let actionTS: String?
+    public let messageTS: String?
+    public let attachmentID: String?
+    public let token: String?
+    public let originalMessage: Message?
+    public let responseURL: String?
     
-    init(response: [String: Any]?) {
-        action = (response?["actions"] as? [[String:Any]])?.map({Action(action: $0)}).first
+    internal init(response: [String: Any]?) {
+        action = (response?["actions"] as? [Any])?.map({$0 as? [String: Any]}).first.map({Action(action: $0)})
         callbackID = response?["callback_id"] as? String
         team = Team(team: response?["team"] as? [String: Any])
         channel = Channel(channel: response?["channel"] as? [String: Any])
@@ -48,6 +48,7 @@ internal struct MessageActionRequest: Request {
         attachmentID = response?["attachment_id"] as? String
         token = response?["token"] as? String
         originalMessage = Message(dictionary: response?["original_message"] as? [String: Any])
-        responseURL = response?["response_url"] as? String ?? ""
+        responseURL = response?["response_url"] as? String
     }
+    
 }

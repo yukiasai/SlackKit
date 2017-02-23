@@ -1,5 +1,5 @@
 //
-// MessageActionResponder.swift
+// IncomingWebhook.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,22 +21,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-import HTTPServer
+public struct IncomingWebhook {
+    
+    public let url: String?
+    public let channel: String?
+    public let configurationURL: String?
+    public let username: String?
+    public let iconEmoji: String?
+    public let iconURL: String?
+    
+    internal init(webhook: [String: Any]?) {
+        url = webhook?["url"] as? String
+        channel = webhook?["channel"] as? String
+        configurationURL = webhook?["configuration_url"] as? String
+        username = webhook?["username"] as? String
+        iconEmoji = webhook?["icon_emoji"] as? String
+        iconURL = webhook?["icon_url"] as? String
+    }
 
-public struct MessageActionResponder {
-    
-    public let routes: [MessageActionRoute]
-    
-    public init(routes: [MessageActionRoute]) {
-        self.routes = routes
-    }
-    
-    internal func routes(_ request: MessageActionRequest) -> Middleware? {
-        if let route = routes.filter({$0.action.name == request.action?.name}).first {
-            return route.middleware
-        }
-        return nil
-    }
-    
 }

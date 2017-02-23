@@ -1,5 +1,5 @@
 //
-// Server+Webhook.swift
+// RequestRoute.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -21,29 +21,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-extension Server {
+import HTTPServer
+
+public struct RequestRoute {
     
-    public func addWebhookWith(token: String, route: String, response: Response) {
-        tokens[route] = token
-        addRoute(route, response: response)
+    let path: String
+    let middleware: Middleware
+    
+    public init(path: String, middleware: Middleware) {
+        self.path = path
+        self.middleware = middleware
     }
     
-    private func addRoute(_ route: String, response: Response) {
-        http[route] = { request in
-            let webhookRequest = WebhookRequest(request: self.requestQueryItems(request.body))
-            if webhookRequest.token == self.tokens[request.path] {
-                return self.request(webhookRequest, reply: self.replyForResponse(response))
-            } else {
-                return .badRequest(.text("Bad request."))
-            }
-        }
-    }
-    
-    private func replyForResponse(_ response: Response) -> Reply {
-        if response.attachments == nil && response.responseType == nil {
-            return Reply.text(body: response.text)
-        } else {
-            return Reply.json(response: response)
-        }
-    }
 }

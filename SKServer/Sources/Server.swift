@@ -22,77 +22,35 @@
 // THE SOFTWARE.
 
 import Foundation
+import SKCore
 import Swifter
 
-internal enum Reply {
-    case json(response: Response)
-    case text(body: String)
-    case badRequest
+public protocol SKServer {
+    func start()
+    func stop()
 }
 
-internal protocol Request {
-    var responseURL: String { get }
-}
-
-public final class Server {
+public final class SlackKitServer {
     
-    internal let http = HttpServer()
-    //MARK: - OAuth
-    internal let oauthURL = "https://slack.com/oauth/authorize"
-    internal let clientID: String
-    internal let clientSecret: String
-    internal let state: String?
-    internal let redirectURI: String?
-    internal var delegate: OAuthDelegate?
-    //Verification tokens
-    internal var tokens = [String: String]()
-    //Message action responders
-    internal var responders = [String: MessageActionResponder]()
+    internal let server: SKServer
 
-    public init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, delegate: OAuthDelegate? = nil) {
-        self.clientID = clientID
-        self.clientSecret = clientSecret
-        self.state = state ?? "state"
-        self.redirectURI = redirectURI
-        self.delegate = delegate
-        oauthRoute()
-    }
-    
-    public func start(_ port: in_port_t = 8080, forceIPV4: Bool = false) {
-        do {
-            try http.start(port, forceIPv4: forceIPV4)
-        } catch let error as NSError {
-            print("Server failed to start with error: \(error)")
+    public init(server: SKServer? = nil) {
+        if let server = server {
+            self.server = server
+        } else {
+            #if os(Linux)
+                self.server = SwifterServer()
+            #else
+                self.server = SwifterServer()
+            #endif
         }
     }
     
+    public func start() {
+        server.start()
+    }
+
     public func stop() {
-        http.stop()
-    }
-    
-    internal func request(_ request:Request, reply: Reply) -> HttpResponse {
-        switch reply {
-        case .text(let body):
-            return .ok(.text(body))
-        case .json(let response):
-            return .ok(.json(response.json as AnyObject))
-        case .badRequest:
-            return .badRequest(.text("Bad request."))
-        }
-    }
-    
-    internal func requestQueryItems(_ body: [UInt8]) -> [URLQueryItem]? {
-        guard let string = String(data: Data(bytes: UnsafePointer<UInt8>(body), count: body.count), encoding: String.Encoding.utf8) else {
-            return nil
-        }
-        let components = URLComponents(string: string)
-        return components?.queryItems
-    }
-    
-    internal func jsonFromRequest(_ string: String) -> [String: Any]? {
-        guard let data = string.data(using: String.Encoding.utf8) else {
-            return nil
-        }
-        return (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any] ?? nil
+        server.stop()
     }
 }
