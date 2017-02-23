@@ -26,6 +26,7 @@ import Foundation
 public struct NetworkInterface {
     
     private let apiUrl = "https://slack.com/api/"
+    private let session = URLSession()
     
     public func request(_ endpoint: Endpoint, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
         var components = URLComponents(string: "\(apiUrl)\(endpoint.rawValue)")
@@ -38,7 +39,7 @@ public struct NetworkInterface {
         }
         let request = URLRequest(url: url)
         
-        URLSession.shared.dataTask(with: request) {(data, response, publicError) in
+        session.dataTask(with: request) {(data, response, publicError) in
             do {
                 successClosure(try self.handleResponse(data, response: response, publicError: publicError))
             } catch let error {
@@ -58,7 +59,7 @@ public struct NetworkInterface {
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = data
         
-        URLSession.shared.dataTask(with: request) {(data, response, publicError) in
+        session.dataTask(with: request) {(data, response, publicError) in
             if publicError == nil {
                 success(true)
             } else {
@@ -85,18 +86,22 @@ public struct NetworkInterface {
         let contentDispositionString = "Content-Disposition: form-data; name=\"file\"; filename=\"\(parameters["filename"])\"\r\n"
         let contentTypeString = "Content-Type: \(parameters["filetype"])\r\n\r\n"
         
-        var requestBodyData: Data = Data()
-        requestBodyData.append(boundaryStart.data(using: String.Encoding.utf8)!)
-        requestBodyData.append(contentDispositionString.data(using: String.Encoding.utf8)!)
-        requestBodyData.append(contentTypeString.data(using: String.Encoding.utf8)!)
-        requestBodyData.append(data)
-        requestBodyData.append("\r\n".data(using: String.Encoding.utf8)!)
-        requestBodyData.append(boundaryEnd.data(using: String.Encoding.utf8)!)
+        guard let boundaryStartData = boundaryStart.data(using: .utf8), let dispositionData = contentDispositionString.data(using: .utf8), let contentTypeData = contentTypeString.data(using: .utf8), let boundaryEndData = boundaryEnd.data(using: .utf8) else {
+            errorClosure(SlackError.clientNetworkError)
+            return
+        }
+        
+        var requestBodyData = Data()
+        requestBodyData.append(contentsOf: boundaryStartData)
+        requestBodyData.append(contentsOf: dispositionData)
+        requestBodyData.append(contentsOf: contentTypeData)
+        requestBodyData.append(contentsOf: data)
+        requestBodyData.append(contentsOf: boundaryEndData)
         
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = requestBodyData as Data
         
-        URLSession.shared.dataTask(with: request) {(data, response, publicError) in
+        session.dataTask(with: request) {(data, response, publicError) in
             do {
                 successClosure(try self.handleResponse(data, response: response, publicError: publicError))
             } catch let error {
@@ -140,7 +145,11 @@ public struct NetworkInterface {
     }
     
     private func randomBoundary() -> String {
-        return String(format: "slackkit.boundary.%08x%08x", arc4random(), arc4random())
+        #if os(Linux)
+            return "slackkit.boundary.\(Int(random()))\(Int(random()))"
+        #else
+            return "slackkit.boundary.\(arc4random())\(arc4random())"
+        #endif
     }
     
     //MARK: - Filter Nil Parameters
