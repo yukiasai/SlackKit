@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SKCommon
+import SKCore
 import Starscream
 
 public class StarscreamClient: RTM, WebSocketDelegate {

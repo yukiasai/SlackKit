@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SKCommon
+import SKCore
 import WebSocketClient
 
 public class ZewoClient: RTM {

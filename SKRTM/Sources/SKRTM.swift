@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 
 import Foundation
-import SKCommon
+import SKCore
 
 public protocol RTM {
     init()
@@ -38,10 +38,10 @@ public protocol RTMDelegate {
     func receivedMessage(_ message: String)
 }
 
-public final class RTMClient: RTMDelegate {
+public final class SKRTM: RTMDelegate {
     
     public var rtm: RTM
-    public var client: Client?
+    public var clientDelegate: ClientDelegate?
     public var token = "xoxp-SLACK_AUTH_TOKEN"
     internal var options: ClientOptions
     var connected = false
@@ -74,7 +74,7 @@ public final class RTMClient: RTMDelegate {
                 return
             }
             self.rtm.connect(url: url)
-            self.client?.initialSetup(JSON: response)
+            self.clientDelegate?.initialSetup(json: response)
         }, failure: { (error) in
             print(error)
         })
@@ -175,5 +175,27 @@ public final class RTMClient: RTMDelegate {
         if let json = (try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)) as? [String: Any] {
             dispatch(json)
         }
+    }
+    
+    internal func dispatch(_ anEvent: [String: Any]) {
+        let event = Event(anEvent)
+        let type = event.type ?? .unknown
+        switch type {
+        case .hello:
+            connected = true
+        case .pong:
+            pong = event.replyTo
+        case .teamMigrationStarted:
+            connect()
+        case .error:
+            print("Error: \(anEvent)")
+        case .goodbye:
+            connect()
+        case .unknown:
+            print("Unsupported event of type: \(anEvent["type"] ?? "No Type Information")")
+        default:
+            break
+        }
+        clientDelegate?.notificationForEvent(event, type: type)
     }
 }

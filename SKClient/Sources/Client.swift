@@ -22,9 +22,9 @@
 // THE SOFTWARE.
 
 import Foundation
-import SKCommon
+import SKCore
 
-open class Client: Notifiable {
+open class Client {
     
     internal(set) public var authenticatedUser: User?
     internal(set) public var team: Team?
