@@ -1,5 +1,5 @@
 //
-// SlackKitServer.swift
+// SKServer.swift
 //
 // Copyright © 2017 Peter Zignego. All rights reserved.
 //
@@ -24,16 +24,16 @@
 import Foundation
 import SKCore
 
-public protocol SKServer {
+public protocol SlackKitServer {
     func start()
     func stop()
 }
 
-public final class SlackKitServer {
+public final class SKServer {
     
-    internal let server: SKServer
+    internal let server: SlackKitServer
 
-    public init?(server: SKServer? = nil, responder: SlackKitResponder) {
+    public init?(server: SlackKitServer? = nil, responder: SlackKitResponder) {
         if let server = server {
             self.server = server
         } else {

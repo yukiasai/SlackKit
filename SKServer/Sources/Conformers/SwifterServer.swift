@@ -10,7 +10,7 @@ import Foundation
 import HTTP
 import Swifter
 
-class SwifterServer: SKServer {
+class SwifterServer: SlackKitServer {
     
     let server = HttpServer()
     let port: in_port_t

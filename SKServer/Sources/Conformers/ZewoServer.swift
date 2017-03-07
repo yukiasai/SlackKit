@@ -9,7 +9,7 @@
 import Foundation
 import HTTPServer
 
-class ZewoServer: SKServer {
+class ZewoServer: SlackKitServer {
 
     let server: Server
     
