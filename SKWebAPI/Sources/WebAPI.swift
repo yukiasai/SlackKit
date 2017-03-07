@@ -135,13 +135,9 @@ public final class WebAPI {
         }
     }
     
-    public static func oauthAccess(clientID: String, clientSecret: String, code: String, redirectURI: String? = nil, success: ((_ response: [String: Any])->Void)?, failure: ((SlackError)->Void)?) {
+    public static func oauthAccess(clientID: String, clientSecret: String, code: String, redirectURI: String? = nil) -> [String: Any]? {
         let parameters: [String: Any?] = ["client_id": clientID, "client_secret": clientSecret, "code": code, "redirect_uri": redirectURI]
-        NetworkInterface().request(.oauthAccess, parameters: parameters, successClosure: {(response) in
-            success?(response)
-        }) {(error) in
-            failure?(error)
-        }
+        return NetworkInterface().synchronusRequest(.oauthAccess, parameters: parameters)
     }
     
     public static func oauthRevoke(token: String, test: Bool? = nil, success: ((_ revoked:Bool)->Void)?, failure: ((SlackError)->Void)?) {

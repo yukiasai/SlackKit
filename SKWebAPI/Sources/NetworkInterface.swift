@@ -44,11 +44,36 @@ public struct NetworkInterface {
         
         session.dataTask(with: request) {(data, response, publicError) in
             do {
-                successClosure(try self.handleResponse(data, response: response, publicError: publicError))
+                successClosure(try NetworkInterface.handleResponse(data, response: response, publicError: publicError))
             } catch let error {
                 errorClosure(error as? SlackError ?? SlackError.unknownError)
             }
         }.resume()
+    }
+    
+    //Adapted from https://gist.github.com/erica/baa8a187a5b4796dab27
+    public func synchronusRequest(_ endpoint: Endpoint, parameters: [String: Any?]) -> [String: Any]? {
+        var components = URLComponents(string: "\(apiUrl)\(endpoint.rawValue)")
+        if parameters.count > 0 {
+            components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
+        }
+        guard let url = components?.url else {
+            return nil
+        }
+        let request = URLRequest(url: url)
+        var data: Data? = nil
+        var response: URLResponse? = nil
+        var error: Error? = nil
+        let semaphore = DispatchSemaphore(value: 0)
+        session.dataTask(with: request) { (reqData, reqResponse, reqError) in
+            data = reqData
+            response = reqResponse
+            error = reqError
+            if data == nil, let error = error { print(error) }
+            semaphore.signal()
+        }.resume()
+        _ = semaphore.wait(timeout: DispatchTime.distantFuture)
+        return try? NetworkInterface.handleResponse(data, response: response, publicError: error)
     }
     
     public func customRequest(_ url: String, data: Data, success: @escaping (Bool)->Void, errorClosure: @escaping (SlackError)->Void) {
@@ -106,14 +131,14 @@ public struct NetworkInterface {
         
         session.dataTask(with: request) {(data, response, publicError) in
             do {
-                successClosure(try self.handleResponse(data, response: response, publicError: publicError))
+                successClosure(try NetworkInterface.handleResponse(data, response: response, publicError: publicError))
             } catch let error {
                 errorClosure(error as? SlackError ?? SlackError.unknownError)
             }
         }.resume()
     }
     
-    private func handleResponse(_ data: Data?, response:URLResponse?, publicError:Error?) throws -> [String: Any] {
+    internal static func handleResponse(_ data: Data?, response: URLResponse?, publicError: Error?) throws -> [String: Any] {
         guard let data = data, let response = response as? HTTPURLResponse else {
             throw SlackError.clientNetworkError
         }
