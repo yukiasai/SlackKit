@@ -23,6 +23,7 @@
 
 import Foundation
 import SKCore
+import SKWebAPI
 
 public protocol RTMWebSocket {
     init()
@@ -33,8 +34,8 @@ public protocol RTMWebSocket {
 }
 
 public protocol RTMAdapter: class {
-    func initialSetup(json: [String: Any])
-    func notificationForEvent(_ event: Event, type: EventType)
+    func initialSetup(json: [String: Any], instance: SKRTMAPI)
+    func notificationForEvent(_ event: Event, type: EventType, instance: SKRTMAPI)
 }
 
 public protocol RTMDelegate {
@@ -45,7 +46,7 @@ public protocol RTMDelegate {
 
 public final class SKRTMAPI: RTMDelegate {
     
-    public var rtm: RTM
+    public var rtm: RTMWebSocket
     public var adapter: RTMAdapter?
     public var token = "xoxp-SLACK_AUTH_TOKEN"
     internal var options: ClientOptions
@@ -54,20 +55,16 @@ public final class SKRTMAPI: RTMDelegate {
     var ping: Double?
     var pong: Double?
     
-    private var webAPI: WebAPI {
-        return WebAPI(token: token)
-    }
-    
-    public init(withAPIToken token: String, options: ClientOptions = ClientOptions(), rtm: RTM? = nil) {
+    public init(withAPIToken token: String, options: ClientOptions = ClientOptions(), rtm: RTMWebSocket? = nil) {
         self.token = token
         self.options = options
         if let rtm = rtm {
             self.rtm = rtm
         } else {
             #if os(Linux)
-                self.rtm = ZewoClient()
+                self.rtm = ZewoRTM()
             #else
-                self.rtm = StarscreamClient()
+                self.rtm = StarscreamRTM()
             #endif
         }
         self.rtm.delegate = self
@@ -75,12 +72,12 @@ public final class SKRTMAPI: RTMDelegate {
     }
     
     public func connect() {
-        webAPI.rtmStart(simpleLatest: options.simpleLatest, noUnreads: options.noUnreads, mpimAware: options.mpimAware, success: {(response) in
+        WebAPI.rtmStart(token: token, simpleLatest: options.simpleLatest, noUnreads: options.noUnreads, mpimAware: options.mpimAware, success: {(response) in
             guard let socketURL = response["url"] as? String, let url = URL(string: socketURL) else {
                 return
             }
             self.rtm.connect(url: url)
-            self.adapter?.initialSetup(json: response)
+            self.adapter?.initialSetup(json: response, instance: self)
         }, failure: { (error) in
             print(error)
         })
@@ -202,6 +199,6 @@ public final class SKRTMAPI: RTMDelegate {
         default:
             break
         }
-        adapter?.notificationForEvent(event, type: type)
+        adapter?.notificationForEvent(event, type: type, instance: self)
     }
 }
