@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 
 import Foundation
-import HTTPServer
+import HTTP
 
 public struct ResponseMiddleware: Middleware {
     
@@ -55,23 +55,36 @@ public struct ResponseMiddleware: Middleware {
             }
         }
     }
-    
 }
 
 extension WebhookRequest {
     public init?(request: Request) {
-        var req = request
-        let body = try? req.body.becomeBuffer(deadline: 3.seconds).bytes
-        let data = Data(bytes: body!)
-        let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-        self.init(request: json)
+        do {
+            var req = request
+            let body = try req.body.becomeBuffer(deadline: 3.seconds).bytes
+            guard
+                let queryString = String(data: Data(body), encoding: .utf8),
+                let proto = req.headers["X-Forwarded-Proto"],
+                let host = req.headers["Host"]
+            else {
+                return nil
+            }
+            let requestString = proto + host + req.url.relativeString + "?" + queryString
+            let components = URLComponents(string: requestString)
+            var dict = [String: Any]()
+            _ = components?.queryItems.flatMap {$0.map({dict[$0.name]=$0.value})}
+            self.init(request: dict)
+        } catch let error {
+            print(error)
+            return nil
+        }
     }
 }
 
 extension Response {
     public init(response: SKResponse) {
-        if response.attachments == nil && response.responseType == nil {
-            self.init(body: Buffer([UInt8](response.text.data(using: .utf8)!)))
+        if let text = response.text.data(using: .utf8), response.attachments == nil, response.responseType == nil {
+            self.init(body: Buffer([UInt8](text)))
         } else if let data = try? JSONSerialization.data(withJSONObject: response.json, options: []) {
             self.init(status: .ok, headers: ["content-type":"application/json"], body: Buffer([UInt8](data)))
         } else {

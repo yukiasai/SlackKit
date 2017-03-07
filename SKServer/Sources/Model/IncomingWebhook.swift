@@ -38,5 +38,4 @@ public struct IncomingWebhook {
         iconEmoji = webhook?["icon_emoji"] as? String
         iconURL = webhook?["icon_url"] as? String
     }
-
 }

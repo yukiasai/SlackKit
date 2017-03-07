@@ -1,5 +1,5 @@
 //
-// SKResponseResponse.swift
+// SKResponse.swift
 //
 // Copyright © 2016 Peter Zignego. All rights reserved.
 //
@@ -22,7 +22,6 @@
 // THE SOFTWARE.
 
 import Foundation
-import HTTPServer
 import SKCore
 
 public struct SKResponse {

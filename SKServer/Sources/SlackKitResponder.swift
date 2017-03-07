@@ -21,8 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import HTTPServer
-import Venice
+import Foundation
+import HTTP
 
 public struct SlackKitResponder: Responder {
     
@@ -33,21 +33,22 @@ public struct SlackKitResponder: Responder {
     }
     
     public func respond(to request: Request) throws -> Response {
-        let channel = FallibleChannel<Response>()
+        guard sslCheck(request: request) == false else {
+            return Response(status: .ok)
+        }
         // Timeout
-        after(3000.milliseconds) {
-            channel.send(Response(status:.ok))
-        }
-        // Response coroutine
-        co {
-            do {
-                channel.send(try self.routes.filter{$0.path == request.path}.first?.middleware.respond(to: request, chainingTo: self) ?? Response(status: .badRequest))
-            } catch {
-                channel.send(error)
-            }
-        }
-            
-        return try channel.receive()!
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: 3 * NSEC_PER_SEC), execute: {
+            return Response(status:.ok)
+        })
+        return try self.routes.filter{$0.path == request.path}.first?.middleware.respond(to: request, chainingTo: self) ?? Response(status: .badRequest)
     }
-
+    
+    private func sslCheck(request: Request) -> Bool {
+        var req = request
+        let encoded = try? URLEncodedFormMapParser.parse(try req.body.becomeBuffer(deadline: 3.seconds))
+        if encoded?.dictionary?["ssl_check"]?.string == "1" {
+            return true
+        }
+        return false
+    }
 }

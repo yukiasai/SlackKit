@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 
 import Foundation
-import HTTPServer
+import HTTP
 
 public struct MessageActionMiddleware: Middleware {
     
@@ -40,13 +40,19 @@ public struct MessageActionMiddleware: Middleware {
         }
         return Response(status: .badRequest)
     }
-    
 }
 
 extension MessageActionRequest {
     public init?(request: Request) {
         var req = request
-        let encoded = try? URLEncodedFormMapParser().parse(try req.body.becomeBuffer(deadline: 3.seconds))
-        self.init(response: encoded!!.dictionary!["payload"]?.dictionary)
+        let encoded = try? URLEncodedFormMapParser.parse(try req.body.becomeBuffer(deadline: 3.seconds))
+        guard
+            let response = encoded?.dictionary?["payload"]?.string,
+            let data = response.data(using: .utf8),
+            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+        else {
+            return nil
+        }
+        self.init(response: json)
     }
 }

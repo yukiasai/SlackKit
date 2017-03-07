@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import Foundation
 import SKCore
 
 public struct OAuthResponse {
@@ -35,12 +36,11 @@ public struct OAuthResponse {
     
     internal init(response: [String: Any]?) {
         accessToken = response?["access_token"] as? String
-        scope = (response?["scope"] as? String)?.split(separator: ",").flatMap{Scope(rawValue: $0)}
+        scope = (response?["scope"] as? String)?.components(separatedBy: ",").flatMap{Scope(rawValue: $0)}
         userID = response?["user_id"] as? String
         teamName = response?["team_name"] as? String
         teamID = response?["team_id"] as? String
         incomingWebhook = IncomingWebhook(webhook: response?["incoming_webhook"] as? [String: Any])
         bot = Bot(botUser: response?["bot"] as? [String: Any])
     }
-    
 }

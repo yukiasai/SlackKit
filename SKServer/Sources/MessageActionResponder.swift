@@ -21,8 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import HTTP
 import Foundation
-import HTTPServer
 
 public struct MessageActionResponder {
     
@@ -33,10 +33,6 @@ public struct MessageActionResponder {
     }
     
     internal func routes(_ request: MessageActionRequest) -> Middleware? {
-        if let route = routes.filter({$0.action.name == request.action?.name}).first {
-            return route.middleware
-        }
-        return nil
+        return routes.first(where: {$0.action.name == request.action?.name})?.middleware
     }
-    
 }

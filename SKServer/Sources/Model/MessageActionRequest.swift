@@ -50,5 +50,4 @@ public struct MessageActionRequest {
         originalMessage = Message(dictionary: response?["original_message"] as? [String: Any])
         responseURL = response?["response_url"] as? String
     }
-    
 }

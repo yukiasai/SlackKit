@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import HTTPServer
+import HTTP
 import SKCore
 
 public struct MessageActionRoute {
@@ -33,5 +33,4 @@ public struct MessageActionRoute {
         self.action = action
         self.middleware = middleware
     }
-    
 }

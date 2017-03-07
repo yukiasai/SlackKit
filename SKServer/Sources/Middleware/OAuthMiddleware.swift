@@ -21,9 +21,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import HTTPServer
+import Foundation
+import HTTP
 import SKCore
-import Venice
+import SKWebAPI
 
 public struct OAuthMiddleware: Middleware {
 
@@ -45,22 +46,11 @@ public struct OAuthMiddleware: Middleware {
         guard let response = AuthorizeResponse(queryItems: request.url.queryItems), let code = response.code, response.state == state else {
             return Response(status: .badRequest)
         }
-        let channel = FallibleChannel<Response>()
-        
-        co {
-            WebAPI.oauthAccess(clientID: self.clientID, clientSecret: self.clientSecret, code: code, redirectURI: self.redirectURI, success: { (response) in
-                self.authed?(OAuthResponse(response: response))
-                guard let redirect = self.redirectURI else {
-                    channel.send(Response(status: .ok))
-                    return
-                }
-                channel.send(Response(redirectTo: redirect))
-            }, failure: { (error) in
-                channel.send(error)
-            })
+        let authResponse = WebAPI.oauthAccess(clientID: clientID, clientSecret: clientSecret, code: code, redirectURI: redirectURI)
+        self.authed?(OAuthResponse(response: authResponse))
+        guard let redirect = redirectURI else {
+            return Response(status: .ok)
         }
-
-        return try channel.receive() ?? Response(status: .badRequest)
+        return Response(redirectTo: redirect)
     }
-
 }

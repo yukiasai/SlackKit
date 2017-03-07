@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import HTTPServer
+import HTTP
 
 public struct RedirectMiddleware : Middleware {
     let location: String
@@ -36,7 +36,7 @@ public struct RedirectMiddleware : Middleware {
         if shouldRedirect(request) {
             return Response(redirectTo: location)
         }
-        
+    
         return try chain.respond(to: request)
     }
 }

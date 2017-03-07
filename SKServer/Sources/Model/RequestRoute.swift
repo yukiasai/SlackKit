@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import HTTPServer
+import HTTP
 
 public struct RequestRoute {
     
@@ -32,5 +32,4 @@ public struct RequestRoute {
         self.path = path
         self.middleware = middleware
     }
-    
 }

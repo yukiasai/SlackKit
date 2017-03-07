@@ -50,5 +50,4 @@ public struct WebhookRequest {
         triggerWord = request?["trigger_word"] as? String
         responseURL = request?["response_url"] as? String
     }
-    
 }
