@@ -49,13 +49,13 @@ public final class SKRTMAPI: RTMDelegate {
     public var rtm: RTMWebSocket
     public var adapter: RTMAdapter?
     public var token = "xoxp-SLACK_AUTH_TOKEN"
-    internal var options: ClientOptions
+    internal var options: RTMOptions
     var connected = false
 
     var ping: Double?
     var pong: Double?
     
-    public init(withAPIToken token: String, options: ClientOptions = ClientOptions(), rtm: RTMWebSocket? = nil) {
+    public init(withAPIToken token: String, options: RTMOptions = RTMOptions(), rtm: RTMWebSocket? = nil) {
         self.token = token
         self.options = options
         if let rtm = rtm {

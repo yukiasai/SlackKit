@@ -1,5 +1,5 @@
 //
-// ClientOptions.swift
+// RTMOptions.swift
 //
 // Copyright © 2017 Peter Zignego. All rights reserved.
 //
@@ -23,7 +23,7 @@
 
 import Foundation
 
-public struct ClientOptions {
+public struct RTMOptions {
     
     public let simpleLatest: Bool
     public let noUnreads: Bool
