@@ -6,7 +6,7 @@
 //  Copyright © 2017 Launch Software LLC. All rights reserved.
 //
 
-#if !os(Linux)
+#if os(macOS) || os(iOS) || os(tvOS)
 import Foundation
 import SKCore
 import Starscream

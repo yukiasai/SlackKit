@@ -6,7 +6,7 @@
 //
 //
 
-#if !os(Linux)
+#if os(macOS) || os(iOS) || os(tvOS)
 import Foundation
 import HTTP
 import Swifter

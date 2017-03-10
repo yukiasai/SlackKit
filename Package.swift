@@ -31,7 +31,7 @@ let package = Package(
     ]
 )
 
-#if !os(Linux)
+#if os(macOS) || os(iOS) || os(tvOS)
 let dependencies: [Package.Dependency] = [
     .Package(url: "https://github.com/daltoniam/Starscream", majorVersion: 2),
     .Package(url: "https://github.com/pvzig/swifter.git", majorVersion: 3)
