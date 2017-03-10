@@ -44,7 +44,7 @@ public extension UInt64 {
     
     static var nanosecondsPerSecond: UInt64 {
         #if os(Linux)
-        return CLOCKS_PER_SEC
+        return UInt64(CLOCKS_PER_SEC)
         #else
         return NSEC_PER_SEC
         #endif

@@ -6,6 +6,7 @@
 //  Copyright © 2017 Launch Software LLC. All rights reserved.
 //
 
+#if !os(Linux)
 import Foundation
 import SKCore
 import Starscream
@@ -55,3 +56,4 @@ public class StarscreamRTM: RTMWebSocket, WebSocketDelegate {
     
     public func websocketDidReceiveData(socket: WebSocket, data: Data) {}
 }
+#endif

@@ -6,6 +6,7 @@
 //
 //
 
+#if !os(Linux)
 import Foundation
 import HTTP
 import Swifter
@@ -105,3 +106,4 @@ extension Request.Method {
         }
     }
 }
+#endif
