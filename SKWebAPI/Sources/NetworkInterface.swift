@@ -29,9 +29,9 @@ public struct NetworkInterface {
     private let apiUrl = "https://slack.com/api/"
     private let session = URLSession(configuration: .default)
     
-    public init() {}
+    internal init() {}
     
-    public func request(_ endpoint: Endpoint, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
+    internal func request(_ endpoint: Endpoint, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
         var components = URLComponents(string: "\(apiUrl)\(endpoint.rawValue)")
         if parameters.count > 0 {
             components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
@@ -52,7 +52,7 @@ public struct NetworkInterface {
     }
     
     //Adapted from https://gist.github.com/erica/baa8a187a5b4796dab27
-    public func synchronusRequest(_ endpoint: Endpoint, parameters: [String: Any?]) -> [String: Any]? {
+    internal func synchronusRequest(_ endpoint: Endpoint, parameters: [String: Any?]) -> [String: Any]? {
         var components = URLComponents(string: "\(apiUrl)\(endpoint.rawValue)")
         if parameters.count > 0 {
             components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
@@ -76,7 +76,7 @@ public struct NetworkInterface {
         return try? NetworkInterface.handleResponse(data, response: response, publicError: error)
     }
     
-    public func customRequest(_ url: String, data: Data, success: @escaping (Bool)->Void, errorClosure: @escaping (SlackError)->Void) {
+    internal func customRequest(_ url: String, data: Data, success: @escaping (Bool)->Void, errorClosure: @escaping (SlackError)->Void) {
         guard let string = url.removingPercentEncoding, let url =  URL(string: string) else {
             errorClosure(SlackError.clientNetworkError)
             return
@@ -96,7 +96,7 @@ public struct NetworkInterface {
         }.resume()
     }
     
-    public func uploadRequest(data: Data, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
+    internal func uploadRequest(data: Data, parameters: [String: Any?], successClosure: @escaping ([String: Any])->Void, errorClosure: @escaping (SlackError)->Void) {
         var components = URLComponents(string: "\(apiUrl)\(Endpoint.filesUpload.rawValue)")
         if parameters.count > 0 {
             components?.queryItems = filterNilParameters(parameters).map { URLQueryItem(name: $0.0, value: "\($0.1)") }
