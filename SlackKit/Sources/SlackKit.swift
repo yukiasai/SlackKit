@@ -22,46 +22,82 @@
 // THE SOFTWARE.
 
 import Foundation
-import SKClient
-import SKCommon
-import SKServer
+@_exported import SKClient
+@_exported import SKCore
+@_exported import SKRTMAPI
+@_exported import SKServer
+@_exported import SKWebAPI
 
-public final class SlackKit: OAuthDelegate {
+public final class SlackKit: RTMAdapter {
     
-    internal(set) public var rtm: RTMClient
-    internal(set) public var server: Server?
-    internal(set) public var clients: [String: RTMClient] = [:]
-    private let options: ClientOptions
+    public typealias EventClosure = (Event, Client?) -> Void
+    internal typealias TypedEvent = (EventType, EventClosure)
+    internal var callbacks = [TypedEvent]()
     
-    // If you already have an API token
-    public init(withAPIToken token: String, client: Client? = Client(), options: ClientOptions = ClientOptions(), rtm: RTM? = nil) {
-        self.options = options
-        self.rtm = RTMClient(token: token, rtm: rtm, options: options)
-        self.rtm.client = client
-        clients[token] = self.rtm
-        self.rtm.connect()
-    }
+    internal(set) public var rtm: SKRTMAPI?
+    internal(set) public var server: SKServer?
+    internal(set) public var webAPI: WebAPI?
+    internal(set) public var clients: [String: Client] = [:]
+    
+    public init() {}
 
-    // If you're going to be receiving and/or initiating OAuth requests, provide a client ID and secret
-    public init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, rtm: RTM? = nil, options: ClientOptions = ClientOptions(), notifications: [EventType] = [], port: in_port_t = 8080, forceIPV4: Bool = false) {
-        self.options = options
-        server = Server(clientID: clientID, clientSecret: clientSecret, state: state, redirectURI: redirectURI, delegate: self)
-        server?.addEventsRoute()
-        server?.start(port, forceIPV4: forceIPV4)
+    public func addWebAPIAccessWithToken(_ token: String) {
+        self.webAPI = WebAPI(token: token)
     }
     
-    public func userAuthed(_ response: OAuthResponse) {
-        // use team ids to add to clients array to prevent duplicate clients...
-        // User auth
-        if let token = response.accessToken {
-            let client = RTMClient(apiToken: token)
-            clients[token] = client
+    public func addRTMBotWithAPIToken(_ token: String, client: Client? = Client(), options: RTMOptions = RTMOptions(), rtm: RTMWebSocket? = nil) {
+        self.rtm = SKRTMAPI(withAPIToken: token, options: options, rtm: rtm)
+        self.rtm?.adapter = self
+        clients[token] = client
+        self.rtm?.connect()
+    }
+    
+    public func addServer(_ server: SlackKitServer? = nil, responder: SlackKitResponder? = nil, oauth: OAuthConfig? = nil) {
+        var responder: SlackKitResponder = responder ?? SlackKitResponder(routes: [])
+        if let oauth = oauth {
+            responder.routes.append(oauthRequestRoute(config: oauth))
         }
-        // Bot User
-        if let token = response.bot?.botToken {
-            let client = RTMClient(apiToken: token)
-            clients[token] = client
-            //connect, rtm or events
+        self.server = SKServer(server: server, responder: responder)
+        self.server?.start()
+    }
+    
+    private func oauthRequestRoute(config: OAuthConfig) -> RequestRoute {
+        let oauth = OAuthMiddleware(config: config) { authorization in
+            // User
+            if let token = authorization.accessToken {
+                self.webAPI = WebAPI(token: token)
+            }
+            // Bot User
+            if let token = authorization.bot?.botToken {
+                self.webAPI = WebAPI(token: token)
+                self.rtm = SKRTMAPI(withAPIToken: token, options: RTMOptions(), rtm: nil)
+                self.rtm?.adapter = self
+                self.clients[token] = Client()
+            }
+        }
+        return RequestRoute(path: "/oauth", middleware: oauth)
+    }
+    
+    //MARK: - RTM Adapter
+    public func initialSetup(json: [String: Any], instance: SKRTMAPI) {
+        clients[instance.token]?.initialSetup(JSON: json)
+    }
+    
+    public func notificationForEvent(_ event: Event, type: EventType, instance: SKRTMAPI) {
+        let client = clients[instance.token]
+        client?.notificationForEvent(event, type: type)
+        executeCallbackForEvent(event, type: type, client: client)
+    }
+    
+    //MARK: - Callbacks
+    public func notificationForEvent(_ type: EventType, event: @escaping EventClosure) {
+        callbacks.append((type, event))
+    }
+    
+    private func executeCallbackForEvent(_ event: Event, type: EventType, client: Client?) {
+        let cbs = callbacks.filter {$0.0 == type}
+        for callback in cbs {
+            callback.1(event, client)
         }
     }
 }

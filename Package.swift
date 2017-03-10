@@ -3,21 +3,29 @@ import PackageDescription
 let package = Package(
     name: "SlackKit",
     targets: [
+        Target(name: "Test", dependencies: [
+            "SlackKit"
+        ]),
         Target(name: "SlackKit", dependencies: [
             "SKCore",
             "SKClient",
-            "SKRTM",
+            "SKRTMAPI",
             "SKServer"
         ]),
         Target(name: "SKCore", dependencies: []),
-        Target(name: "SKRTM", dependencies: [
+        Target(name: "SKRTMAPI", dependencies: [
+            "SKCore",
+            "SKWebAPI"
+        ]),
+        Target(name: "SKWebAPI", dependencies: [
             "SKCore"
         ]),
         Target(name: "SKClient", dependencies: [
             "SKCore"
         ]),
         Target(name: "SKServer", dependencies: [
-            "SKCore"
+            "SKCore",
+            "SKWebAPI"
         ])
     ],
     dependencies: [

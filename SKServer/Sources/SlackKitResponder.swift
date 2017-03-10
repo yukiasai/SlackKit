@@ -26,7 +26,7 @@ import HTTP
 
 public struct SlackKitResponder: Responder {
     
-    let routes: [RequestRoute]
+    public var routes: [RequestRoute]
     
     public init(routes: [RequestRoute]) {
         self.routes = routes
