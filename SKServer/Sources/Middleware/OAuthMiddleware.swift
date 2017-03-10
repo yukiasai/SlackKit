@@ -28,27 +28,21 @@ import SKWebAPI
 
 public struct OAuthMiddleware: Middleware {
 
-    private let clientID: String
-    private let clientSecret: String
-    private let state: String?
-    private let redirectURI: String?
+    private let config: OAuthConfig
     internal(set) public var authed: ((OAuthResponse) -> Void)? = nil
     
-    public init(clientID: String, clientSecret: String, state: String? = nil, redirectURI: String? = nil, authed: ((OAuthResponse) -> Void)? = nil) {
-        self.clientID = clientID
-        self.clientSecret = clientSecret
-        self.state = state ?? ""
-        self.redirectURI = redirectURI
+    public init(config: OAuthConfig, authed: ((OAuthResponse) -> Void)? = nil) {
+        self.config = config
         self.authed = authed
     }
     
     public func respond(to request: Request, chainingTo next: Responder) throws -> Response {
-        guard let response = AuthorizeResponse(queryItems: request.url.queryItems), let code = response.code, response.state == state else {
+        guard let response = AuthorizeResponse(queryItems: request.url.queryItems), let code = response.code, response.state == config.state else {
             return Response(status: .badRequest)
         }
-        let authResponse = WebAPI.oauthAccess(clientID: clientID, clientSecret: clientSecret, code: code, redirectURI: redirectURI)
+        let authResponse = WebAPI.oauthAccess(clientID: config.clientID, clientSecret: config.clientSecret, code: code, redirectURI: config.redirectURI)
         self.authed?(OAuthResponse(response: authResponse))
-        guard let redirect = redirectURI else {
+        guard let redirect = config.redirectURI else {
             return Response(status: .ok)
         }
         return Response(redirectTo: redirect)
