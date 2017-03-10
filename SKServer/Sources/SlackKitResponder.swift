@@ -37,7 +37,7 @@ public struct SlackKitResponder: Responder {
             return Response(status: .ok)
         }
         // Timeout
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: 3 * NSEC_PER_SEC), execute: {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: 3 * UInt64.nanosecondsPerSecond), execute: {
             return Response(status:.ok)
         })
         return try self.routes.filter{$0.path == request.path}.first?.middleware.respond(to: request, chainingTo: self) ?? Response(status: .badRequest)

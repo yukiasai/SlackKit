@@ -21,6 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#if os(Linux)
+import Dispatch
+#endif
 import Foundation
 import SKCore
 
@@ -271,7 +274,7 @@ internal extension Client {
         }
         channels[channelID]?.usersTyping.append(userID)
 
-        let timeout = DispatchTime.now() + Double(Int64(5.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let timeout = DispatchTime.now() + Double(Int64(5.0 * Double(UInt64.nanosecondsPerSecond))) / Double(UInt64.nanosecondsPerSecond)
         DispatchQueue.main.asyncAfter(deadline: timeout, execute: {
             if let index = self.channels[channelID]?.usersTyping.index(of: userID) {
                 self.channels[channelID]?.usersTyping.remove(at: index)

@@ -117,7 +117,7 @@ public final class SKRTMAPI: RTMDelegate {
     
     //MARK: - RTM Ping
     private func pingRTMServer() {
-        let delay = DispatchTime.now() + Double(Int64(options.pingInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let delay = DispatchTime.now() + Double(UInt64(options.pingInterval * Double(UInt64.nanosecondsPerSecond))) / Double(UInt64.nanosecondsPerSecond)
         DispatchQueue.main.asyncAfter(deadline: delay) {
             guard self.connected && self.isConnectionTimedOut else {
                 self.disconnect()
