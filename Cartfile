@@ -1,2 +1,2 @@
 github "https://github.com/daltoniam/Starscream" == 2.0.2
-github "https://github.com/pvzig/swifter.git" == 3.0.4
+github "glock45/swifter" == 1.3.2
