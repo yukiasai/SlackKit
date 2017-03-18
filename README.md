@@ -18,7 +18,7 @@ To build the SlackKit project directly, first build the dependencies using Carth
 Add SlackKit to your pod file:
 ```
 use_frameworks!
-pod 'SlackKit', '~> 3.1.7'
+pod 'SlackKit', '~> 3.1.10'
 ```
 and run
 ```
