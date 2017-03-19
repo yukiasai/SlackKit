@@ -48,7 +48,7 @@ internal struct NetworkInterface {
     }
     
     internal func customRequest(_ url: String, data: Data, success: @escaping (Bool)->Void, errorClosure: @escaping (SlackError)->Void) {
-        guard let url =  URL(string: url.removePercentEncoding()) else {
+        guard let string = url.removingPercentEncoding, let url =  URL(string: string) else {
             errorClosure(SlackError.clientNetworkError)
             return
         }
