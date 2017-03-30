@@ -82,8 +82,8 @@ internal struct NetworkInterface {
         let contentType = "multipart/form-data; boundary=" + boundaryConstant
         let boundaryStart = "--\(boundaryConstant)\r\n"
         let boundaryEnd = "--\(boundaryConstant)--\r\n"
-        let contentDispositionString = "Content-Disposition: form-data; name=\"file\"; filename=\"\(parameters["filename"])\"\r\n"
-        let contentTypeString = "Content-Type: \(parameters["filetype"])\r\n\r\n"
+        let contentDispositionString = "Content-Disposition: form-data; name=\"file\"; filename=\"\(parameters["filename"] as? String ?? "")\"\r\n"
+        let contentTypeString = "Content-Type: \(parameters["filetype"] as? String ?? "")\r\n\r\n"
         
         var requestBodyData: Data = Data()
         requestBodyData.append(boundaryStart.data(using: String.Encoding.utf8)!)
