@@ -1,316 +1,205 @@
-![SlackKit](https://cloud.githubusercontent.com/assets/8311605/10260893/5ec60f96-694e-11e5-91fd-da6845942201.png)
+<p align="center"><img src="https://cloud.githubusercontent.com/assets/8311605/24083714/e921a0d4-0cb2-11e7-8384-d42113ef5056.png" alt="SlackKit" width="500"/></p>
 
-![Swift Version](https://img.shields.io/badge/Swift-3.0-orange.svg) ![Plaforms](https://img.shields.io/badge/Platforms-macOS,iOS,tvOS-lightgrey.svg) ![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg) [![CocoaPods compatible](https://img.shields.io/badge/CocoaPods-compatible-brightgreen.svg)](https://cocoapods.org) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg)](https://github.com/Carthage/Carthage) [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
-## SlackKit: A Swift Slack Client Library
+![Swift Version](https://img.shields.io/badge/Swift-3.0.2-orange.svg)
+![Plaforms](https://img.shields.io/badge/Platforms-macOS,iOS,tvOS,Linux-lightgrey.svg)
+![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)
+[![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg)](https://github.com/Carthage/Carthage)
+[![CocoaPods compatible](https://img.shields.io/badge/CocoaPods-compatible-brightgreen.svg)](https://cocoapods.org)
+
+## SlackKit: Slack Apps in Swift
 ### Description
 
-This is a Slack client library for OS X, iOS, and tvOS written in Swift. It's intended to expose all of the functionality of Slack's [Real Time Messaging API](https://api.slack.com/rtm) as well as the [web APIs](https://api.slack.com/web) that are accessible to [bot users](https://api.slack.com/bot-users). SlackKit also supports Slack’s [OAuth 2.0](https://api.slack.com/docs/oauth) flow including the [Add to Slack](https://api.slack.com/docs/slack-button) and [Sign in with Slack](https://api.slack.com/docs/sign-in-with-slack) buttons, [incoming webhooks](https://api.slack.com/incoming-webhooks), [slash commands](https://api.slack.com/slash-commands), and [message buttons](https://api.slack.com/docs/message-buttons).
+SlackKit makes it easy to build Slack apps in Swift.
 
-This is the **Swift 3** branch of SlackKit. SlackKit also has support for [Swift 2.3](https://github.com/pvzig/SlackKit/tree/swift2.3) and [Linux](https://github.com/pvzig/SlackKit/tree/linux).
-
-#### Building the SlackKit Framework
-To build the SlackKit project directly, first build the dependencies using Carthage or CocoaPods. To use the framework in your application, install it in one of the following ways:
+It's intended to expose all of the functionality of Slack's [Real Time Messaging API](https://api.slack.com/rtm) as well as the [web APIs](https://api.slack.com/web) that are accessible to [bot users](https://api.slack.com/bot-users). SlackKit also supports Slack’s [OAuth 2.0](https://api.slack.com/docs/oauth) flow including the [Add to Slack](https://api.slack.com/docs/slack-button) and [Sign in with Slack](https://api.slack.com/docs/sign-in-with-slack) buttons, [incoming webhooks](https://api.slack.com/incoming-webhooks), [slash commands](https://api.slack.com/slash-commands), and [message buttons](https://api.slack.com/docs/message-buttons).
 
 ### Installation
 
-#### CocoaPods
-
-Add SlackKit to your pod file:
-```
-use_frameworks!
-pod 'SlackKit', '~> 3.1.7'
-```
-and run
-```
-# Use CocoaPods version >= 1.1.0
-pod install
-```
-
-#### Carthage
-
-Add SlackKit to your Cartfile:
-```
-github "https://github.com/pvzig/slackkit.git"
-```
-and run
-```
-carthage bootstrap
-```
-
-Drag the built `SlackKit.framework` into your Xcode project.
-
 #### Swift Package Manager
 
-Add SlackKit to your Package.swift
+Add `SlackKit` to your `Package.swift`
+
 ```swift
 import PackageDescription
   
 let package = Package(
 	dependencies: [
-		.Package(url: "https://github.com/pvzig/SlackKit.git", majorVersion: 3)
+		.Package(url: "https://github.com/SlackKit/SlackKit.git", "4.0.0")
 	]
 )
 ```
+#### Carthage
 
-Run `swift build` on your application’s main directory.
+Add `SlackKit` to your `Cartfile`:
 
-To use the library in your project import it:
 ```
-import SlackKit
+github "SlackKit/SlackKit"
+```
+
+#### CocoaPods
+Add `SlackKit` to your `Podfile`:
+
+```
+pod 'SlackKit'
 ```
 
 ### Usage
+#### The Basics
+Create a bot user with an API token:
+
+```swift
+import SlackKit
+
+let bot = SlackKit()
+bot.addRTMBotWithAPIToken("xoxb-SLACK-BOT-TOKEN")
+// Register for event notifications
+bot.notificationForEvent(.message) { (event, _) in
+	// Your bot logic here
+	print(event.message)
+}
+```
+
+or create a ready-to-launch Slack app with your [application’s `Client ID` and `Client Secret`](https://api.slack.com/apps):
+
+```swift
+import SlackKit
+
+let bot = SlackKit()
+let oauthConfig = OAuthConfig(clientID: "CLIENT_ID", clientSecret: "CLIENT_SECRET")
+bot.addServer(oauth: oauthConfig)
+```
+
+or just make calls to the Slack Web API:
+
+```swift
+import SlackKit
+
+let bot = SlackKit()
+bot.addWebAPIAccessWithToken("xoxb-SLACK-BOT-TOKEN")
+bot.webAPI?.authenticationTest(success: { (success) in
+	print(success)
+}, failure: nil)
+
+```
+
+#### Slash Commands
+After [configuring your slash command in Slack](https://my.slack.com/services/new/slash-commands) (you can also provide slash commands as part of a [Slack App](https://api.slack.com/slack-apps)), create a route, response middleware for that route, and add it to a responder:
+
+```swift
+let slackkit = SlackKit()
+let middleware = ResponseMiddleware(token: "SLASH_COMMAND_TOKEN", response: SKResponse(text: "👋"))
+let route = RequestRoute(path: "/hello", middleware: middleware)
+let responder = SlackKitResponder(routes: [route])
+slackkit.addServer(responder: responder)
+```
+When a user enters that slash command, it will hit your configured route and return the response you specified.
+
+#### Message Buttons
+Add [message buttons](https://api.slack.com/docs/message-buttons) to your responses for additional interactivity.
+
+To send messages with actions, add them to an attachment and send them using the Web API:
+
+```swift
+let helloAction = Action(name: "hello", text: "🌎")
+let attachment = Attachment(fallback: "Hello World", title: "Welcome to SlackKit", callbackID: "hello_world", actions: [helloAction])
+slackkit.webAPI?.sendMessage(channel: "CXXXXXX", text: "", attachments: [attachment], success: nil, failure: nil)
+```
+
+To respond to message actions, add a `RequestRoute` with `MessageActionMiddleware` using your app’s verification token to your `SlackKitResponder`:
+
+```swift
+let response = ResponseMiddleware(token: "SLACK_APP_VERIFICATION_TOKEN", response: SKResponse(text: "Hello, world!"))
+let actionRoute = MessageActionRoute(action: helloAction, middleware: response)
+let actionMiddleware = MessageActionMiddleware(token: "SLACK_APP_VERIFICATION_TOKEN", routes:[actionRoute])
+let actions = RequestRoute(path: "/actions", middleware: actionMiddleware)
+let responder = SlackKitResponder(routes: [actions])
+slackkit.addServer(responder: responder)
+```
 
 #### OAuth
 Slack has [many different oauth scopes](https://api.slack.com/docs/oauth-scopes) that can be combined in different ways. If your application does not request the proper OAuth scopes, your API calls will fail. 
 
 If you authenticate using OAuth and the Add to Slack or Sign in with Slack buttons this is handled for you.
 
-If you wish to make OAuth requests yourself, you can generate them using the `authorizeRequest` function on `SlackKit`’s `oauth` property:
-```swift
-func authorizeRequest(scope:[Scope], redirectURI: String, state: String = "slackkit", team: String? = nil)
-```
-
-For local development of things like OAuth, slash commands, and message buttons that require connecting over `https`, you may want to use a tool like [ngrok](https://ngrok.com) or [localtunnel](http://localtunnel.me).
-
-#### Incoming Webhooks
-After [configuring your incoming webhook in Slack](https://my.slack.com/services/new/incoming-webhook/), initialize IncomingWebhook with the provided URL and use `postMessage` to send messages.
-```swift
-let incoming = IncomingWebhook(url: "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX")
-let message = Response(text: "Hello, World!")
-incoming.postMessage(message)
-```
-
-#### Slash Commands
-After [configuring your slash command in Slack](https://my.slack.com/services/new/slash-commands) (you can also provide slash commands as part of a [Slack App](https://api.slack.com/slack-apps)), initialize a webhook server with the token for the slash command, a configured route, and a response.
-```swift
-let response = Response(text: "Hello, World!", responseType: .inChannel)
-let webhook = WebhookServer(token: "SLASH-COMMAND-TOKEN", route: "hello_world", response: response)
-webhook.start()
-```
-When a user enters that slash command, it will hit your configured route and return the response you specified.
-
-To add additional routes and responses, you can use WebhookServer’s addRoute function:
-```swift 
-func addRoute(route: String, response: Response)
-```
-
-#### Message Buttons
-If you are developing a Slack App and are authorizing using OAuth, you can use [message buttons](https://api.slack.com/docs/message-buttons).
-
-To send messages with actions, add them to an attachment:
-```swift
-let helloAction = Action(name: "hello_world", text: "Hello, World!")
-let attachment = Attachment(fallback: "Hello World Attachment", title: "Attachment with an Action Button", callbackID: "helloworld", actions: [helloAction])
-```
-
-To act on message actions, initialize an instance of the `MessageActionServer` using your app’s verification token, your specified interactive messages request URL route, and a `MessageActionResponder`:
-```swift
-let action = Action(name: "hello_world", text: "Hello, World!")
-let response = Response(text: "Hello, 🌎!", responseType: .inChannel)
-let responder = MessageActionResponder(responses: [(action, response)])
-let server = MessageActionServer(token: "SLACK-APP-VERIFICATION-TOKEN", route: "actions", responder: responder)
-server.start()
-```
-
-#### Bot Users
-To deploy a bot user using SlackKit you'll need a bearer token which identifies a single user. You can generate a [full access token or create one using OAuth 2](https://api.slack.com/web).
-
-Initialize a SlackKit instance using your [application’s Client ID and Client Secret](https://api.slack.com/apps) to set up SlackKit for OAuth authorization:
-```swift
-let bot = SlackKit(clientID: "CLIENT_ID", clientSecret: "CLIENT_SECRET")
-```
-
-or use a manually acquired token:
-```swift
-let bot = SlackKit(withAPIToken: "xoxp-YOUR-SLACK-API-TOKEN")
-```
-
-#### Client Connection Options
-You can also set options for a ping/pong interval, timeout interval, and automatic reconnection:
-```swift
-let options = ClientOptions(pingInterval: 2, timeout: 10, reconnect: false)
-let bot = SlackKit(clientID: "CLIENT_ID", clientSecret: "CLIENT_SECRET", clientOptions: options)
-```
-
-Once connected, the client will begin to consume any messages sent by the Slack RTM API.
+For local development of things like OAuth, slash commands, and message buttons, you may want to use a tool like [ngrok](https://ngrok.com).
 
 #### Web API Methods
 SlackKit currently supports the a subset of the Slack Web APIs that are available to bot users:
 
-- api.test
-- auth.revoke
-- auth.test
-- channels.history
-- channels.info
-- channels.list
-- channels.mark
-- channels.setPurpose
-- channels.setTopic
-- chat.delete
-- chat.meMessage
-- chat.postMessage
-- chat.update
-- emoji.list
-- files.comments.add
-- files.comments.edit
-- files.comments.delete
-- files.delete
-- files.info
-- files.upload
-- groups.close
-- groups.history
-- groups.info
-- groups.list
-- groups.mark
-- groups.open
-- groups.setPurpose
-- groups.setTopic
-- im.close
-- im.history
-- im.list
-- im.mark
-- im.open
-- mpim.close
-- mpim.history
-- mpim.list
-- mpim.mark
-- mpim.open
-- oauth.access
-- pins.add
-- pins.list
-- pins.remove
-- reactions.add
-- reactions.get
-- reactions.list
-- reactions.remove
-- rtm.start
-- stars.add
-- stars.remove
-- team.info
-- users.getPresence
-- users.info
-- users.list
-- users.setActive
-- users.setPresence
+| Web APIs      |
+| ------------- |
+| `api.test`|
+| `api.revoke`|
+| `auth.test`|
+| `channels.history`|
+| `channels.info`|
+| `channels.list`|
+| `channels.mark`|
+| `channels.setPurpose`|
+| `channels.setTopic`|
+| `chat.delete`|
+| `chat.meMessage`|
+| `chat.postMessage`|
+| `chat.update`|
+| `emoji.list`|
+| `files.comments.add`|
+| `files.comments.edit`|
+| `files.comments.delete`|
+| `files.delete`|
+| `files.info`|
+| `files.upload`|
+| `groups.close`|
+| `groups.history`|
+| `groups.info`|
+| `groups.list`|
+| `groups.mark`|
+| `groups.open`|
+| `groups.setPurpose`|
+| `groups.setTopic`|
+| `im.close`|
+| `im.history`|
+| `im.list`|
+| `im.mark`|
+| `im.open`|
+| `mpim.close`|
+| `mpim.history`|
+| `mpim.list`|
+| `mpim.mark`|
+| `mpim.open`|
+| `oauth.access`|
+| `pins.add`|
+| `pins.list`|
+| `pins.remove`|
+| `reactions.add`|
+| `reactions.get`|
+| `reactions.list`|
+| `reactions.remove`|
+| `rtm.start`|
+| `stars.add`|
+| `stars.remove`|
+| `team.info`|
+| `users.getPresence`|
+| `users.info`|
+| `users.list`|
+| `users.setActive`|
+| `users.setPresence`|
 
-They can be accessed through a Client object’s `webAPI` property:
-```swift
-client.webAPI.authenticationTest({(auth) in
-	print(auth)
-}, failure: {(error) in
-	print(error)
-})
-```
+Don’t need the whole banana? Want more control over the low-level implementation details? Use the extensible modules SlackKit is built on:
 
-#### Delegate methods
-
-To receive delegate callbacks for events, register an object as the delegate for those events using the `onClientInitalization` block:
-```swift
-let bot = SlackKit(clientID: clientID, clientSecret: clientSecret)
-bot.onClientInitalization = { (client: Client) in
-    DispatchQueue.main.async(execute: {
-	    client.messageEventsDelegate = self
-    })
-}
-```
-
-Delegate callbacks contain a reference to the Client where the event occurred.
-
-There are a number of delegates that you can set to receive callbacks for certain events.
-
-##### ConnectionEventsDelegate
-```swift
-connected(_ client: Client)
-disconnected(_ client: Client)
-connectionFailed(_ client: Client, error: SlackError)
-```
-##### MessageEventsDelegate
-```swift
-sent(_ message: Message, client: Client)
-received(_ message: Message, client: Client)
-changed(_ message: Message, client: Client)
-deleted(_ message: Message?, client: Client)
-```
-##### ChannelEventsDelegate
-```swift
-userTypingIn(_ channel: Channel, user: User, client: Client)
-marked(_ channel: Channel, timestamp: String, client: Client)
-created(_ channel: Channel, client: Client)
-deleted(_ channel: Channel, client: Client)
-renamed(_ channel: Channel, client: Client)
-archived(_ channel: Channel, client: Client)
-historyChanged(_ channel: Channel, client: Client)
-joined(_ channel: Channel, client: Client)
-left(_ channel: Channel, client: Client)
-```
-##### DoNotDisturbEventsDelegate
-```swift
-updated(_ status: DoNotDisturbStatus, client: Client)
-userUpdated(_ status: DoNotDisturbStatus, user: User, client: Client)
-```
-##### GroupEventsDelegate
-```swift
-opened(_ group: Channel, client: Client)
-```
-##### FileEventsDelegate
-```swift
-processed(_ file: File, client: Client)
-madePrivate(_ file: File, client: Client)
-deleted(_ file: File, client: Client)
-commentAdded(_ file: File, comment: Comment, client: Client)
-commentEdited(_ file: File, comment: Comment, client: Client)
-commentDeleted(_ file: File, comment: Comment, client: Client)
-```
-##### PinEventsDelegate
-```swift
-pinned(_ item: Item, channel: Channel?, client: Client)
-unpinned(_ item: Item, channel: Channel?, client: Client)
-```
-##### StarEventsDelegate
-```swift
-starred(_ item: Item, starred: Bool, _ client: Client)
-```
-##### ReactionEventsDelegate
-```swift
-added(_ reaction: String, item: Item, itemUser: String, client: Client)
-removed(_ reaction: String, item: Item, itemUser: String, client: Client)
-```
-##### SlackEventsDelegate
-```swift
-preferenceChanged(_ preference: String, value: Any?, client: Client)
-userChanged(_ user: User, client: Client)
-presenceChanged(_ user: User, presence: String, client: Client)
-manualPresenceChanged(_ user: User, presence: String, client: Client)
-botEvent(_ bot: Bot, client: Client)
-```
-##### TeamEventsDelegate
-```swift
-userJoined(_ user: User, client: Client)
-planChanged(_ plan: String, client: Client)
-preferencesChanged(_ preference: String, value: Any?, client: Client)
-nameChanged(_ name: String, client: Client)
-domainChanged(_ domain: String, client: Client)
-emailDomainChanged(_ domain: String, client: Client)
-emojiChanged(_ client: Client)
-```
-##### SubteamEventsDelegate
-```swift
-event(_ userGroup: UserGroup, client: Client)
-selfAdded(_ subteamID: String, client: Client)
-selfRemoved(_ subteamID: String, client: Client)
-```
-##### TeamProfileEventsDelegate
-```swift
-changed(_ profile: CustomProfile, client: Client)
-deleted(_ profile: CustomProfile, client: Client)
-reordered(_ profile: CustomProfile, client: Client)
-```
+| Module        | Slack Service |
+| ------------- |-------------  |
+| **[SKClient](https://github.com/SlackKit/SKClient)** | Write your own client implementation|
+| **[SKRTMAPI](https://github.com/SlackKit/SKRTMAPI)**     | Connect to the Slack RTM API|
+| **[SKServer](https://github.com/SlackKit/SKServer)**      | Spin up a server|
+| **[SKWebAPI](https://github.com/SlackKit/SKWebAPI)** | Access the Slack Web API|
 
 ### Examples
-[Check out example applications here.](https://github.com/pvzig/SlackKit-examples)
+You can find the source code for several example applications [here](https://github.com/SlackKit/Examples).
+### Tutorials
+Coming soon!
 
 ### Get In Touch
-[@pvzig](https://twitter.com/pvzig)
+Twitter: [@pvzig](https://twitter.com/pvzig)
 
-<peter@launchsoft.co>
+Email: <peter@launchsoft.co>
