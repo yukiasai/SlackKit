@@ -1,6 +1,7 @@
 use_frameworks!
 
 target 'SlackKit macOS' do
+	platform :osx, '10.11'
 	pod 'SKCore'
 	pod 'SKClient'
 	pod 'SKWebAPI'
@@ -9,6 +10,7 @@ target 'SlackKit macOS' do
 end
 
 target 'SlackKit iOS' do
+	platform :ios, '9.0'
 	pod 'SKCore'
 	pod 'SKClient'
 	pod 'SKWebAPI'
@@ -17,6 +19,7 @@ target 'SlackKit iOS' do
 end
 
 target 'SlackKit tvOS' do
+	platform :tvos, '9.0'
 	pod 'SKCore'
 	pod 'SKClient'
 	pod 'SKWebAPI'
