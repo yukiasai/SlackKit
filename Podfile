@@ -5,6 +5,7 @@ target 'SlackKit macOS' do
 	pod 'SKClient'
 	pod 'SKWebAPI'
 	pod 'SKRTMAPI'
+	pod 'SKServer'
 end
 
 target 'SlackKit iOS' do
@@ -12,6 +13,7 @@ target 'SlackKit iOS' do
 	pod 'SKClient'
 	pod 'SKWebAPI'
 	pod 'SKRTMAPI'
+	pod 'SKServer'
 end
 
 target 'SlackKit tvOS' do
@@ -19,4 +21,5 @@ target 'SlackKit tvOS' do
 	pod 'SKClient'
 	pod 'SKWebAPI'
 	pod 'SKRTMAPI'
+	pod 'SKServer'
 end
