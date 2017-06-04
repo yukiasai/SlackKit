@@ -1,18 +1,28 @@
-source 'https://github.com/CocoaPods/Specs.git'
-
 use_frameworks!
 
-target 'SlackKit OS X' do
-	pod 'Starscream', '~> 2.0.3'
-	pod 'Swifter', '~> 1.3.3'
+target 'SlackKit macOS' do
+	platform :osx, '10.11'
+	pod 'SKCore'
+	pod 'SKClient'
+	pod 'SKWebAPI'
+	pod 'SKRTMAPI'
+	pod 'SKServer'
 end
 
 target 'SlackKit iOS' do
-	pod 'Starscream', '~> 2.0.3'
-	pod 'Swifter', '~> 1.3.3'
+	platform :ios, '9.0'
+	pod 'SKCore'
+	pod 'SKClient'
+	pod 'SKWebAPI'
+	pod 'SKRTMAPI'
+	pod 'SKServer'
 end
 
 target 'SlackKit tvOS' do
-	pod 'Starscream', '~> 2.0.3'
-	pod 'Swifter', '~> 1.3.3'
+	platform :tvos, '9.0'
+	pod 'SKCore'
+	pod 'SKClient'
+	pod 'SKWebAPI'
+	pod 'SKRTMAPI'
+	pod 'SKServer'
 end

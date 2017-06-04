@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0800"
+   LastUpgradeVersion = "0830"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "26072A331BB48B3A00CD650C"
+               BlueprintIdentifier = "2684F17C1E95AA6900536DCC"
                BuildableName = "SlackKit.framework"
-               BlueprintName = "SlackKit OS X"
+               BlueprintName = "SlackKit macOS"
                ReferencedContainer = "container:SlackKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "26072A331BB48B3A00CD650C"
+            BlueprintIdentifier = "2684F17C1E95AA6900536DCC"
             BuildableName = "SlackKit.framework"
-            BlueprintName = "SlackKit OS X"
+            BlueprintName = "SlackKit macOS"
             ReferencedContainer = "container:SlackKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "26072A331BB48B3A00CD650C"
+            BlueprintIdentifier = "2684F17C1E95AA6900536DCC"
             BuildableName = "SlackKit.framework"
-            BlueprintName = "SlackKit OS X"
+            BlueprintName = "SlackKit macOS"
             ReferencedContainer = "container:SlackKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
