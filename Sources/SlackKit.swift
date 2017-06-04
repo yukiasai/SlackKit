@@ -73,6 +73,7 @@ public final class SlackKit: RTMAdapter {
                 self.rtm = SKRTMAPI(withAPIToken: token, options: RTMOptions(), rtm: nil)
                 self.rtm?.adapter = self
                 self.clients[token] = Client()
+                self.rtm?.connect()
             }
         }
         return RequestRoute(path: "/oauth", middleware: oauth)
