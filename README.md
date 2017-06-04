@@ -196,8 +196,9 @@ Don’t need the whole banana? Want more control over the low-level implementati
 
 ### Examples
 You can find the source code for several example applications [here](https://github.com/SlackKit/Examples).
+
 ### Tutorials
-Coming soon!
+- [Build a Slack Bot and Deploy to Heroku](https://medium.com/@pvzig/building-slack-bots-in-swift-b99e243e444c)
 
 ### Get In Touch
 Twitter: [@pvzig](https://twitter.com/pvzig)
