@@ -1,0 +1,4 @@
+github "SlackKit/SKCore" >= 4.0.0
+github "SlackKit/SKClient" >= 4.0.0
+github "SlackKit/SKRTMAPI" >= 4.0.0
+github "SlackKit/SKServer" >= 4.0.0
